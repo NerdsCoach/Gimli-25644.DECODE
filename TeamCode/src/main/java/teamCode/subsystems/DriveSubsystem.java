@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import java.util.function.DoubleSupplier;
 
 import teamCode.DriveToPoint;
+import teamCode.GoBildaPinpointReader;
 import teamCode.Pose2DUnNormalized;
 
 public class DriveSubsystem extends SubsystemBase
@@ -24,7 +25,7 @@ public class DriveSubsystem extends SubsystemBase
     private DcMotor m_rightBack;
 
     private GoBildaPinpointDriver m_odo;
-//    private GoBildaPinpointDriver m_odo;
+
     DriveToPoint nav = new DriveToPoint();
 
     private double m_lastRecordedAngle;
@@ -32,16 +33,14 @@ public class DriveSubsystem extends SubsystemBase
     private double error;
 
 
-
-
     public DriveSubsystem(MecanumDrive drive, GoBildaPinpointDriver odo)
     {
         this.m_drive = drive;
         this.m_currentAngle = 0.0;
         this.m_odo = odo;
-//        this.m_odo.setOffsets(68,-178);
-//        this.m_odo.setEncoderResolution(teamCode.GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-//        this.m_odo.setEncoderDirections(teamCode.GoBildaPinpointDriver.EncoderDirection.REVERSED, teamCode.GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        this.m_odo.setOffsets(87,-170, DistanceUnit.MM);
+        this.m_odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        this.m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         this.m_odo.setPosition(new Pose2D(DistanceUnit.MM, 0,0, AngleUnit.DEGREES, 0.0));
 
     }
@@ -50,10 +49,12 @@ public class DriveSubsystem extends SubsystemBase
     {
         m_drive.driveFieldCentric
                 (
-                        leftX * leftX * leftX * -1.0,//-1 //-0.7 for slow
+                        leftX * leftX * leftX * -1.0,
                         leftY * leftY * leftY * -1.0,//-1
                         getJoystickAngle(rightX, rightY),
-                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))
+                        m_odo.getHeading(AngleUnit.DEGREES)  //try this with robot, or change DEGREES to RADIANS below, and check for all the places we getHeading to make the same changes
+
+//                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))  //different from last year
                 );
         m_odo.update();
     }
@@ -65,7 +66,8 @@ public class DriveSubsystem extends SubsystemBase
                         this.getDeltaPosition(targetX.getAsDouble())[0],
                         this.getDeltaPosition(targetY.getAsDouble())[1],
                         getTurnPower(true,0),
-                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))
+                        m_odo.getHeading(AngleUnit.DEGREES)  //try this with robot, or change DEGREES to RADIANS below, and check for all the places we getHeading to make the same changes
+//                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))//different from last year
                 );
     }
 
@@ -94,7 +96,8 @@ public class DriveSubsystem extends SubsystemBase
 
     public void turnTo(boolean deadband, double angle)
     {
-        double orientation = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+//        double orientation = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+        double orientation = m_odo.getHeading(AngleUnit.DEGREES);
         m_odo.update();
         double desiredAngle;
         if (deadband)
@@ -129,13 +132,15 @@ public class DriveSubsystem extends SubsystemBase
     public void resetAngle()
     {
         m_odo.update();
-        m_lastRecordedAngle = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+//        m_lastRecordedAngle = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+        m_lastRecordedAngle = m_odo.getHeading(AngleUnit.DEGREES);
         m_currentAngle = 0;
     }
 
     public double getAngle()
     {
-        double orientation = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+//        double orientation = Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES));
+        double orientation = m_odo.getHeading(AngleUnit.DEGREES);
         double deltaAngle = orientation - m_lastRecordedAngle;
 
         if (deltaAngle > 180)

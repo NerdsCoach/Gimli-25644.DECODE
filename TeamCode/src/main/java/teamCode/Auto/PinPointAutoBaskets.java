@@ -3,8 +3,8 @@
 //import static teamCode.Constants.LiftArmConstants.kLiftArmCloseSample;
 //import static teamCode.Constants.LiftArmConstants.kLiftArmHighBasket;
 //import static teamCode.Constants.LiftArmConstants.kLiftArmIntakeReset;
-//import static teamCode.Constants.PivotIntakeConstants.kIntakePivotPickUp;
-//import static teamCode.Constants.PivotIntakeConstants.kIntakePivotScore;
+//import static teamCode.Constants.SorterConstants.kIntakePivotPickUp;
+//import static teamCode.Constants.SorterConstants.kIntakePivotScore;
 //import static teamCode.Constants.SlideArmConstants.kSlideArmCloseSample;
 //import static teamCode.Constants.SlideArmConstants.kSlideArmHighBasket;
 //import static teamCode.Constants.SlideArmConstants.kSlideArmHome;
@@ -27,7 +27,7 @@
 //import teamCode.Pose2DUnNormalized;
 //import teamCode.commands.StingrayAscent1ArmCommand;
 //import teamCode.subsystems.PurplePotatoSorterSubsystemOG;
-//import teamCode.subsystems.SecondBreakfastIntakeSubsystem;
+//import teamCode.subsystems.IntakeServoSubsystem;
 //import teamCode.subsystems.LiftArmSubsystem;
 //import teamCode.subsystems.BilbosTurnTableSubsystem;
 //import teamCode.subsystems.StingRayArmSubsystem;
@@ -49,7 +49,7 @@
 //    private StingRayArmSubsystem m_ascentArmSubsystem;
 //    private LiftArmSubsystem m_liftArmSubsystem;
 //    private BilbosTurnTableSubsystem m_slideArmSubsystem;
-//    private SecondBreakfastIntakeSubsystem m_intakeWheelSubsystem;
+//    private IntakeServoSubsystem m_intakeWheelSubsystem;
 //    private StingrayAscent1ArmCommand m_ascentArmCommand;
 //    private TouchSensor m_touch;
 //    private final ElapsedTime holdTimer = new ElapsedTime();
@@ -141,7 +141,7 @@
 //
 //        this.m_liftArmSubsystem = new LiftArmSubsystem(this.m_liftArmMotor);
 //        this.m_slideArmSubsystem = new BilbosTurnTableSubsystem(this.m_slideArmMotor);
-//        this.m_intakeWheelSubsystem = new SecondBreakfastIntakeSubsystem(this.m_intakeWheelServo
+//        this.m_intakeWheelSubsystem = new IntakeServoSubsystem(this.m_intakeWheelServo
 //        );
 //        this.m_ascentArmCommand = new StingrayAscent1ArmCommand(this.m_ascentArmSubsystem);
 //

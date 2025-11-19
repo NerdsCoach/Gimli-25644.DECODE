@@ -2,21 +2,21 @@ package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import teamCode.subsystems.AragornsAimingServoSubsystem;
-import teamCode.subsystems.BilbosTurnTableSubsystem;
-import teamCode.subsystems.EyeOfSauronHuskyLensSubsystem;
+import teamCode.subsystems.AimingServoSubsystem;
+import teamCode.subsystems.TurnTableSubsystem;
+import teamCode.subsystems.HuskyLensAimingSubsystem;
 
 public class AimingCommand extends CommandBase
 {
-    public EyeOfSauronHuskyLensSubsystem m_huskyLensSubsystem;
-    public AragornsAimingServoSubsystem m_aimingServoSubsystem;
-    public BilbosTurnTableSubsystem m_turnTableSubsystem;
+    public HuskyLensAimingSubsystem m_huskyLensSubsystem;
+    public AimingServoSubsystem m_aimingServoSubsystem;
+    public TurnTableSubsystem m_turnTableSubsystem;
 
     // Constants for PID-like control
     private final double kP = 0.01; // Proportional gain
     private final double DEADZONE = 5; // Pixels in center of screen
 
-    public AimingCommand(EyeOfSauronHuskyLensSubsystem huskyLens, AragornsAimingServoSubsystem launcher)
+    public AimingCommand(HuskyLensAimingSubsystem huskyLens, AimingServoSubsystem launcher)
     {
         this.m_huskyLensSubsystem = huskyLens;
         this.m_aimingServoSubsystem = launcher;
@@ -42,7 +42,7 @@ public class AimingCommand extends CommandBase
                 double newPanPosition = currentPanPosition - panAdjustment;
 
                 // Clamp the new position to stay within servo's range
-                newPanPosition = Math.max(AragornsAimingServoSubsystem.PAN_MIN, Math.min(AragornsAimingServoSubsystem.PAN_MAX, newPanPosition));
+                newPanPosition = Math.max(AimingServoSubsystem.PAN_MIN, Math.min(AimingServoSubsystem.PAN_MAX, newPanPosition));
 
                 m_aimingServoSubsystem.setPanPosition(newPanPosition);
             }

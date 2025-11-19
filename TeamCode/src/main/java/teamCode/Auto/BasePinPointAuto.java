@@ -3,8 +3,8 @@
 //import static teamCode.Constants.LiftArmConstants.kLiftArmCloseSample;
 //import static teamCode.Constants.LiftArmConstants.kLiftArmHighBasket;
 //import static teamCode.Constants.LiftArmConstants.kLiftArmIntakeReset;
-//import static teamCode.Constants.PivotIntakeConstants.kIntakePivotPickUp;
-//import static teamCode.Constants.PivotIntakeConstants.kIntakePivotScore;
+//import static teamCode.Constants.SorterConstants.kIntakePivotPickUp;
+//import static teamCode.Constants.SorterConstants.kIntakePivotScore;
 //import static teamCode.Constants.SlideArmConstants.kSlideArmCloseSample;
 //import static teamCode.Constants.SlideArmConstants.kSlideArmHighBasket;
 //
@@ -33,7 +33,7 @@
 //import teamCode.commands.SlideFudgeInCommand;
 //import teamCode.commands.StingrayAscent1ArmCommand;
 //import teamCode.subsystems.PurplePotatoSorterSubsystemOG;
-//import teamCode.subsystems.SecondBreakfastIntakeSubsystem;
+//import teamCode.subsystems.IntakeServoSubsystem;
 //import teamCode.subsystems.LiftArmSubsystem;
 //import teamCode.subsystems.BilbosTurnTableSubsystem;
 //import teamCode.subsystems.StingRayArmSubsystem;
@@ -56,7 +56,7 @@
 //    private AutoDriveSubsystem m_autoDriveSubsystem;
 //    private LiftArmSubsystem m_liftArmSubsystem;
 //    private BilbosTurnTableSubsystem m_slideArmSubsystem;
-//    private SecondBreakfastIntakeSubsystem m_intakeWheelSubsystem;
+//    private IntakeServoSubsystem m_intakeWheelSubsystem;
 //    private ArmPositionHighBasketCommand m_armPositionHighBasketCommand;
 //    private ArmPositionHighChamberCommand m_armPositionHighChamberCommand;
 //    private ArmPositionTravelCommand m_armPositionHomeCommand;
@@ -155,7 +155,7 @@
 //
 //        this.m_liftArmSubsystem = new LiftArmSubsystem(this.m_liftArmMotor);
 //        this.m_slideArmSubsystem = new BilbosTurnTableSubsystem(this.m_slideArmMotor);
-//        this.m_intakeWheelSubsystem = new SecondBreakfastIntakeSubsystem(this.m_intakeWheelServo,this.m_touch);
+//        this.m_intakeWheelSubsystem = new IntakeServoSubsystem(this.m_intakeWheelServo,this.m_touch);
 //
 //        this.m_armPositionHomeCommand = new ArmPositionTravelCommand(this.m_liftArmSubsystem, this.m_slideArmSubsystem, this.m_intakePivotSubsystem);
 //        this.m_armPositionCloseSampleCommand = new ArmPositionCloseSampleCommand(this.m_liftArmSubsystem, this.m_slideArmSubsystem, this.m_intakePivotSubsystem);

@@ -2,22 +2,21 @@ package teamCode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import java.util.List;
 
-public class EyeOfSauronHuskyLensSubsystem extends SubsystemBase
+public class HuskyLensAimingSubsystem extends SubsystemBase
 {
-    private final HuskyLens huskyLens;
+    private final HuskyLens m_huskyLens;
     private HuskyLens.Block targetBlock;
 
-    public EyeOfSauronHuskyLensSubsystem(final HardwareMap hardwareMap)
+    public HuskyLensAimingSubsystem(final HardwareMap hardwareMap)
     {
         // Find the HuskyLens in the hardware map
-        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
+        m_huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
         // Set the HuskyLens algorithm to AprilTag recognition
         try
         {
-            huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+            m_huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
         }
         catch (Exception e)
         {
@@ -31,7 +30,7 @@ public class EyeOfSauronHuskyLensSubsystem extends SubsystemBase
         // Run this in the loop to continuously get the latest data
         try
         {
-            HuskyLens.Block[] blocks = huskyLens.blocks();
+            HuskyLens.Block[] blocks = m_huskyLens.blocks();
             targetBlock = null;
 
             // Iterate through detected blocks to find a specific AprilTag ID
