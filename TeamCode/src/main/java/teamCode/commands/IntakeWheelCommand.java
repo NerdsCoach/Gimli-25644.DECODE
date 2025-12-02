@@ -48,7 +48,6 @@ public class IntakeWheelCommand extends CommandBase
     @Override
     public void initialize()
     {
-
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import teamCode.commands.AimingCommand;
+import teamCode.commands.DeParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.DriveManateeModeCommand;
 import teamCode.commands.IntakeModeCommand;
@@ -51,6 +52,7 @@ import teamCode.commands.TransferServoCommand;
 import teamCode.commands.TurnTableCommand;
 
 import teamCode.subsystems.AimingServoSubsystem;
+import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.GimlisBoxMotorSubsystem;
@@ -102,11 +104,11 @@ public class RobotContainer extends CommandOpMode
     public DcMotor m_launcherMotorRed;
     public DcMotor m_launcherMotorBlue;
 
-
     public CRServo m_intakeServo;
     public Servo m_aimingServo;
     public Servo m_transferServo;
     public Servo m_sorterServo;
+    private Servo m_light;
 
     /* Sensors */
     public HuskyLens m_huskylens;
@@ -124,7 +126,7 @@ public class RobotContainer extends CommandOpMode
     private GimlisBoxMotorSubsystem m_parkingSubsystem;
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
-
+    private LightSubsystem m_lightSubsystem;
 
     /* Commands */
     private DriveFieldOrientedCommand m_driveFieldOrientedCommand;
@@ -136,6 +138,7 @@ public class RobotContainer extends CommandOpMode
     private TransferServoCommand m_transferServoCommand;
 
     private ParkingCommand m_parkingCommand;
+    private DeParkingCommand m_deParkingCommand;
     private AimingCommand m_aimingCommand;
     private DriveManateeModeCommand m_driveManateeModeCommand;
     private ResetGyroCommand m_resetGyroCommand;
@@ -201,14 +204,14 @@ public class RobotContainer extends CommandOpMode
         this.m_sorterServo = hardwareMap.get(ServoImplEx.class, "sorterServo");
         this.m_transferServo = hardwareMap.get(Servo.class, "transferServo");
 
-
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
         new Motor(hardwareMap, "turnTableMotor", Motor.GoBILDA.RPM_435);
 
         this.m_launcherMotorRed = hardwareMap.get(DcMotor.class, "launcherMotorRed");
         this.m_launcherMotorBlue = hardwareMap.get(DcMotor.class, "launcherMotorBlue");
-//        this.m_parkingMotor = hardwareMap.get(DcMotor.class, "parkingMotor");
+        this.m_parkingMotor = hardwareMap.get(DcMotor.class, "parkMotor");
 
+        this.m_light = hardwareMap.get(Servo.class, "light");
 
         /* Sensors */
         this.m_pIDController = new PIDController(0, 0, 0);
@@ -222,12 +225,13 @@ public class RobotContainer extends CommandOpMode
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
         this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2);
         this.m_turnTableMotorSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
-        this.m_launcherMotorSubsystem = new LauncherMotorSubsystem(this.m_launcherMotorRed,this.m_launcherMotorBlue);
+        this.m_launcherMotorSubsystem = new LauncherMotorSubsystem(this.m_launcherMotorRed/*,this.m_launcherMotorBlue*/);
+        this.m_parkingSubsystem = new GimlisBoxMotorSubsystem(this.m_parkingMotor);
 
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(hardwareMap, "sorterServo");
         this.m_transferServoSubsystem = new TransferServoSubsystem(hardwareMap, "transferServo");
-
+        this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
 
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
@@ -237,7 +241,7 @@ public class RobotContainer extends CommandOpMode
         this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
                 (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
                 () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-//
+
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand
 //                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
@@ -247,10 +251,13 @@ public class RobotContainer extends CommandOpMode
         this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
-        this.m_intakeWheelCommand = new IntakeWheelCommand(this.m_intakeServoSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER),
-                () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
+        this.m_intakeWheelCommand = new IntakeWheelCommand(this.m_intakeServoSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         this.m_intakeServoSubsystem.setDefaultCommand(this.m_intakeWheelCommand);
 
+        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, () -> this.m_driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER),
+                () -> this.m_driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        this.m_parkingSubsystem.setDefaultCommand(this.m_parkingCommand);
 
 //        this.m_scoreMode = new ScoreTestingCommand(this.m_sorterServoSubsystem, this.m_transferServoSubsystem, this.m_launcherMotorSubsystem);
 //        this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
@@ -261,7 +268,7 @@ public class RobotContainer extends CommandOpMode
 //                .whenPressed(this.m_scoreMode);
         schedule();
         /* Event Commands */
-        this.m_scoreMode = new ScoreModeCommand(this.m_sorterServoSubsystem, this.m_transferServoSubsystem, this.m_launcherMotorSubsystem);
+        this.m_scoreMode = new ScoreModeCommand(this.m_sorterServoSubsystem, this.m_transferServoSubsystem, this.m_launcherMotorSubsystem, this.m_lightSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .whenPressed(this.m_scoreMode);
 
@@ -287,9 +294,18 @@ public class RobotContainer extends CommandOpMode
 //        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem);
 //        this.m_square = (new GamepadButton(this.m_driver1, GamepadKeys.Button.X))
 //                .whenPressed(this.m_parkingCommand);
-        this.m_launcherCommand = new LauncherCommand(this.m_launcherMotorSubsystem);
-        this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
-                .whenPressed(this.m_launcherCommand);
+//        this.m_launcherCommand = new LauncherCommand(this.m_launcherMotorSubsystem);
+//        this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
+//                .whenPressed(this.m_launcherCommand);
+
+//        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem);
+//        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
+//                .whenPressed(this.m_parkingCommand);
+
+
+//        this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
+//        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+//                .whenPressed(this.m_deParkingCommand);
 
 //        this.m_sorterServoCommand = new SorterServoCommand(this.m_sorterServoSubsystem);
 //        this.m_circle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))
@@ -298,11 +314,9 @@ public class RobotContainer extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_transferServoCommand);
 
-
         this.m_resetGyroCommand = new ResetGyroCommand(this.m_gyroSubsystem);
         this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_resetGyroCommand);
-//
 //
 //        this.m_pose2DObservationZoneCommand = new Pose2DObservationZoneCommand(this.m_driveSubsystem, this.m_odo,
 //                this.leftFront, this.rightFront, this.leftBack,this.rightBack);

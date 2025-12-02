@@ -20,6 +20,6 @@ public class TransferServoSubsystem extends SubsystemBase
     }
     public boolean atTarget(double target)
     {
-        return this.m_transferServo.getPosition() >= target-5 && this.m_transferServo.getPosition() <= target+5;
+        return this.m_transferServo.getPosition() >= target-.01 && this.m_transferServo.getPosition() <= target+.01;
     }
 }

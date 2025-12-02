@@ -41,7 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
  * See the sensor's product page: https://www.gobilda.com/pinpoint-odometry-computer-imu-sensor-fusion-for-2-wheel-odometry/
  */
 @TeleOp(name = "Sensor: GoBilda Pinpoint", group = "Sensor")
-@Disabled
+//@Disabled
 public class GoBildaPinpointReader extends OpMode {
     // Create an instance of the sensor
     GoBildaPinpointDriver m_odo;
@@ -49,7 +49,7 @@ public class GoBildaPinpointReader extends OpMode {
     @Override
     public void init() {
         // Get a reference to the sensor
-        m_odo = hardwareMap.get(GoBildaPinpointDriver.class, "m_odo");
+        m_odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
         // Configure the sensor
         configurePinpoint();
@@ -84,7 +84,7 @@ public class GoBildaPinpointReader extends OpMode {
         *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
         *  Forward of center is a positive number, backwards is a negative number.
         */
-        m_odo.setOffsets(68.0, -178.0, DistanceUnit.MM); //these are tuned for StingRay Product Insight #1
+        m_odo.setOffsets(90, -5, DistanceUnit.MM); //these are tuned for Gimli Product Insight #1
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
