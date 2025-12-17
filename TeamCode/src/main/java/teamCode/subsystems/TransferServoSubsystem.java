@@ -1,25 +1,31 @@
 package teamCode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TransferServoSubsystem extends SubsystemBase
 {
-    private final Servo m_transferServo;
+    private final CRServo m_transferServo;
 
-    public TransferServoSubsystem(HardwareMap hMap, String transferServo)
+    public TransferServoSubsystem(CRServo transfer)
     {
-        this.m_transferServo = hMap.get(Servo.class, transferServo);
+        this.m_transferServo = transfer;
+        this.m_transferServo.setRunMode(Motor.RunMode.VelocityControl);
+    }
+    public void spinTransfer(double speed)
+    {
+        this.m_transferServo.set(speed);
+    }
+    public void spinTransfer(int spin)
+    {
+        this.m_transferServo.setTargetPosition(spin);
     }
 
-    // Pivots position of the intake.
-    public void transfer (double transferPos)
-    {
-        this.m_transferServo.setPosition(transferPos);
-    }
-    public boolean atTarget(double target)
-    {
-        return this.m_transferServo.getPosition() >= target-.01 && this.m_transferServo.getPosition() <= target+.01;
-    }
 }
+
+
+
+

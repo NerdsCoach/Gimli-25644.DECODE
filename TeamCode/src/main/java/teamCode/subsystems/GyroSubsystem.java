@@ -32,12 +32,12 @@ public class GyroSubsystem extends SubsystemBase
 //        this.m_odo.recalibrateIMU();
     }
 
-    public void holdBasketPose()
-    {
-        this.m_odo.setPosition(new Pose2D(DistanceUnit.MM, 1270, -205, AngleUnit.DEGREES,90.5));
-    }
-    public void holdChamberPose()
-    {
-        this.m_odo.setPosition(new Pose2D(DistanceUnit.MM, 73, -1087,AngleUnit.DEGREES,-91.6));
-    }
+//    public void holdBasketPose()
+//    {
+//        this.m_odo.setPosition(new Pose2D(DistanceUnit.MM, 1270, -205, AngleUnit.DEGREES,90.5));
+//    }
+//    public void holdChamberPose()
+//    {
+//        this.m_odo.setPosition(new Pose2D(DistanceUnit.MM, 73, -1087,AngleUnit.DEGREES,-91.6));
+//    }
 }

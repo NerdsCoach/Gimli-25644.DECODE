@@ -59,10 +59,12 @@ public class GoBildaPinpointReader extends OpMode {
     }
 
     @Override
-    public void loop() {
+    public void loop()
+    {
         telemetry.addLine("Push your robot around to see it track");
         telemetry.addLine("Press A to reset the position");
-        if(gamepad1.a){
+        if(gamepad1.a)
+        {
             // You could use readings from April Tags here to give a new known position to the m_odo
             m_odo.setPosition(new Pose2D(DistanceUnit.MM, 0, 0, AngleUnit.DEGREES, 0));
         }
@@ -74,7 +76,8 @@ public class GoBildaPinpointReader extends OpMode {
         telemetry.addData("Heading angle (DEGREES)", pose2D.getHeading(AngleUnit.DEGREES));
     }
 
-    public void configurePinpoint(){
+    public void configurePinpoint()
+    {
        /*
         *  Set the odometry pod positions relative to the point that you want the position to be measured from.
         *

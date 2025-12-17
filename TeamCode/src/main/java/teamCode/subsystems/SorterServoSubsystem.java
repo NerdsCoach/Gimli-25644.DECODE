@@ -1,27 +1,27 @@
 package teamCode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.arcrobotics.ftclib.hardware.motors.CRServo;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 
 public class SorterServoSubsystem extends SubsystemBase
 {
-    private final Servo m_sorterServo;
+    private final CRServo m_sorterServo;
 
-    public SorterServoSubsystem(HardwareMap hMap, String sorterServo)
+    public SorterServoSubsystem(CRServo clock)
     {
-//        this.m_sorterServo = hMap.get(Servo.class, sorterServo);
-        this.m_sorterServo = hMap.get(ServoImplEx.class, "sorterServo");
+        this.m_sorterServo = clock;
+        this.m_sorterServo.setRunMode(Motor.RunMode.VelocityControl);
     }
 
-    // Pivots position of the intake.
-    public void sort(double pos)
+    // Spins the intake wheel forward, or in reverse.
+    public void spinSorter(double speed)
     {
-        this.m_sorterServo.setPosition(pos);
+        this.m_sorterServo.set(speed);
     }
-    public boolean atTarget(double target)
+    public void spinSorter(int spin)
     {
-        return this.m_sorterServo.getPosition() >= target-.01 && this.m_sorterServo.getPosition() <= target+.01;
+        this.m_sorterServo.setTargetPosition(spin);
     }
 }
+

@@ -21,10 +21,12 @@ import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -34,24 +36,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
+import java.lang.reflect.Array;
+
 import teamCode.commands.AimingCommand;
+import teamCode.commands.ColorSensorCommand;
 import teamCode.commands.DeParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.DriveManateeModeCommand;
-import teamCode.commands.IntakeModeCommand;
-import teamCode.commands.IntakeResetCommand;
+//import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.IntakeWheelCommand;
 import teamCode.commands.LauncherCommand;
+import teamCode.commands.LightCommand;
 import teamCode.commands.ParkingCommand;
 import teamCode.commands.ResetGyroCommand;
-import teamCode.commands.ScoreModeCommand;
-//import teamCode.commands.ScoreTestingCommand;
-import teamCode.commands.SorterServoCommand;
+//import teamCode.commands.SorterServoCommand;
+import teamCode.commands.SorterCommand;
+import teamCode.commands.SorterOffCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferServoCommand;
 import teamCode.commands.TurnTableCommand;
 
 import teamCode.subsystems.AimingServoSubsystem;
+import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 import teamCode.subsystems.DriveSubsystem;
@@ -104,15 +110,19 @@ public class RobotContainer extends CommandOpMode
     public DcMotor m_launcherMotorRed;
     public DcMotor m_launcherMotorBlue;
 
+
     public CRServo m_intakeServo;
     public Servo m_aimingServo;
-    public Servo m_transferServo;
-    public Servo m_sorterServo;
+    public CRServo m_transferServo;
+    public CRServo m_sorterServo;
     private Servo m_light;
 
     /* Sensors */
     public HuskyLens m_huskylens;
-    public ColorSensor m_colorSensor;
+    public NormalizedColorSensor m_colorSensor;
+
+//    public int m_gain;
+//    public  m_hsvValues;
 
     /* Subsystems */
     private DriveSubsystem m_driveSubsystem;
@@ -127,15 +137,20 @@ public class RobotContainer extends CommandOpMode
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
     private LightSubsystem m_lightSubsystem;
+    private ColorSensorSubsystem m_colorSensorSubsystem;
+    private ColorSensorSubsystem m_colorSubsystem;
 
     /* Commands */
     private DriveFieldOrientedCommand m_driveFieldOrientedCommand;
     private IntakeWheelCommand m_intakeWheelCommand;
-    private IntakeResetCommand m_intakeResetCommand;
     private LauncherCommand m_launcherCommand;
     private TurnTableCommand m_turnTableCommand;
-    private SorterServoCommand m_sorterServoCommand;
+//    private SorterServoCommand m_sorterServoCommand;
     private TransferServoCommand m_transferServoCommand;
+    private SorterCommand m_sorterCommand;
+    private SorterOffCommand m_sorterOff;
+    private ColorSensorCommand m_colorCommand;
+    private LightCommand m_lightCommand;
 
     private ParkingCommand m_parkingCommand;
     private DeParkingCommand m_deParkingCommand;
@@ -146,8 +161,8 @@ public class RobotContainer extends CommandOpMode
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
 
-    private IntakeModeCommand m_intakeMode;
-    private ScoreModeCommand m_scoreMode;
+//    private IntakeModeCommand m_intakeMode;
+//    private ScoreModeCommand m_scoreMode;
 
 //    private ScoreTestingCommand m_scoreMode;
 
@@ -192,6 +207,9 @@ public class RobotContainer extends CommandOpMode
         System.out.println(xEncoder);
         m_odo.recalibrateIMU();
 
+        float m_gain = 2;
+        final float[] m_hsvValues = new float[3];
+
         /* Gamepad */
 
         this.m_driver1 = new GamepadEx(gamepad1);
@@ -201,8 +219,9 @@ public class RobotContainer extends CommandOpMode
     //TODO Device Name MUST MATCH name on the Drivers Station!!!!!
 
         this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
-        this.m_sorterServo = hardwareMap.get(ServoImplEx.class, "sorterServo");
-        this.m_transferServo = hardwareMap.get(Servo.class, "transferServo");
+        this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
+        this.m_transferServo = new CRServo(hardwareMap, "transferServo");
+        this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
         new Motor(hardwareMap, "turnTableMotor", Motor.GoBILDA.RPM_435);
@@ -217,7 +236,6 @@ public class RobotContainer extends CommandOpMode
         this.m_pIDController = new PIDController(0, 0, 0);
         this.m_pIDController.setPID(0.0, 0.0, 0.0);
 //        this.m_huskylens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
-        //TODO Color Sensor Here:
 
         /* Subsystems */
 
@@ -229,8 +247,9 @@ public class RobotContainer extends CommandOpMode
         this.m_parkingSubsystem = new GimlisBoxMotorSubsystem(this.m_parkingMotor);
 
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
-        this.m_sorterServoSubsystem = new SorterServoSubsystem(hardwareMap, "sorterServo");
-        this.m_transferServoSubsystem = new TransferServoSubsystem(hardwareMap, "transferServo");
+        this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
+        this.m_transferServoSubsystem = new TransferServoSubsystem(this.m_transferServo);
+        this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
 
         register(this.m_driveSubsystem);
@@ -268,24 +287,27 @@ public class RobotContainer extends CommandOpMode
 //                .whenPressed(this.m_scoreMode);
         schedule();
         /* Event Commands */
-        this.m_scoreMode = new ScoreModeCommand(this.m_sorterServoSubsystem, this.m_transferServoSubsystem, this.m_launcherMotorSubsystem, this.m_lightSubsystem);
+
+        this.m_sorterCommand = new SorterCommand(this.m_sorterServoSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
-                .whenPressed(this.m_scoreMode);
+                .whenPressed(this.m_sorterCommand);
 
-        this.m_intakeMode = new IntakeModeCommand(this.m_sorterServoSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
-                .whenPressed(this.m_intakeMode);
+        this.m_sorterOff = new SorterOffCommand(this.m_sorterServoSubsystem);
+        this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
+                .whenPressed(this.m_sorterOff);
 
-        this.m_intakeResetCommand = new IntakeResetCommand(this.m_sorterServoSubsystem);
-        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(this.m_intakeResetCommand);
+        this.m_colorCommand = new ColorSensorCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
+        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
+                .whenPressed(this.m_colorCommand);
+
+        this.m_lightCommand = new LightCommand(this.m_lightSubsystem);
+        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+                .whenPressed(this.m_lightCommand);
+
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
 //        this.m_manateeButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))
 //                .toggleWhenPressed(this.m_driveFieldOrientedCommand, this.m_driveManateeModeCommand);
-
-//        this.m_scoreButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
-//                .toggleWhenPressed(this.m_intakeMode, this.m_scoreMode);
 
 //        this.m_aimingCommand = new AimingCommand(this.m_huskyLensSubsystem, this.m_aimingSubsystem);
 //        this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
@@ -322,6 +344,19 @@ public class RobotContainer extends CommandOpMode
 //                this.leftFront, this.rightFront, this.leftBack,this.rightBack);
 //        new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(this.m_pose2DObservationZoneCommand);
     }
+
+    {
+//        telemetry.addLine()
+//                .addData("Red", "%.3f", m_colorSubsystem.getRed())
+//                .addData("Green", "%.3f", m_colorSubsystem.getRed())
+//                .addData("Blue", "%.3f", m_colorSubsystem.getRed());
+//        telemetry.addLine()
+//                .addData("Hue", "%.3f", m_hsvValues)
+//                .addData("Saturation", "%.3f", m_hsvValues[1])
+//                .addData("Value", "%.3f", hsvValues[2]);
+//        telemetry.addData("Alpha", "%.3f", m_colorSensor.alpha());
+    }
+
 //  {
 //        for (int i = 1; i>0; i+=0)
 //        {
