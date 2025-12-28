@@ -13,7 +13,7 @@ public class LauncherMotorSubsystem extends SubsystemBase
     {
        this.m_launcherMotorRed = launcherMotorRed;
        this.m_launcherMotorRed.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       this.m_launcherMotorRed.setDirection(DcMotorSimple.Direction.REVERSE);
+       this.m_launcherMotorRed.setDirection(DcMotorSimple.Direction.FORWARD);
        this.m_launcherMotorRed.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //

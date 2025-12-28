@@ -34,7 +34,7 @@ public class HuskyLensTest2 extends LinearOpMode
         List<HuskyLens.Block> myHuskyLensBlocks;
         HuskyLens.Block myHuskyLensBlock;
 
-        huskylens = hardwareMap.get(HuskyLens.class, "huskylens");
+        huskylens = hardwareMap.get(HuskyLens.class, "huskyLens");
 
         // Put initialization blocks here.
         telemetry.addData(">>", huskylens.knock() ? "Touch start to continue" : "Problem communicating with HuskyLens");
