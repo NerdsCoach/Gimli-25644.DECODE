@@ -4,23 +4,20 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class AxeServoSubsystem extends SubsystemBase
+public class AxeSubsystem extends SubsystemBase
 {
+
     private final Servo m_transferServo;
 
-    public AxeServoSubsystem(HardwareMap hMap, String transferServo)
+    public AxeSubsystem(HardwareMap hMap, String transferServo)
     {
         this.m_transferServo = hMap.get(Servo.class, transferServo);
     }
 
     // Pivots position of the intake.
-    public void transfer (double transferPos)
+    public void pivotAxe (double transferPos)
     {
         this.m_transferServo.setPosition(transferPos);
-    }
-    public boolean atTarget(double target)
-    {
-        return this.m_transferServo.getPosition() >= target-.01 && this.m_transferServo.getPosition() <= target+.01;
     }
 }
 

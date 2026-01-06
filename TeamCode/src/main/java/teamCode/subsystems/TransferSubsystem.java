@@ -3,14 +3,12 @@ package teamCode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
-public class TransferServoSubsystem extends SubsystemBase
+public class TransferSubsystem extends SubsystemBase
 {
     private final CRServo m_transferServo;
 
-    public TransferServoSubsystem(CRServo transfer)
+    public TransferSubsystem(CRServo transfer)
     {
         this.m_transferServo = transfer;
         this.m_transferServo.setRunMode(Motor.RunMode.VelocityControl);
@@ -19,10 +17,10 @@ public class TransferServoSubsystem extends SubsystemBase
     {
         this.m_transferServo.set(speed);
     }
-    public void spinTransfer(int spin)
-    {
-        this.m_transferServo.setTargetPosition(spin);
-    }
+//    public void spinTransfer(int spin)
+//    {
+//        this.m_transferServo.setTargetPosition(spin);
+//    }
 
 }
 

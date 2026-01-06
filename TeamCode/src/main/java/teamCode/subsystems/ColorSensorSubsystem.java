@@ -11,11 +11,6 @@ public class ColorSensorSubsystem extends SubsystemBase
     public NormalizedColorSensor m_colorSensor;
     private final Servo m_light;
 
-//    public ColorSensorSubsystem (NormalizedColorSensor color)
-//    {
-//        this.m_colorSensor = color;
-//        this.m_colorSensor.getNormalizedColors();
-//    }
         // Define the sensor and LED driver
 
         // Default Servo positions for goBILDA Prism colors (examples)

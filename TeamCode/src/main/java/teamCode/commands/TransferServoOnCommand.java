@@ -2,14 +2,13 @@ package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import teamCode.subsystems.SorterServoSubsystem;
-import teamCode.subsystems.TransferServoSubsystem;
+import teamCode.subsystems.TransferSubsystem;
 
-public class TransferServoCommand extends CommandBase
+public class TransferServoOnCommand extends CommandBase
 {
-    private final TransferServoSubsystem m_transferServoSubsystem;
+    private final TransferSubsystem m_transferServoSubsystem;
 
-    public TransferServoCommand(TransferServoSubsystem transfer)
+    public TransferServoOnCommand(TransferSubsystem transfer)
     {
         this.m_transferServoSubsystem = transfer;
         addRequirements(this.m_transferServoSubsystem);

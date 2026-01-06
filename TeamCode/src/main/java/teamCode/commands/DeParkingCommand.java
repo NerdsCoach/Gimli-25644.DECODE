@@ -2,13 +2,14 @@ package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import teamCode.subsystems.GimlisBoxMotorSubsystem;
+import teamCode.Constants;
+import teamCode.subsystems.ParkingSubsystem;
 
 public class DeParkingCommand extends CommandBase
 {
-    private GimlisBoxMotorSubsystem m_parkingSubsystem;
+    private ParkingSubsystem m_parkingSubsystem;
 
-    public DeParkingCommand(GimlisBoxMotorSubsystem parkingSubsystem)
+    public DeParkingCommand(ParkingSubsystem parkingSubsystem)
     {
         this.m_parkingSubsystem = parkingSubsystem;
 
@@ -18,12 +19,13 @@ public class DeParkingCommand extends CommandBase
     @Override
     public void initialize()
     {
+
     }
 
     @Override
     public void execute()
     {
-//        this.m_parkingSubsystem.dePark();
+            this.m_parkingSubsystem.parking(Constants.ParkConstants.kDeParkLimit);
     }
 
     @Override

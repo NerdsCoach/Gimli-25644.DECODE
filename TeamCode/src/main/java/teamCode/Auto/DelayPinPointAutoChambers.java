@@ -178,7 +178,7 @@
 //                    }
 //                    if (this.m_slideArmSubsystem.atTarget(kSlideArmHighChamber))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(-0.75);//Score on High Chamber #1
+//                        this.m_intakeWheelSubsystem.parking(-0.75);//Score on High Chamber #1
 //                        telemetry.addLine("Ready to Score!");
 //                        stateMachine = StateMachine.PRESCORE_SPECIMEN;
 //                    }
@@ -230,13 +230,13 @@
 //                    {
 //                        this.m_liftArmSubsystem.liftSlow(kLiftArmIntakeReset);
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotScore);
-//                        this.m_intakeWheelSubsystem.spinIntake(1.0);//Score on High Chamber #1
+//                        this.m_intakeWheelSubsystem.parking(1.0);//Score on High Chamber #1
 //
 //                    }
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            PreSampleDrive,0.7, 0))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Turn off intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Turn off intake
 //                        stateMachine = StateMachine.STRAFE_TO_SAMPLE;
 //                    }
 //                    break;
@@ -258,7 +258,7 @@
 //                    break;
 //
 //                case OBSERVATION_ZONE:
-//                    this.m_intakeWheelSubsystem.spinIntake(-0.5);//Start intake
+//                    this.m_intakeWheelSubsystem.parking(-0.5);//Start intake
 //                    this.m_liftArmSubsystem.liftArm(kLiftArmCloseSample);
 //                    this.m_slideArmSubsystem.slideArm(kSlideArmCloseSample);
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -298,7 +298,7 @@
 //                            new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            0.5, 0.5))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotScore);
 //                        this.m_liftArmSubsystem.liftArm(kLiftArmIntakeReset);
 //                        stateMachine = StateMachine.PRE_SUBMERSIBLE;
@@ -319,7 +319,7 @@
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            ObservationZone, 0.4, 0))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Turn off intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Turn off intake
 //                        stateMachine = StateMachine.PARKED;
 //                    }
 //                    break;

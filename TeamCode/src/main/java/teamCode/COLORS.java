@@ -20,7 +20,7 @@
 //
 //import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //
-//import teamCode.commands.ColorSensorCommand;
+//import teamCode.commands.ColorModeOnCommand;
 //import teamCode.subsystems.ColorSensorSubsystem;
 //import teamCode.subsystems.LightSubsystem;
 //
@@ -34,7 +34,7 @@
 //    private Button m_circle;
 //
 //    private ColorSensorSubsystem m_colorSensorSubsystem;
-//    private ColorSensorCommand m_colorCommand;
+//    private ColorModeOnCommand m_colorCommand;
 //        public void initialize (HardwareMap hardwareMap)
 //        {
 //            m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
@@ -100,9 +100,9 @@
 ////            {
 ////                // Only increase the gain by a small amount, since this loop will occur multiple times per second.
 //            gain += 0.005;
-////                this.m_colorCommand = new ColorSensorCommand(this.m_colorSensorSubsystem);
+////                this.m_colorCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem);
 ////            }
-////            this.m_colorCommand = new ColorSensorCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
+////            this.m_colorCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
 ////            this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B)).whenPressed(this.m_colorCommand);
 //
 //            // Show the gain value via telemetry

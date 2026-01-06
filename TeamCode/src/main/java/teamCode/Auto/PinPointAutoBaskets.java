@@ -183,7 +183,7 @@
 //                    }
 //                    if(this.m_slideArmSubsystem.atTarget(kSlideArmHighBasket))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(1.0);//Score in High Basket #1
+//                        this.m_intakeWheelSubsystem.parking(1.0);//Score in High Basket #1
 //                        telemetry.addLine("Score!");
 //                        stateMachine = StateMachine.TURN_OFF_INTAKE_1;
 //                    }
@@ -196,7 +196,7 @@
 //                            new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            0.4,1.75))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
 //                        stateMachine = StateMachine.DRIVE_TO_SAMPLE_2;
 //                    }
@@ -209,7 +209,7 @@
 //                     {
 //                        this.m_liftArmSubsystem.liftArm(kLiftArmCloseSample);
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
-//                        this.m_intakeWheelSubsystem.spinIntake(-1.0);//Turn On intake
+//                        this.m_intakeWheelSubsystem.parking(-1.0);//Turn On intake
 //                    }
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            PrePickUpSample2, 0.4, .5))
@@ -224,7 +224,7 @@
 //                            PickUpSample2, 0.3, 0))
 //                    {
 //                        telemetry.addLine("Picked up Sample 2!");
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_liftArmSubsystem.liftArm(kLiftArmIntakeReset);
 //                        stateMachine = StateMachine.SCORE_SAMPLE_2;
 //                    }
@@ -245,7 +245,7 @@
 //                    }
 //                    if(this.m_slideArmSubsystem.atTarget(kSlideArmHighBasket))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(1.0);//Score in High Basket #1
+//                        this.m_intakeWheelSubsystem.parking(1.0);//Score in High Basket #1
 //                        telemetry.addLine("Score!");
 //                        stateMachine = StateMachine.TURN_OFF_INTAKE_2;
 //                    }
@@ -258,7 +258,7 @@
 //                            new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            0.45,2.5))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
 //
 //                        telemetry.addLine("Ready to drive 3");
@@ -274,7 +274,7 @@
 //                    telemetry.addLine("Drive three should be happening");
 //                    this.m_liftArmSubsystem.liftArm(kLiftArmCloseSample);
 //                    this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
-//                    this.m_intakeWheelSubsystem.spinIntake(-1.0);//Turn On intake
+//                    this.m_intakeWheelSubsystem.parking(-1.0);//Turn On intake
 //                }
 //                if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                        PrePickUpSample3, 0.4, .5))
@@ -290,7 +290,7 @@
 //                            PickUpSample3, 0.4, 0)|| getRuntime() > 2)
 //                    {
 //                        telemetry.addLine("Picked up Sample 3!");
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_liftArmSubsystem.liftArm(kLiftArmIntakeReset);
 //                        stateMachine = StateMachine.SCORE_SAMPLE_3;
 //                    }
@@ -311,7 +311,7 @@
 //                    }
 //                    if(this.m_slideArmSubsystem.atTarget(kSlideArmHighBasket))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(1.0);
+//                        this.m_intakeWheelSubsystem.parking(1.0);
 //                        telemetry.addLine("Score!");
 //                        stateMachine = StateMachine.TURN_OFF_INTAKE_3;
 //                    }
@@ -324,7 +324,7 @@
 //                            new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            0.4,2))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
 //                        telemetry.addLine("Ready to drive to Sample 4");
 //                        stateMachine = StateMachine.DRIVE_TO_SAMPLE_4;
@@ -340,7 +340,7 @@
 //                    telemetry.addLine("Drive FOUR should be happening");
 //                    this.m_liftArmSubsystem.liftArm(kLiftArmCloseSample);
 //                    this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
-//                    this.m_intakeWheelSubsystem.spinIntake(-1.0);//Turn On intake
+//                    this.m_intakeWheelSubsystem.parking(-1.0);//Turn On intake
 //                }
 //                if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                        PrePickUpSample4, 0.5, 0))
@@ -374,7 +374,7 @@
 //                            PickUpSample4Drive, 0.6, .5) || getRuntime() >5)
 //                    {
 //                        telemetry.addLine("Picked up Sample 4!");
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_liftArmSubsystem.liftArm(kLiftArmIntakeReset);
 //                        telemetry.addLine("Stopped Intake");
 //                        stateMachine = StateMachine.SCORE_SAMPLE_4;
@@ -396,7 +396,7 @@
 //                    }
 //                    if(this.m_slideArmSubsystem.atTarget(kSlideArmHighBasket))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(1.0);
+//                        this.m_intakeWheelSubsystem.parking(1.0);
 //                        telemetry.addLine("Score!");
 //                        stateMachine = StateMachine.TURN_OFF_INTAKE_4;
 //                    }
@@ -409,7 +409,7 @@
 //                            new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM),m_odo.getPosY(DistanceUnit.MM),UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            0.45,2))
 //                    {
-//                        this.m_intakeWheelSubsystem.spinIntake(0.0);//Stop intake
+//                        this.m_intakeWheelSubsystem.parking(0.0);//Stop intake
 //                        this.m_intakePivotSubsystem.SpinSorter(kIntakePivotPickUp);
 //                        this.m_slideArmSubsystem.slideArm(kSlideArmCloseSample);
 //

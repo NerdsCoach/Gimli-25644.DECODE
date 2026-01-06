@@ -27,9 +27,9 @@ public class IntakeServoSubsystem extends SubsystemBase
     {
         this.m_intakeServo.set(speed);
     }
-    public void spinIntake(int spin)
-    {
-        this.m_intakeServo.setTargetPosition(spin);
-    }
+//    public void spinIntake(int spin)
+//    {
+//        this.m_intakeServo.setTargetPosition(spin);
+//    }
 }
 

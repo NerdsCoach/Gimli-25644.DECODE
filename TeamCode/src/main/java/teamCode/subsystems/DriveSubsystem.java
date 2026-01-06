@@ -84,7 +84,7 @@ public class DriveSubsystem extends SubsystemBase
 
         if (Math.abs(error) > 6)
         {
-            double motorPower = 0.5;//.5 for normal//0.4 is best for slow
+            double motorPower = 0.5;//.5 for normal//0.4 is best for stop
             error = error - getAngle();
             return motorPower * error / 100 + (0.1 * (error / Math.abs(error)));
         }
