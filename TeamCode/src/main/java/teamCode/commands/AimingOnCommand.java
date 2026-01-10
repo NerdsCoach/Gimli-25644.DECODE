@@ -56,11 +56,11 @@ public class AimingOnCommand extends CommandBase
 
                 if (correction > 0 && canMovePositive)
                 {
-                    m_turnTableSubsystem.turn(correction);
+                    m_turnTableSubsystem.turnSpeed(correction);
                 }
                 else if (correction < 0 && canMoveNegative)
                 {
-                    m_turnTableSubsystem.turn(correction);
+                    m_turnTableSubsystem.turnSpeed(correction);
                 }
                 else
                 {
@@ -97,9 +97,9 @@ public class AimingOnCommand extends CommandBase
 //                boolean canMovePositive = (currentPosition < 850);
 //
 //                if (correction > 0 && canMovePositive) {
-//                    m_turnTableSubsystem.turn(correction); // Move positive if not at max
+//                    m_turnTableSubsystem.turnSpeed(correction); // Move positive if not at max
 //                } else if (correction < 0 && canMoveNegative) {
-//                    m_turnTableSubsystem.turn(correction); // Move negative if not at min
+//                    m_turnTableSubsystem.turnSpeed(correction); // Move negative if not at min
 //                } else {
 //                    m_turnTableSubsystem.stop(); // Stop only if trying to go PAST the limit
 //                }
@@ -127,7 +127,7 @@ public class AimingOnCommand extends CommandBase
 //                // Limit correction speed
 //                if (correction > 0.3) correction = 0.3;
 //                if (correction < -0.3) correction = -0.3; // 0.5
-//                m_turnTableSubsystem.turn(correction);
+//                m_turnTableSubsystem.turnSpeed(correction);
 //            }
 //        }
 //        else

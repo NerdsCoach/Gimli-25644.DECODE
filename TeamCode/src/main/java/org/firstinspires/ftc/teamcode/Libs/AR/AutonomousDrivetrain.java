@@ -47,7 +47,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  *  This OpMode illustrates the concept of driving an autonomous path based on Gyro (IMU) heading and encoder counts.
  *  The code is structured as a LinearOpMode
  *
- *  The path to be followed by the robot is built from a series of drive, turn or pause steps.
+ *  The path to be followed by the robot is built from a series of drive, turnSpeed or pause steps.
  *  Each step on the path is defined by a single function call, and these can be strung together in any order.
  *
  *  The code REQUIRES that you have encoders on the drive motors, otherwise you should use: RobotAutoDriveByTime;
@@ -137,9 +137,9 @@ public class AutonomousDrivetrain {
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.4;     // Max driving speed for better distance accuracy.
-    static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turn rate
+    static final double     TURN_SPEED              = 0.2;     // Max Turn speed to limit turnSpeed rate
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
-    // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
+    // Requiring more accuracy (a smaller number) will often make the turnSpeed take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
@@ -264,7 +264,7 @@ public class AutonomousDrivetrain {
             rightFrontTarget = MTR_RF.getCurrentPosition() + moveCounts;
             rightBackTarget = MTR_RB.getCurrentPosition() + moveCounts;
 
-            // Set Target FIRST, then turn on RUN_TO_POSITION
+            // Set Target FIRST, then turnSpeed on RUN_TO_POSITION
             MTR_LF.setTargetPosition(leftFrontTarget);
             MTR_LB.setTargetPosition(leftBackTarget);
             MTR_RF.setTargetPosition(rightFrontTarget);
@@ -302,7 +302,7 @@ public class AutonomousDrivetrain {
      *  <p>
      *  2) Driver stops the OpMode running.
      *
-     * @param maxTurnSpeed Desired MAX speed of turn. (range 0 to +1.0)
+     * @param maxTurnSpeed Desired MAX speed of turnSpeed. (range 0 to +1.0)
      * @param heading Absolute Heading Angle (in Degrees) relative to last gyro reset.
      *              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *              If a relative angle is required, add/subtract from current heading.
@@ -338,7 +338,7 @@ public class AutonomousDrivetrain {
      *  <p>
      *  This function is useful for giving the robot a moment to stabilize it's heading between movements.
      *
-     * @param maxTurnSpeed      Maximum differential turn speed (range 0 to +1.0)
+     * @param maxTurnSpeed      Maximum differential turnSpeed speed (range 0 to +1.0)
      * @param heading    Absolute Heading Angle (in Degrees) relative to last gyro reset.
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
@@ -391,7 +391,7 @@ public class AutonomousDrivetrain {
     }
 
     /**
-     * Take separate drive (fwd/rev) and turn (right/left) requests,
+     * Take separate drive (fwd/rev) and turnSpeed (right/left) requests,
      * combines them, and applies the appropriate speed commands to the left and right wheel motors.
      * @param drive forward motor speed
      * @param turn  clockwise turning motor speed.

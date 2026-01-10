@@ -17,11 +17,22 @@ public class TransferServoOnCommand extends CommandBase
     @Override
     public void initialize()
     {
+
     }
 
     @Override
     public void execute()
     {
         this.m_transferServoSubsystem.spinTransfer(-.75);
+    }
+    @Override
+    public boolean isFinished()
+    {
+        return true;
+    }
+
+    @Override
+    public void end(boolean interrupted)
+    {
     }
 }

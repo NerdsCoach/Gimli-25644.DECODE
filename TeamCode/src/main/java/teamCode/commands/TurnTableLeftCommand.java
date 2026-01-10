@@ -7,7 +7,7 @@ import java.util.function.DoubleSupplier;
 
 public class TurnTableLeftCommand extends CommandBase
 {
-    /* Uses triggers to manually adjust turn table */
+    /* Uses triggers to manually adjust turnSpeed table */
     private TurnTableSubsystem m_turnTableSubsystem;
 
         public TurnTableLeftCommand(TurnTableSubsystem turnTableSubsystem)

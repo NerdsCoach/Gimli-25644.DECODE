@@ -35,7 +35,7 @@ public class RedMoveAuto extends LinearOpMode
     private final ElapsedTime holdTimer = new ElapsedTime();
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
-    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 300, -300, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
 
     enum StateMachine
     {

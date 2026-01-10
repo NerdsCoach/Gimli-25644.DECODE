@@ -31,7 +31,7 @@ public class BellyOfTheBeastCommand extends CommandBase
     {
         if (m_position == m_off)
         {
-            this.m_sorterSubsystem.spinSorter(-.75);
+            this.m_sorterSubsystem.spinSorter(-1.0);
             m_position = m_on;
         }
         else if (m_position == m_on)

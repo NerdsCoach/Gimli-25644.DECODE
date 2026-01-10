@@ -17,10 +17,10 @@ public class TransferSubsystem extends SubsystemBase
     {
         this.m_transferServo.set(speed);
     }
-//    public void spinTransfer(int spin)
-//    {
-//        this.m_transferServo.setTargetPosition(spin);
-//    }
+    public void transferOff()
+    {
+        this.m_transferServo.setTargetPosition(0);
+    }
 
 }
 

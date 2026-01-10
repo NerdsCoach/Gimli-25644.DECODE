@@ -19,9 +19,6 @@ public class SorterServoSubsystem extends SubsystemBase
     {
         this.m_sorterServo.set(speed);
     }
-    public void spinSorter(int spin)
-    {
-        this.m_sorterServo.setTargetPosition(spin);
-    }
+
 }
 

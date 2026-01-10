@@ -25,4 +25,15 @@ public class LightCommand extends CommandBase
     {
         this.m_lightSubsystem.on(0.722);
     }
+
+    @Override
+    public boolean isFinished()
+    {
+        return true;
+    }
+
+    @Override
+    public void end(boolean interrupted)
+    {
+    }
 }

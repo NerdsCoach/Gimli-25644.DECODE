@@ -160,7 +160,7 @@
 //                    stateMachine = StateMachine.DRIVE_TO_SUBMERSIBLE;
 //                    break;
 //
-//                case DRIVE_TO_SUBMERSIBLE: /*Drive to Submersible, moving arm, slide, pivot intake, turn on intake*/
+//                case DRIVE_TO_SUBMERSIBLE: /*Drive to Submersible, moving arm, slide, pivot intake, turnSpeed on intake*/
 //                    /*
 //                    drive the robot to the first target, the nav.driveTo function will return true once
 //                    the robot has reached the target, and has been there for (holdTime) seconds.

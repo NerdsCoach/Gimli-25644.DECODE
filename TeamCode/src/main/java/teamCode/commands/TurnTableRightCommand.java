@@ -9,7 +9,7 @@ import teamCode.subsystems.TurnTableSubsystem;
 
 public class TurnTableRightCommand extends CommandBase
 {
-    /* Uses triggers to manually adjust turn table */
+    /* Uses triggers to manually adjust turnSpeed table */
     private TurnTableSubsystem m_turnTableSubsystem;
 
         public TurnTableRightCommand(TurnTableSubsystem turnTableSubsystem)

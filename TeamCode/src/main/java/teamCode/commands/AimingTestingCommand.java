@@ -60,9 +60,9 @@ public class AimingTestingCommand extends CommandBase
 
 //            if (correction > 0.5) correction = 0.5;
 //            if (correction < -0.5) correction = -0.5;
-            m_turnTableSubsystem.turn(correction);
+            m_turnTableSubsystem.turnSpeed(correction);
 
-            m_turnTableSubsystem.turn(error * KP);
+            m_turnTableSubsystem.turnSpeed(error * KP);
 
             if (Math.abs(error) < deadband)
             {
@@ -89,7 +89,7 @@ public class AimingTestingCommand extends CommandBase
 ////            if (correction > 0.5) correction = 0.5;
 ////            if (correction < -0.5) correction = -0.5;
 ////
-////            m_turnTableSubsystem.turn(correction);
+////            m_turnTableSubsystem.turnSpeed(correction);
 ////        }
 ////
 ////        else
@@ -104,7 +104,7 @@ public class AimingTestingCommand extends CommandBase
 //////        }
 //////        else
 //////        {
-//////            m_turnTableSubsystem.turn(error * KP);
+//////            m_turnTableSubsystem.turnSpeed(error * KP);
 //////        }
 
 

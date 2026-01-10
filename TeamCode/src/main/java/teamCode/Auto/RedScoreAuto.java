@@ -26,6 +26,7 @@
 //import teamCode.subsystems.GyroSubsystem;
 //import teamCode.subsystems.IntakeServoSubsystem;
 //import teamCode.subsystems.LauncherMotorSubsystem;
+//import teamCode.subsystems.LauncherSubsystem;
 //import teamCode.subsystems.SorterServoSubsystem;
 //import teamCode.subsystems.TransferServoSubsystem;
 //
@@ -136,7 +137,7 @@
 ////        this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
 ////        this.m_transferServo = new CRServo (hardwareMap, "transferServo");
 //
-//        this.m_launcherMotorSubsystem = new LauncherMotorSubsystem(this.m_launcherMotorRed/*, this.m_launcherMotorBlue*/);
+//        this.m_launcherMotorSubsystem = new LauncherSubsystem (this.m_launcherMotorRed/*, this.m_launcherMotorBlue*/);
 //
 //        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
 ////        this.m_sorterServo = hardwareMap.get(ServoImplEx.class, "sorterServo");
@@ -166,7 +167,7 @@
 //
 //                    holdTimer.reset();
 ////                    this.m_sorterServoSubsystem.sort(kScorePos1);
-//                    this.m_launcherMotorSubsystem.launch();
+//                    this.m_launcherMotorSubsystem.();
 //                    telemetry.addLine("Launch Motor On");
 //                    stateMachine = StateMachine.SCORE_1_RESET;
 //

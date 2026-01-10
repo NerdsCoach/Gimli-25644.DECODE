@@ -34,8 +34,8 @@ public class AxeLauncherOnCommand extends CommandBase
     public void execute()
     {
 
-        /* If Axe is up, put it down and turn on Launcher Motor
-        *   if launcher motor is running, turn on transfer */
+        /* If Axe is up, put it down and turnSpeed on Launcher Motor
+        *   if launcher motor is running, turnSpeed on transfer */
         if (m_position == m_Up)
         {
             this.m_axeSubsystem.pivotAxe(m_axeDown);
@@ -56,16 +56,5 @@ public class AxeLauncherOnCommand extends CommandBase
             m_position = m_Up;
         }
 
-    }
-
-    @Override
-    public void end(boolean interrupted)
-    {
-    }
-
-    @Override
-    public boolean isFinished()
-    {
-        return true;
     }
 }

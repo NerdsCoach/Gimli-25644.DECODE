@@ -19,7 +19,7 @@ public class LauncherSubsystem extends SubsystemBase
 
     public void launch ()
     {
-        this.m_launcherMotor.setPower(0.45); //1 at far 0.75
+        this.m_launcherMotor.setPower(0.3); //1 at far 0.75
         this.m_launcherMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
