@@ -6,7 +6,6 @@ import static teamCode.PoseStorage.xEncoder;
 import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -19,6 +18,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -36,32 +36,29 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import teamCode.commands.AimingOnCommand;
 import teamCode.commands.AimingTestingCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
-import teamCode.commands.ColorModeOffCommand;
 import teamCode.commands.ColorModeOnCommand;
 
 import teamCode.commands.DeParkingCommand;
 import teamCode.commands.FudgeDeParkingCommand;
+import teamCode.commands.HoodTestingCommand;
+import teamCode.commands.OutTakeModeCommand;
 import teamCode.commands.ParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.DriveManateeModeCommand;
-import teamCode.commands.HoodServoCloseCommand;
-import teamCode.commands.HoodServoFarCommand;
+import teamCode.commands.HoodDownCommand;
+import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.LauncherCommand;
-import teamCode.commands.LightCommand;
 import teamCode.commands.FudgeParkingCommand;
 import teamCode.commands.ResetGyroCommand;
-import teamCode.commands.ScoreTestingCommand;
-import teamCode.commands.SorterOnCommand;
-import teamCode.commands.SorterOffCommand;
+import teamCode.commands.ReverseTransferCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
-import teamCode.commands.TransferServoOffCommand;
-import teamCode.commands.TransferServoOnCommand;
 
 import teamCode.commands.AimingOffCommand;
 import teamCode.commands.TurnTableLeftCommand;
 import teamCode.commands.TurnTableRightCommand;
+import teamCode.subsystems.AimingServoSubsystem;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
@@ -71,7 +68,6 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
-//import teamCode.subsystems.HuskyLensAimingSubsystem;
 import teamCode.subsystems.GamepadSubsystem;
 import teamCode.subsystems.TransferSubsystem;
 import teamCode.subsystems.GyroSubsystem;
@@ -111,6 +107,7 @@ public class RobotContainer extends CommandOpMode
     private Button m_scoreButton;
     private Button m_axeButton;
     private Button m_leftJoyStick;
+    private Button m_rightTrigger;
 
     /* Motors */
     public DcMotor leftFront;
@@ -119,7 +116,7 @@ public class RobotContainer extends CommandOpMode
     public DcMotor rightBack;
     public DcMotor m_turnTableMotor;
     public DcMotor m_parkMotor;
-    public DcMotor m_launcherMotorRed;
+    public DcMotorEx m_launcherMotorRed;
 
     public CRServo m_intakeServo;
     public Servo m_hoodServo;
@@ -133,17 +130,17 @@ public class RobotContainer extends CommandOpMode
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
 
-//    public int m_gain;
-//    public  m_hsvValues;
 
     /* Subsystems */
     private DriveSubsystem m_driveSubsystem;
-    private HoodServoSubsystem m_hoodServoSubsystem;
+//    private HoodServoSubsystem m_hoodServoSubsystem;
     private TurnTableSubsystem m_turnTableSubsystem;
     private HuskyLensSubsystem m_huskyLensSubsystem;
     private IntakeServoSubsystem m_intakeServoSubsystem;
     private TransferSubsystem m_transferServoSubsystem;
     private AxeSubsystem m_axeSubsystem;
+    private AimingServoSubsystem m_aimingServoSubsystem;
+    private HoodServoSubsystem m_hoodServoSubsystem;
     private LauncherSubsystem m_launcherMotorSubsystem;
     private SorterServoSubsystem m_sorterServoSubsystem;
     private ParkingSubsystem m_parkingSubsystem;
@@ -156,19 +153,14 @@ public class RobotContainer extends CommandOpMode
     /* Commands */
     private DriveFieldOrientedCommand m_driveFieldOrientedCommand;
     private IntakeModeCommand m_intakeModeCommand;
+    private OutTakeModeCommand m_outTakeModeCommand;
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
     private LauncherCommand m_launcherCommand;
     private TurnTableLeftCommand m_turnTableLeftCommand;
     private TurnTableRightCommand m_turnTableRightCommand;
-//    private SorterServoCommand m_sorterServoCommand;
-    private TransferServoOnCommand m_transferOnCommand;
-    private TransferServoOffCommand m_transferOffCommand;
-    private SorterOnCommand m_sorterCommand;
-    private SorterOffCommand m_sorterOff;
     private ColorModeOnCommand m_colorOnCommand;
-    private ColorModeOffCommand m_colorOffCommand;
-    private LightCommand m_lightCommand;
     private TransferLimitCommand m_transferLimitCommand;
+    private ReverseTransferCommand m_reverseTransferCommand;
 
     private FudgeParkingCommand m_fudgeParkingCommand;
     private FudgeDeParkingCommand m_fudgeDeParkingCommand;
@@ -179,9 +171,9 @@ public class RobotContainer extends CommandOpMode
     private AimingOffCommand m_turnOffAimingCommand;
     private DriveManateeModeCommand m_driveManateeModeCommand;
     private ResetGyroCommand m_resetGyroCommand;
-    private ScoreTestingCommand m_scoreCommand;
-    private HoodServoCloseCommand m_hoodCloseCommand;
-    private HoodServoFarCommand m_hoodFarCommand;
+    private HoodDownCommand m_hoodCloseCommand;
+    private HoodUpCommand m_hoodFarCommand;
+    private HoodTestingCommand m_hoodTestingCommand;
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
@@ -243,7 +235,7 @@ public class RobotContainer extends CommandOpMode
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
 
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
-        this.m_launcherMotorRed = hardwareMap.get(DcMotor.class, "launcherMotorRed");
+        this.m_launcherMotorRed = hardwareMap.get(DcMotorEx.class, "launcherMotorRed");
         this.m_parkMotor = hardwareMap.get(DcMotor.class, "parkMotor");
 
         this.m_light = hardwareMap.get(Servo.class, "light");
@@ -272,8 +264,7 @@ public class RobotContainer extends CommandOpMode
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
-//        this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "hoodServo");
-
+        this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
 
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
@@ -282,17 +273,26 @@ public class RobotContainer extends CommandOpMode
         /* Default Commands */
 
         //DRIVER
+//        this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
+//                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
+//                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
+//        this.m_driveSubsystem.setDefaultCommand(this.m_driveFieldOrientedCommand);
+
         this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
                 (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
+                        () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
         this.m_driveSubsystem.setDefaultCommand(this.m_driveFieldOrientedCommand);
+
 
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand
 //                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
 
-        this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
+        this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime(), this.m_colorSensorSubsystem);
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
+
+        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_transferServoSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        this.m_transferServoSubsystem.setDefaultCommand(this.m_reverseTransferCommand);
 
         schedule();
 
@@ -308,12 +308,16 @@ public class RobotContainer extends CommandOpMode
 
         //DRIVER
         this.m_resetGyroCommand = new ResetGyroCommand(this.m_gyroSubsystem);
-        this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.START))
+        this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_resetGyroCommand);
 
         this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem, this.m_sorterServoSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeModeCommand);
+
+        this.m_outTakeModeCommand = new OutTakeModeCommand(this.m_intakeServoSubsystem);
+        this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
+                .whenPressed(this.m_outTakeModeCommand);
 
         this.m_fudgeParkingCommand = new FudgeParkingCommand(this.m_parkingSubsystem);
         this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
@@ -331,18 +335,14 @@ public class RobotContainer extends CommandOpMode
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
 
-
         //GADGETEER
 
         //TODO make color into a toggle
         //TODO it only reads the color once after pressing button
+
         this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_colorOnCommand);
-
-        this.m_colorOffCommand = new ColorModeOffCommand(this.m_colorSensorSubsystem);
-        this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
-                .whenPressed(this.m_colorOffCommand);
 
         this.m_bellyOfTheBeastCommand = new BellyOfTheBeastCommand(this.m_sorterServoSubsystem);
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
@@ -364,26 +364,27 @@ public class RobotContainer extends CommandOpMode
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 
-        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
+        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem, this.m_colorSensorSubsystem);
         this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
                 .whenPressed(this.m_turnOffAimingCommand);
 
+        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
+        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
+                .whenPressed(this.m_hoodCloseCommand);
+
+        this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
+        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
+                .whenPressed(this.m_hoodFarCommand);
+
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
-        this.m_leftJoyStick = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_STICK_BUTTON))
+        this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
 
-        //TODO hood aiming servo button DPAD UP (Close) AND DOWN (Far)
-        //TODO Transfer Trigger and limit switch
 
-//
-//        this.m_hoodCloseCommand = new HoodServoCloseCommand(this.m_hoodServoSubsystem);
-//        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
-//                .whenPressed(this.m_hoodCloseCommand);
-//
-//        this.m_hoodFarCommand = new HoodServoFarCommand(this.m_hoodServoSubsystem);
-//        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
-//                .whenPressed(this.m_hoodFarCommand);
-//
+        //TODO hood aiming servo button DPAD UP (Close) AND DOWN (Far)
+
+
+
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
 //        this.m_manateeButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))
@@ -392,27 +393,6 @@ public class RobotContainer extends CommandOpMode
 //        this.m_pose2DObservationZoneCommand = new Pose2DObservationZoneCommand(this.m_driveSubsystem, this.m_odo,
 //                this.leftFront, this.rightFront, this.leftBack,this.rightBack);
 //        new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(this.m_pose2DObservationZoneCommand);
-
-
-//    {
-//        telemetry.addLine()
-//                .addData("Red", "%.3f", m_colorSubsystem.getRed())
-//                .addData("Green", "%.3f", m_colorSubsystem.getRed())
-//                .addData("Blue", "%.3f", m_colorSubsystem.getRed());
-//        telemetry.addLine()
-//                .addData("Hue", "%.3f", m_hsvValues)
-//                .addData("Saturation", "%.3f", m_hsvValues[1])
-//                .addData("Value", "%.3f", hsvValues[2]);
-//        telemetry.addData("Alpha", "%.3f", m_colorSensor.alpha());
-//    }
-
-
-//        for (int i = 1; i>0; i+=0)
-//        {
-//            telemetry.addData("Turn Table Motor", this.m_turnTableMotor.getCurrentPosition());
-//            telemetry.addData("Parking Motor", this.m_parkMotor.getCurrentPosition());
-//            telemetry.update();
-//        }
 
     }
 }

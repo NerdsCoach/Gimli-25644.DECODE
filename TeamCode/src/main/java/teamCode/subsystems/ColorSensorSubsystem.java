@@ -11,6 +11,7 @@ public class ColorSensorSubsystem extends SubsystemBase
     public NormalizedColorSensor m_colorSensor;
     private final Servo m_light;
 
+
         // Define the sensor and LED driver
 
         // Default Servo positions for goBILDA Prism colors (examples)
@@ -18,7 +19,9 @@ public class ColorSensorSubsystem extends SubsystemBase
         private static final double PURPLE_POS = 0.722;
         private static final double OFF_POS = 0.0;
 
-        public ColorSensorSubsystem(HardwareMap hardwareMap) {
+
+    public ColorSensorSubsystem(HardwareMap hardwareMap)
+        {
             // Initialize from hardware map
             m_colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorSensor");
             m_light = hardwareMap.get(Servo.class, "light");

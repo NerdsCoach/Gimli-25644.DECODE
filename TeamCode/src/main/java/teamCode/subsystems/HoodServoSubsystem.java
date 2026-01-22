@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class HoodServoSubsystem extends SubsystemBase
 {
-    private final Servo m_launcherServo;
+    private final Servo m_aimingServo;
 
-    public HoodServoSubsystem(HardwareMap hMap, String launcherServo )
+    public HoodServoSubsystem(HardwareMap hMap, String aimingServo)
     {
-        this.m_launcherServo = hMap.get(Servo.class, launcherServo);
+        this.m_aimingServo = hMap.get(Servo.class, aimingServo);
     }
 
-    public void pivotHood(double launcherPos)
+    public void pivotHood(double movePos)
     {
-        this.m_launcherServo.setPosition(launcherPos);
+        this.m_aimingServo.setPosition(movePos);
     }
 }

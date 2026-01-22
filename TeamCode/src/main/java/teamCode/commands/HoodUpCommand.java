@@ -3,19 +3,16 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import teamCode.Constants;
 import teamCode.subsystems.HoodServoSubsystem;
+import teamCode.subsystems.LauncherSubsystem;
 
-public class HoodServoCloseCommand extends CommandBase
+public class HoodUpCommand extends CommandBase
 {
-    private static final double m_aimClose = Constants.LauncherServoConstants.kAimClose;
+    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private final HoodServoSubsystem m_hoodServoSubsystem;
-    private int m_position;
-    private static final int m_up = 1;
-    private static final int m_down = 0;
 
-    public HoodServoCloseCommand(HoodServoSubsystem servoSubsystem)
+    public HoodUpCommand(HoodServoSubsystem hoodServoSubsystem)
     {
-        this.m_hoodServoSubsystem = servoSubsystem;
-        m_position = m_down;
+        this.m_hoodServoSubsystem = hoodServoSubsystem;
         addRequirements(this.m_hoodServoSubsystem);
     }
 
@@ -26,7 +23,7 @@ public class HoodServoCloseCommand extends CommandBase
     @Override
     public void execute()
     {
-            this.m_hoodServoSubsystem.pivotHood(m_aimClose);
+            this.m_hoodServoSubsystem.pivotHood(m_aimFar);
     }
 
     @Override

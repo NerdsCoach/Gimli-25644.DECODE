@@ -19,7 +19,6 @@ public class DeParkingCommand extends CommandBase
     @Override
     public void initialize()
     {
-
     }
 
     @Override

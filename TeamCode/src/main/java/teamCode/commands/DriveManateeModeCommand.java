@@ -18,7 +18,6 @@ public class DriveManateeModeCommand extends CommandBase
     public GyroSubsystem m_gyroSubsystem;
     public GamepadSubsystem m_gamepadSubsystem;
 
-
     public DriveManateeModeCommand(DriveSubsystem driveSubsystem, GamepadSubsystem gamepadSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier rightY)
     {
        this.m_driveSubsystem = driveSubsystem;
@@ -46,6 +45,5 @@ public class DriveManateeModeCommand extends CommandBase
                        m_rightX.getAsDouble()*0.7,
                        m_rightY.getAsDouble()*0.7
                );
-//       this.m_gamepadSubsystem.speedManatee();
     }
 }

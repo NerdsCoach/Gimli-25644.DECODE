@@ -1,6 +1,7 @@
 package teamCode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,10 +15,9 @@ public class AimingServoSubsystem extends SubsystemBase
     public static final double PAN_MAX = 1.0;
     public static final double PAN_MIN = 0.0;
 
-    public AimingServoSubsystem(final HardwareMap hardwareMap)
+    public AimingServoSubsystem(HardwareMap hMap, String transferServo)
     {
-        // Find the pan servo in the hardware map
-        m_aimingServo = hardwareMap.get(Servo.class, "aiming_servo");
+        this.m_aimingServo = hMap.get(Servo.class, transferServo);
     }
 
     public void setPanPosition(double position)

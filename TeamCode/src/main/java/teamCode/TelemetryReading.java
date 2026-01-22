@@ -7,11 +7,9 @@ import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.button.Button;
-import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
@@ -20,6 +18,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,32 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
-import teamCode.commands.AimingOffCommand;
-import teamCode.commands.AimingOnCommand;
-import teamCode.commands.AimingTestingCommand;
-import teamCode.commands.BellyOfTheBeastCommand;
-import teamCode.commands.ColorModeOffCommand;
-import teamCode.commands.ColorModeOnCommand;
-import teamCode.commands.DeParkingCommand;
-import teamCode.commands.DriveFieldOrientedCommand;
-import teamCode.commands.DriveManateeModeCommand;
-import teamCode.commands.FudgeDeParkingCommand;
-import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.HoodServoCloseCommand;
-import teamCode.commands.HoodServoFarCommand;
-import teamCode.commands.IntakeModeCommand;
-import teamCode.commands.LauncherCommand;
-import teamCode.commands.LightCommand;
-import teamCode.commands.ParkingCommand;
-import teamCode.commands.ResetGyroCommand;
-import teamCode.commands.ScoreTestingCommand;
-import teamCode.commands.SorterOffCommand;
-import teamCode.commands.SorterOnCommand;
 import teamCode.commands.TimerCommand;
-import teamCode.commands.TransferServoOffCommand;
-import teamCode.commands.TransferServoOnCommand;
-import teamCode.commands.TurnTableLeftCommand;
-import teamCode.commands.TurnTableRightCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.DriveSubsystem;
@@ -109,7 +83,7 @@ public class TelemetryReading extends CommandOpMode
     public DcMotor rightBack;
     public DcMotor m_turnTableMotor;
     public DcMotor m_parkMotor;
-    public DcMotor m_launcherMotorRed;
+    public DcMotorEx m_launcherMotorRed;
 
     public CRServo m_intakeServo;
     public Servo m_hoodServo;
@@ -203,7 +177,7 @@ public class TelemetryReading extends CommandOpMode
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
 
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
-        this.m_launcherMotorRed = hardwareMap.get(DcMotor.class, "launcherMotorRed");
+        this.m_launcherMotorRed = hardwareMap.get(DcMotorEx.class, "launcherMotorRed");
         this.m_parkMotor = hardwareMap.get(DcMotor.class, "parkMotor");
 
         this.m_light = hardwareMap.get(Servo.class, "light");

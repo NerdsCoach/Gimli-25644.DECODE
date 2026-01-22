@@ -2,6 +2,7 @@ package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
@@ -9,14 +10,14 @@ public class AimingOffCommand extends CommandBase
 {
     private final HuskyLensSubsystem m_huskySubsystem;
     private final TurnTableSubsystem m_turnTableSubsystem;
-    private static final int TARGET_CENTER_X = 160;
-    private static final double KP = 0.01; // Proportional gain (needs tuning)
+    private final ColorSensorSubsystem m_colorSubsystem;
 
-    public AimingOffCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem)
+    public AimingOffCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem, ColorSensorSubsystem colorSensorSubsystem)
     {
         m_huskySubsystem = huskyLensSubsystem;
         m_turnTableSubsystem = turnTableSubsystem;
-        addRequirements(huskyLensSubsystem, turnTableSubsystem);
+        m_colorSubsystem = colorSensorSubsystem;
+        addRequirements(huskyLensSubsystem, turnTableSubsystem, colorSensorSubsystem);
     }
 
     @Override
@@ -28,6 +29,7 @@ public class AimingOffCommand extends CommandBase
     public void execute()
     {
         m_turnTableSubsystem.stop(); // Stop if no tag detected
+        m_colorSubsystem.setLEDOff();
     }
 
     @Override

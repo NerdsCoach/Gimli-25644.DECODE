@@ -12,6 +12,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -48,7 +49,7 @@ public class RedFarLaunchAuto extends LinearOpMode
     private DcMotor rightFront;
     private DcMotor leftBack;
     private DcMotor rightBack;
-    private DcMotor m_launcherMotor;
+    private DcMotorEx m_launcherMotor;
     public DcMotor m_turnTableMotor;
 
     //Servos
@@ -147,7 +148,7 @@ public class RedFarLaunchAuto extends LinearOpMode
 
 
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
-        this.m_launcherMotor = hardwareMap.get(DcMotor.class, "launcherMotorRed");
+        this.m_launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotorRed");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
 

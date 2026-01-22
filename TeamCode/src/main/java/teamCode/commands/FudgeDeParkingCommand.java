@@ -19,7 +19,6 @@ public FudgeDeParkingCommand(ParkingSubsystem parkingSubsystem)
         @Override
         public void initialize()
         {
-
         }
 
         @Override

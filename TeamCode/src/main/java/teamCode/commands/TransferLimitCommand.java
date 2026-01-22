@@ -27,7 +27,8 @@ public class TransferLimitCommand extends CommandBase
     }
 
     @Override
-    public void execute() {
+    public void execute()
+    {
         boolean currentState = m_limitSwitchSubsystem.isPressed();
 
         // Only count if it transitions from FALSE to TRUE
