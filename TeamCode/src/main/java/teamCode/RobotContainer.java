@@ -285,6 +285,7 @@ public class RobotContainer extends CommandOpMode
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
         register(this.m_gamepadSubsystem);
+        register(this.m_limitSwitchSubsystem);
 
 
         /* Default Commands */
@@ -302,8 +303,8 @@ public class RobotContainer extends CommandOpMode
         this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
-        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_transferServoSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        this.m_transferServoSubsystem.setDefaultCommand(this.m_reverseTransferCommand);
+        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        this.m_limitSwitchSubsystem.setDefaultCommand(this.m_reverseTransferCommand);
 
         schedule();
 ////
@@ -332,21 +333,21 @@ public class RobotContainer extends CommandOpMode
         this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_outTakeModeCommand);
 
-        this.m_fudgeParkingCommand = new FudgeParkingCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
-                .whileHeld(this.m_fudgeParkingCommand);
-
-        this.m_fudgeDeParkingCommand = new FudgeDeParkingCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
-                .whileHeld(this.m_fudgeDeParkingCommand);
-
-        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem);
-        this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(this.m_parkingCommand);
-
-        this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
-                .whenPressed(this.m_deParkingCommand);
+//        this.m_fudgeParkingCommand = new FudgeParkingCommand(this.m_parkingSubsystem);
+//        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+//                .whileHeld(this.m_fudgeParkingCommand);
+//
+//        this.m_fudgeDeParkingCommand = new FudgeDeParkingCommand(this.m_parkingSubsystem);
+//        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+//                .whileHeld(this.m_fudgeDeParkingCommand);
+//
+//        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem);
+//        this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
+//                .whenPressed(this.m_parkingCommand);
+//
+//        this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
+//        this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
+//                .whenPressed(this.m_deParkingCommand);
 
         //GADGETEER
 
@@ -361,7 +362,7 @@ public class RobotContainer extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherCommand = new LauncherCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem);
+        this.m_launcherCommand = new LauncherCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .whenPressed(this.m_launcherCommand);
 
@@ -374,7 +375,7 @@ public class RobotContainer extends CommandOpMode
                 .whileHeld(this.m_turnTableRightCommand);
 
         this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
-        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
+        this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 
         this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem, this.m_colorSensorSubsystem);

@@ -16,44 +16,85 @@ public class HuskyLensSubsystem extends SubsystemBase
     private final HuskyLens m_huskyLens;
     private HuskyLens.Block detectedTag = null; // Store the most relevant detected tag
 
-
     public HuskyLensSubsystem(HuskyLens huskyLens)
     {
         m_huskyLens = huskyLens;
-        // Configure as per your robot configuration name ("m_huskyLens")
-//        huskyLens = hardwareMap.get(HuskyLens.class, "m_huskyLens");
-        // Set the algorithm to TAG_RECOGNITION programmatically
         huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
     }
-
+    // This runs automatically every loop to keep data fresh
     @Override
-    public void periodic() {
-        // Periodically check for AprilTags
+    public void periodic()
+    {
         HuskyLens.Block[] blocks = m_huskyLens.blocks();
-        if (blocks.length > 0) {
-            // Find the tag you want to aim for (e.g., ID 1)
-            for (HuskyLens.Block block : blocks) {
-                // The HuskyLens returns ID 0 for untrained tags
-                // You will need to "learn" specific tags using the HuskyLens UI first
-                if (block.id == 4) { // Assuming ID 1 is your target
-                    detectedTag = block;
-                    break;
-                }
+        detectedTag = null; // Reset every loop
+
+        for (HuskyLens.Block block : blocks)
+        {
+            if (block.id == 4)
+            {
+                detectedTag = block; // Found our specific tag!
+                break;
             }
-        } else {
-            detectedTag = null;
         }
     }
 
-    public boolean isTagDetected() {
+    public boolean isTagDetected()
+    {
         return detectedTag != null;
+    }
+
+    public double getTargetWidth()
+    {
+        return isTagDetected() ? (double)detectedTag.width : -1.0;
     }
 
     public int getTargetCenterX()
     {
-        return detectedTag != null ? detectedTag.x : 0; // X position of the target
+        return isTagDetected() ? detectedTag.x : 160; // 160 is the middle of the screen
     }
 
+//    @Override
+//    public void periodic()
+//    {
+//        // Periodically check for AprilTags
+//        HuskyLens.Block[] blocks = m_huskyLens.blocks();
+//
+//        if (blocks.length > 0)
+//        {double tagWidth = blocks[0].width;
+//            double distance = 5000.0 / tagWidth; // Example calibrated constant
+//            // Find the tag you want to aim for (e.g., ID 1)
+//            for (HuskyLens.Block block : blocks) {
+//                // The HuskyLens returns ID 0 for untrained tags
+//                // You will need to "learn" specific tags using the HuskyLens UI first
+//                if (block.id == 4) { // Assuming ID 1 is your target
+//                    detectedTag = block;
+//                    break;
+//                }
+//            }
+//        } else {
+//            detectedTag = null;
+//        }
+//    }
+
+
+//    public double getTargetWidth()
+//    {
+//        HuskyLens.Block[] blocks = m_huskyLens.blocks();
+//        for (HuskyLens.Block block : blocks)
+//        {
+//            if (block.id == 4) return block.width; // Just return the width
+//        }
+//        return -1; // Return -1 if not found
+//    }
+//
+//    public boolean isTagDetected() {
+//        return detectedTag != null;
+//    }
+//
+//    public int getTargetCenterX()
+//    {
+//        return detectedTag != null ? detectedTag.x : 0; // X position of the target
+//    }
 
 
 

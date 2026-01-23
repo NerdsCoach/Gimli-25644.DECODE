@@ -1,29 +1,77 @@
 package teamCode.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import java.util.TreeMap;
+
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
+import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 
 public class LauncherCommand extends CommandBase
 {
-    private LauncherSubsystem m_launcherSubsystem;
+    private final LauncherSubsystem m_launcherSubsystem;
+    private final AxeSubsystem m_axeSubsystem;
+    private final HuskyLensSubsystem m_huskySubsystem;
+
+
+    private TreeMap<Double, Double> distanceLUT = new TreeMap<>();
+    private TreeMap<Double, Double> velocityLUT = new TreeMap<>();
 
     private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-    private final AxeSubsystem m_axeSubsystem;
     private int m_position;
     private static final int m_up = 1;
     private static final int m_down = 0;
 
-    public LauncherCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem)
+    public LauncherCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem, HuskyLensSubsystem huskyLensSubsystem)
     {
         m_position = m_down;
 
         this.m_launcherSubsystem = launcherSubsystem;
+        m_huskySubsystem = huskyLensSubsystem;
         this.m_axeSubsystem = axeSubsystem;
-        addRequirements(m_launcherSubsystem, this.m_axeSubsystem);
+        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem);
+
+        velocityLUT.put(84.0, 2400.0); // 84 inches -> 2400 ticks/sec
+        velocityLUT.put(72.0, 2300.0); // 72 inches -> 2300 ticks/sec
+        velocityLUT.put(60.0, 2100.0); // 60 inches -> 2100 ticks/sec
+        velocityLUT.put(48.0, 2000.0); // 48 inches -> 2000 ticks/sec
+        velocityLUT.put(36.0, 1960.0); // 36 inches -> 1960 ticks/sec
+        velocityLUT.put(30.0, 1870.0); // 30 inches -> 1900 ticks/sec
+        velocityLUT.put(24.0, 1800.0); // 30 inches -> 1900 ticks/sec
+
+        // Add your real-world measurements here:
+        distanceLUT.put(24.0, 84.0); // 24 pixels = 84 in (7ft)
+        distanceLUT.put(28.0, 72.0); // 28 pixels = 72 inches (6ft)
+        distanceLUT.put(32.0, 60.0); // 32 pixels = 60 inches (5ft)
+        distanceLUT.put(40.0, 48.0); // 40 pixels = 48 inches (4ft)
+        distanceLUT.put(48.0, 36.0); // 48 pixels = 36 inches (3ft)
+        distanceLUT.put(58.0, 30.0); // 58 pixels = 30 inches (2.5ft)
+        distanceLUT.put(68.0, 24.0); // 68 pixels = 24 inches (2ft)
     }
+    public double getDistance(double currentWidth)
+    {
+        Double lowKey = distanceLUT.floorKey(currentWidth);
+        Double highKey = distanceLUT.ceilingKey(currentWidth);
+        if (lowKey == null) return distanceLUT.get(highKey);
+        if (highKey == null) return distanceLUT.get(lowKey);
+        if (lowKey.equals(highKey)) return distanceLUT.get(lowKey);
+        return distanceLUT.get(lowKey) + (currentWidth - lowKey) *
+                (distanceLUT.get(highKey) - distanceLUT.get(lowKey)) / (highKey - lowKey);
+    }
+
+    public double getSubTargetVelocity(double distance)
+    {
+        Double lowKey = velocityLUT.floorKey(distance);
+        Double highKey = velocityLUT.ceilingKey(distance);
+        if (lowKey == null) return velocityLUT.get(highKey);
+        if (highKey == null) return velocityLUT.get(lowKey);
+        if (lowKey.equals(highKey)) return velocityLUT.get(lowKey);
+        return velocityLUT.get(lowKey) + (distance - lowKey) *
+                (velocityLUT.get(highKey) - velocityLUT.get(lowKey)) / (highKey - lowKey);
+    }
+
 
     @Override
     public void initialize()
@@ -33,18 +81,33 @@ public class LauncherCommand extends CommandBase
     @Override
     public void execute()
     {
-        if (m_position == m_down)
-        {
+
+        double width = m_huskySubsystem.getTargetWidth();
+        int centerX = m_huskySubsystem.getTargetCenterX();
+
+
+//        if (m_position == m_down)
+//        {
             this.m_axeSubsystem.pivotAxe(m_axeUp);
-            this.m_launcherSubsystem.launch();
-            m_position = m_up;
-        }
-        else if (m_position == m_up)
-        {
-            this.m_axeSubsystem.pivotAxe(m_axeDown);
-            this.m_launcherSubsystem.stop();
-            m_position = m_down;
-        }
+            if (width > 0)
+            {
+                // 1. HANDLE SPEED (Distance Logic)
+                double distance = getDistance(width);
+                double targetVelocity = getSubTargetVelocity(distance);
+                m_launcherSubsystem.setMotorVelocity(targetVelocity);
+            } else
+            {
+                // If we lose the tag, stop turning and keep a base speed
+                m_launcherSubsystem.setMotorVelocity(0);
+            }
+//            m_position = m_up;
+//        }
+//        else if (m_position == m_up)
+//        {
+//            this.m_axeSubsystem.pivotAxe(m_axeDown);
+//            this.m_launcherSubsystem.stop();
+//            m_position = m_down;
+//        }
     }
 
     @Override
@@ -55,6 +118,6 @@ public class LauncherCommand extends CommandBase
     @Override
     public boolean isFinished()
     {
-        return true;
+        return false;
     }
 }

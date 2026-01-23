@@ -38,6 +38,11 @@ public class TurnTableSubsystem extends SubsystemBase
         this.m_turnTableMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void setTurnPower(double power) {
+        this.m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.m_turnTableMotor.setPower(power);
+    }
+
     public boolean atTargetLeft(double targetLeft)
     {
 //        return this.m_turnTableMotor.getCurrentPosition() >= targetLeft;

@@ -199,7 +199,7 @@ public class BlueFarLaunchAuto extends LinearOpMode
                     holdTimer.reset();
                     // Sorter, Launcher, and Turntable on. Axe down
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
-                    this.m_launcherSubsystem.launch();
+                    this.m_launcherSubsystem.setMotorVelocity(1000);
                     this.m_turnTableSubsystem.Turn(0); //-575
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
 
