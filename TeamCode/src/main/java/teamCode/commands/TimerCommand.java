@@ -21,13 +21,13 @@ public class TimerCommand extends CommandBase
     private static final float TARGET_PURPLE_HUE = 240.0f;
     private static final float HUE_TOLERANCE = 10.0f; // Allow +/- 10 degrees variance
 
-    public TimerCommand(GamepadSubsystem gamepadSubsystem, DoubleSupplier timer, ColorSensorSubsystem color)
+    public TimerCommand(GamepadSubsystem gamepadSubsystem, DoubleSupplier timer)
     {
         this.m_gamepadSubsystem = gamepadSubsystem;
 //        this.m_colorSubsystem = color;
         this.m_timer = timer;
 
-        addRequirements(m_gamepadSubsystem, this.m_colorSubsystem);
+        addRequirements(m_gamepadSubsystem);
     }
 
     @Override

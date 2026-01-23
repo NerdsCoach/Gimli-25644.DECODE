@@ -21,7 +21,6 @@ public class ColorModeOnCommand extends CommandBase
 
     private static final int  m_off = 1;
 
-
     public ColorModeOnCommand(ColorSensorSubsystem colorSubsystem)
     {
         this.m_colorSubsystem = colorSubsystem;

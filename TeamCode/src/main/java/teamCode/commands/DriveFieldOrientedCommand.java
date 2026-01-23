@@ -32,6 +32,7 @@ public class DriveFieldOrientedCommand extends CommandBase
     @Override
     public void initialize()
     {
+        System.out.println("Running Initialize!");
     }
 
     @Override
@@ -44,8 +45,13 @@ public class DriveFieldOrientedCommand extends CommandBase
                         m_rightX.getAsDouble(),
                         m_rightY.getAsDouble()
                 );
+        System.out.println("Running Execute!");
 //       this.m_gamepadSubsystem.speedTurbo();
     }
+
+
+
+
 //    public DriveSubsystem m_driveSubsystem;
 //    public DoubleSupplier m_leftX;
 //    public DoubleSupplier m_leftY;

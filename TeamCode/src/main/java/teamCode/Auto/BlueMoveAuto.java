@@ -41,7 +41,7 @@ public class BlueMoveAuto extends LinearOpMode
     {
         WAITING_FOR_START,
         DRIVE_OFF_LINE,
-                PARK,
+        PARK,
         PARKED,
     }
 

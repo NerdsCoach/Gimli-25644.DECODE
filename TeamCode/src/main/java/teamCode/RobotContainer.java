@@ -6,6 +6,7 @@ import static teamCode.PoseStorage.xEncoder;
 import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -19,6 +20,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -109,7 +111,8 @@ public class RobotContainer extends CommandOpMode
     private Button m_leftJoyStick;
     private Button m_rightTrigger;
 
-    /* Motors */
+    /* Motors*/
+    //TODO TRIED PRIVATE INSTEAD OF PUBLIC, IT GAVE THE USAGES BUT IT STILL DIDN'T WORK....
     public DcMotor leftFront;
     public DcMotor rightFront;
     public DcMotor leftBack;
@@ -162,6 +165,7 @@ public class RobotContainer extends CommandOpMode
     private TransferLimitCommand m_transferLimitCommand;
     private ReverseTransferCommand m_reverseTransferCommand;
 
+
     private FudgeParkingCommand m_fudgeParkingCommand;
     private FudgeDeParkingCommand m_fudgeDeParkingCommand;
     private ParkingCommand m_parkingCommand;
@@ -190,6 +194,14 @@ public class RobotContainer extends CommandOpMode
         this.leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         this.rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
         this.m_drive = new MecanumDrive
                 (
                         new Motor(hardwareMap, "leftFront", Motor.GoBILDA.RPM_312),
@@ -209,6 +221,8 @@ public class RobotContainer extends CommandOpMode
         this.m_odo.setHeading(odoHeading, AngleUnit.DEGREES);
         double headingDegrees = currentPose.getHeading(UnnormalizedAngleUnit.DEGREES);
 
+        //TODO TRIED ADDING IMU, STILL DOESN'T WORK...
+
 //                this.m_odo.setPosition(new Pose2DUnNormalized(DistanceUnit.MM,200,200,UnnormalizedAngleUnit.DEGREES,-45.0));
 //                this.m_odo.setPosition(PoseStorage.poseStorage.xEncoder, PoseStorage.poseStorage.yEncoder,DistanceUnit.MM, PoseStorage.poseStorage.odoHeading,UnnormalizedAngleUnit.DEGREES);
 
@@ -226,6 +240,8 @@ public class RobotContainer extends CommandOpMode
 
         this.m_driver1 = new GamepadEx(gamepad1);
         this.m_driver2 = new GamepadEx(gamepad2);
+
+
 
         /* Motors */
     //TODO Device Name MUST MATCH name on the Drivers Station!!!!!
@@ -268,44 +284,41 @@ public class RobotContainer extends CommandOpMode
 
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
+        register(this.m_gamepadSubsystem);
 
 
         /* Default Commands */
 
         //DRIVER
-//        this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
-//                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-//                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-//        this.m_driveSubsystem.setDefaultCommand(this.m_driveFieldOrientedCommand);
-
         this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
                 (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-                        () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
+                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
         this.m_driveSubsystem.setDefaultCommand(this.m_driveFieldOrientedCommand);
-
 
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand
 //                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-
-        this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime(), this.m_colorSensorSubsystem);
+//
+        this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
         this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_transferServoSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         this.m_transferServoSubsystem.setDefaultCommand(this.m_reverseTransferCommand);
 
         schedule();
-
-//        /* Event Commands */while (opModeIsActive())
-//        {
-//        // THIS IS THE BRAIN. Without this, isFinished() never runs!
-//        CommandScheduler.getInstance().run();
+////
+////        /* Event Commands */while (opModeIsActive())
+////        {
+////        // THIS IS THE BRAIN. Without this, isFinished() never runs!
+////        CommandScheduler.getInstance().run();
+////
+////        // You can use telemetry here!
+////        telemetry.addData("Limit Pressed", m_limitSwitchSubsystem.isPressed());
+////        telemetry.update();
+////        }
+        System.out.println("2");
 //
-//        // You can use telemetry here!
-//        telemetry.addData("Limit Pressed", m_limitSwitchSubsystem.isPressed());
-//        telemetry.update();
-//        }
-
+//
         //DRIVER
         this.m_resetGyroCommand = new ResetGyroCommand(this.m_gyroSubsystem);
         this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
@@ -361,7 +374,7 @@ public class RobotContainer extends CommandOpMode
                 .whileHeld(this.m_turnTableRightCommand);
 
         this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
-        this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
+        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
                 .whenPressed(this.m_aimingCommand);
 
         this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem, this.m_colorSensorSubsystem);
@@ -380,10 +393,7 @@ public class RobotContainer extends CommandOpMode
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
 
-
-        //TODO hood aiming servo button DPAD UP (Close) AND DOWN (Far)
-
-
+//        //TODO hood aiming servo button DPAD UP (Close) AND DOWN (Far)
 
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
