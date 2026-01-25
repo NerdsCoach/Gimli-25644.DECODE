@@ -8,7 +8,7 @@ import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 
-public class LauncherCommand extends CommandBase
+public class LauncherOnCommand extends CommandBase
 {
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
@@ -23,14 +23,17 @@ public class LauncherCommand extends CommandBase
     private int m_position;
     private static final int m_up = 1;
     private static final int m_down = 0;
+    private double m_lastKnownSpeed;
 
-    public LauncherCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem, HuskyLensSubsystem huskyLensSubsystem)
+    public LauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem, HuskyLensSubsystem huskyLensSubsystem)
     {
         m_position = m_down;
 
         this.m_launcherSubsystem = launcherSubsystem;
         m_huskySubsystem = huskyLensSubsystem;
         this.m_axeSubsystem = axeSubsystem;
+        m_lastKnownSpeed = 1500.0; // Set a safe default starting speed
+
         addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem);
 
         velocityLUT.put(84.0, 2400.0); // 84 inches -> 2400 ticks/sec
@@ -95,19 +98,17 @@ public class LauncherCommand extends CommandBase
                 double distance = getDistance(width);
                 double targetVelocity = getSubTargetVelocity(distance);
                 m_launcherSubsystem.setMotorVelocity(targetVelocity);
-            } else
-            {
-                // If we lose the tag, stop turning and keep a base speed
-                m_launcherSubsystem.setMotorVelocity(0);
+                // 2. SAVE this to your memory variable
+                m_lastKnownSpeed = targetVelocity;
+
+                // 3. Set the motor
+                m_launcherSubsystem.setMotorVelocity(targetVelocity);
             }
-//            m_position = m_up;
-//        }
-//        else if (m_position == m_up)
-//        {
-//            this.m_axeSubsystem.pivotAxe(m_axeDown);
-//            this.m_launcherSubsystem.stop();
-//            m_position = m_down;
-//        }
+            else
+            {
+                // If we lose sight, DON'T set to 0. Use the saved memory!
+                m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
+            }
     }
 
     @Override

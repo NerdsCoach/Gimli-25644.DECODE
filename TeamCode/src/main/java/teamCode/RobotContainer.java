@@ -6,9 +6,9 @@ import static teamCode.PoseStorage.xEncoder;
 import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 
@@ -35,6 +35,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
+import java.util.function.DoubleSupplier;
+
 import teamCode.commands.AimingOnCommand;
 import teamCode.commands.AimingTestingCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
@@ -43,6 +45,8 @@ import teamCode.commands.ColorModeOnCommand;
 import teamCode.commands.DeParkingCommand;
 import teamCode.commands.FudgeDeParkingCommand;
 import teamCode.commands.HoodTestingCommand;
+import teamCode.commands.LauncherOffCommand;
+import teamCode.commands.LauncherOnCommand;
 import teamCode.commands.OutTakeModeCommand;
 import teamCode.commands.ParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
@@ -50,7 +54,6 @@ import teamCode.commands.DriveManateeModeCommand;
 import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeModeCommand;
-import teamCode.commands.LauncherCommand;
 import teamCode.commands.FudgeParkingCommand;
 import teamCode.commands.ResetGyroCommand;
 import teamCode.commands.ReverseTransferCommand;
@@ -110,6 +113,7 @@ public class RobotContainer extends CommandOpMode
     private Button m_axeButton;
     private Button m_leftJoyStick;
     private Button m_rightTrigger;
+    private Trigger m_leftTrigger;
 
     /* Motors*/
     //TODO TRIED PRIVATE INSTEAD OF PUBLIC, IT GAVE THE USAGES BUT IT STILL DIDN'T WORK....
@@ -158,7 +162,8 @@ public class RobotContainer extends CommandOpMode
     private IntakeModeCommand m_intakeModeCommand;
     private OutTakeModeCommand m_outTakeModeCommand;
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
-    private LauncherCommand m_launcherCommand;
+    private LauncherOnCommand m_launcherOnCommand;
+    private LauncherOffCommand m_launcherOffCommand;
     private TurnTableLeftCommand m_turnTableLeftCommand;
     private TurnTableRightCommand m_turnTableRightCommand;
     private ColorModeOnCommand m_colorOnCommand;
@@ -303,23 +308,8 @@ public class RobotContainer extends CommandOpMode
         this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
-        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        this.m_limitSwitchSubsystem.setDefaultCommand(this.m_reverseTransferCommand);
-
         schedule();
-////
-////        /* Event Commands */while (opModeIsActive())
-////        {
-////        // THIS IS THE BRAIN. Without this, isFinished() never runs!
-////        CommandScheduler.getInstance().run();
-////
-////        // You can use telemetry here!
-////        telemetry.addData("Limit Pressed", m_limitSwitchSubsystem.isPressed());
-////        telemetry.update();
-////        }
-        System.out.println("2");
-//
-//
+
         //DRIVER
         this.m_resetGyroCommand = new ResetGyroCommand(this.m_gyroSubsystem);
         this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
@@ -362,9 +352,13 @@ public class RobotContainer extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherCommand = new LauncherCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
+        this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
-                .whenPressed(this.m_launcherCommand);
+                .whenPressed(this.m_launcherOnCommand);
+
+        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
+        this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
+                .whenPressed(this.m_launcherOffCommand);
 
         this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
         this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
@@ -390,11 +384,13 @@ public class RobotContainer extends CommandOpMode
         this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_hoodFarCommand);
 
+        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);
+        m_leftTrigger.whileActiveContinuous(m_reverseTransferCommand);
+
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
-
-//        //TODO hood aiming servo button DPAD UP (Close) AND DOWN (Far)
 
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());

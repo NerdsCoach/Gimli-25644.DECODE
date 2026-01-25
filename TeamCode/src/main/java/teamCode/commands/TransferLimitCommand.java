@@ -4,6 +4,8 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 
+import java.util.function.DoubleSupplier;
+
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.TransferSubsystem;
 
@@ -44,7 +46,7 @@ public class TransferLimitCommand extends CommandBase
     @Override
     public boolean isFinished()
     {
-        return m_limitSwitchSubsystem.getHitCount() >= 1;
+        return m_limitSwitchSubsystem.getHitCount() >= 1 ;
     }
 
     @Override
