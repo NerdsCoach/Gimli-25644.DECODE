@@ -41,7 +41,7 @@ public class DriveToPoint
         IN_BOUNDS
     }
 //
-    private static double xyTolerance = 30; //was  15
+    private static double xyTolerance = 12; //was  15
     private static double yawTolerance = 0.0349066;
 
     private static double pGain = 0.009;//0.008 //latest num = 0.02

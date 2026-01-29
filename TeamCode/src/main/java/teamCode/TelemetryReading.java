@@ -213,6 +213,9 @@ public class TelemetryReading extends CommandOpMode
             telemetry.addData("Parking Motor", this.m_parkMotor.getCurrentPosition());
             telemetry.addData("Launcher Motor", this.m_launcherMotorRed.getPower());
             telemetry.addData("Switch Pressed", this.m_limitSwitch.isPressed());
+            telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
+            telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
+            telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
             System.out.println(this.m_limitSwitch.isPressed());
         }
             telemetry.update();

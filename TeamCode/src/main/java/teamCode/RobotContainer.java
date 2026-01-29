@@ -20,7 +20,6 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -34,8 +33,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
-
-import java.util.function.DoubleSupplier;
 
 import teamCode.commands.AimingOnCommand;
 import teamCode.commands.AimingTestingCommand;
@@ -321,7 +318,7 @@ public class RobotContainer extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
                 .whileHeld(this.m_fudgeDeParkingCommand);
 
-        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem);
+        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeServoSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_parkingCommand);
 
@@ -350,13 +347,13 @@ public class RobotContainer extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
                 .whenPressed(this.m_launcherOffCommand);
 
-        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
-        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
-                .whileHeld(this.m_turnTableLeftCommand);
-
-        this.m_turnTableRightCommand = new TurnTableRightCommand(this.m_turnTableSubsystem);
-        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
-                .whileHeld(this.m_turnTableRightCommand);
+//        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
+//        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
+//                .whileHeld(this.m_turnTableLeftCommand);
+//
+//        this.m_turnTableRightCommand = new TurnTableRightCommand(this.m_turnTableSubsystem);
+//        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+//                .whileHeld(this.m_turnTableRightCommand);
 
         this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))

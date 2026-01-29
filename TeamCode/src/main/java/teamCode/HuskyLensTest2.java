@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 
-@TeleOp(name = "HuskyLensTest")
+@TeleOp(name = "ReadHuskyLensTest")
 public class HuskyLensTest2 extends LinearOpMode
 {
 

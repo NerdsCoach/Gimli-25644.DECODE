@@ -257,6 +257,10 @@ public class RedNearAuto extends LinearOpMode
                     break;
 
                 case AIM_TURNTABLE:
+                    leftBack.setPower(0.0);
+                    leftFront.setPower(0.0);
+                    rightBack.setPower(0.0);
+                    rightFront.setPower(0.0);
                     int targetX = m_huskyLensSubsystem.getTargetCenterX();
                     double error = TARGET_CENTER_X - targetX;
                     double correction = error * KP;
@@ -375,7 +379,7 @@ public class RedNearAuto extends LinearOpMode
 //                            Park, 0.5, 0))
                     holdTimer.reset();
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.2, 0.5))
+                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.0)
                     {
 //                        this.m_intakeServo.set(0.0);
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
@@ -390,6 +394,10 @@ public class RedNearAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
                     {
+                        leftBack.setPower(0.0);
+                        leftFront.setPower(0.0);
+                        rightBack.setPower(0.0);
+                        rightFront.setPower(0.0);
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);

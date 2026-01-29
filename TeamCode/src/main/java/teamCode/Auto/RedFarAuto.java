@@ -241,6 +241,11 @@ public class RedFarAuto extends LinearOpMode
                 case LAUNCH_BALL:
                     // Standard launch power
                     this.m_limitSwitchSubsystem.setTransferPower(-0.30);
+                    leftBack.setPower(0.0);
+                    leftFront.setPower(0.0);
+                    rightBack.setPower(0.0);
+                    rightFront.setPower(0.0);
+
                     boolean currentState = m_limitSwitchSubsystem.isPressed();
 
                     if (currentState && !lastState) {
@@ -313,7 +318,7 @@ public class RedFarAuto extends LinearOpMode
 //                            Park, 0.5, 0))
                     holdTimer.reset();
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.2, 0.5))
+                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.0)
                     {
 //                        this.m_intakeServo.set(0.0);
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
@@ -328,8 +333,13 @@ public class RedFarAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
                     {
+                        leftBack.setPower(0.0);
+                        leftFront.setPower(0.0);
+                        rightBack.setPower(0.0);
+                        rightFront.setPower(0.0);
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+                        this.m_intakeServoSubsystem.spinIntake(0.0);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_launcherSubsystem.setMotorVelocity(0);

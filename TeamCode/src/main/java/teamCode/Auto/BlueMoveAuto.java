@@ -20,12 +20,10 @@ import teamCode.commands.TimerCommand;
 
 public class BlueMoveAuto extends LinearOpMode
 {
-
     private DcMotor leftFront;
     private DcMotor rightFront;
     private DcMotor leftBack;
     private DcMotor rightBack;
-
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
