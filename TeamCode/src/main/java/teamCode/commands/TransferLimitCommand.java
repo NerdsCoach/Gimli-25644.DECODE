@@ -7,7 +7,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import java.util.function.DoubleSupplier;
 
 import teamCode.subsystems.LimitSwitchSubsystem;
-import teamCode.subsystems.TransferSubsystem;
+
 
 public class TransferLimitCommand extends CommandBase
 {
@@ -40,7 +40,7 @@ public class TransferLimitCommand extends CommandBase
         }
         lastState = currentState;
 
-        m_limitSwitchSubsystem.setPower(-0.25);
+        m_limitSwitchSubsystem.setTransferPower(-0.25);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class TransferLimitCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        m_limitSwitchSubsystem.setPower(0.0);
+        m_limitSwitchSubsystem.setTransferPower(0.0);
     }
 }

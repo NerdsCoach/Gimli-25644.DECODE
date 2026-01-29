@@ -87,7 +87,7 @@ public class GoBildaPinpointReader extends OpMode {
         *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
         *  Forward of center is a positive number, backwards is a negative number.
         */
-        m_odo.setOffsets(90, -5, DistanceUnit.MM); //these are tuned for Gimli Product Insight #1
+        m_odo.setOffsets(-105, -25, DistanceUnit.MM); //these are tuned for Gimli Product Insight #1
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -103,7 +103,7 @@ public class GoBildaPinpointReader extends OpMode {
          * increase when you move the robot forward. And the Y (strafe) pod should increase when
          * you move the robot to the left.
          */
-        m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+        m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                                       GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         /*

@@ -14,11 +14,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class HuskyLensSubsystem extends SubsystemBase
 {
     private final HuskyLens m_huskyLens;
+    private final int targetId;//added1/27
+
     private HuskyLens.Block detectedTag = null; // Store the most relevant detected tag
 
-    public HuskyLensSubsystem(HuskyLens huskyLens)
+    public HuskyLensSubsystem(HuskyLens huskyLens, int targetId)
     {
         m_huskyLens = huskyLens;
+        this.targetId = targetId;//added1/27
         huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
     }
     // This runs automatically every loop to keep data fresh
@@ -30,8 +33,10 @@ public class HuskyLensSubsystem extends SubsystemBase
 
         for (HuskyLens.Block block : blocks)
         {
-            if (block.id == 4)
-            {
+//            if (block.id == 4)
+                if (block.id == targetId)//changed1.27
+
+                {
                 detectedTag = block; // Found our specific tag!
                 break;
             }

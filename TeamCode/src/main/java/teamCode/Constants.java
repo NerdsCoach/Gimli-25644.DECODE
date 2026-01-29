@@ -30,14 +30,14 @@ public class Constants
 
     public static final class AxeConstants
     {
-        public static final double kAxeDown = 0.5;
-        public static final double kAxeUp = 0.62;// down...
+        public static final double kAxeDown = 0.62;
+        public static final double kAxeDownAuto = 0.48;
+        public static final double kAxeUp = 0.5;// down...
     }
 
     public static final class AimingConstants
     {
-        public static final double kCloseAim = .7; //Up
-        public static final double kFarAim = .89;// down...
+        public static final double kCloseAim = .89; //Up
+        public static final double kFarAim = .7;// down...
     }
-
 }

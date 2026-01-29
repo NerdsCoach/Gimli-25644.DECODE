@@ -42,7 +42,6 @@ import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
-import teamCode.subsystems.TransferSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
 @TeleOp(name = "Read Telemetry")
@@ -60,21 +59,6 @@ public class TelemetryReading extends CommandOpMode
     /* Gamepad */
     private GamepadEx m_driver1;
     private GamepadEx m_driver2;
-
-    private Button m_leftBumper;
-    private Button m_rightBumper;
-    private Button m_xButton;
-    private Button m_circle;
-    private Button m_square;
-    private Button m_triangle;
-    private Button m_dpadTop;
-    private Button m_dpadBottom;
-    private Button m_dpadLeft;
-    private Button m_dpadRight;
-    private Button m_gyroResetButton;
-    private Button m_manateeButton;
-    private Button m_scoreButton;
-    private Button m_axeButton;
 
     /* Motors */
     public DcMotor leftFront;
@@ -106,7 +90,6 @@ public class TelemetryReading extends CommandOpMode
     private TurnTableSubsystem m_turnTableSubsystem;
     private HuskyLensSubsystem m_huskyLensSubsystem;
     private IntakeServoSubsystem m_intakeServoSubsystem;
-    private TransferSubsystem m_transferServoSubsystem;
     private AxeSubsystem m_axeSubsystem;
     private LauncherSubsystem m_launcherMotorSubsystem;
     private SorterServoSubsystem m_sorterServoSubsystem;
@@ -198,10 +181,9 @@ public class TelemetryReading extends CommandOpMode
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
-        this.m_huskyLensSubsystem = new HuskyLensSubsystem(this.m_huskylens);
+        this.m_huskyLensSubsystem = new HuskyLensSubsystem(this.m_huskylens, 4);
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
-        this.m_transferServoSubsystem = new TransferSubsystem(this.m_transferServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
@@ -232,7 +214,6 @@ public class TelemetryReading extends CommandOpMode
             telemetry.addData("Launcher Motor", this.m_launcherMotorRed.getPower());
             telemetry.addData("Switch Pressed", this.m_limitSwitch.isPressed());
             System.out.println(this.m_limitSwitch.isPressed());
-//            telemetry.addData("Hit Count", this.m_limitSwitchSubsystem.getHitCount());
         }
             telemetry.update();
         }

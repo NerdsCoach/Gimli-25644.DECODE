@@ -2,6 +2,7 @@ package teamCode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,8 +15,8 @@ import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
 import teamCode.commands.TimerCommand;
 
-
-@Autonomous(name="Red Move Auto", group="Pinpoint")
+@Disabled
+//@Autonomous(name="Red Move Auto", group="Pinpoint")
 //@Disabled
 
 public class RedMoveAuto extends LinearOpMode
@@ -25,7 +26,6 @@ public class RedMoveAuto extends LinearOpMode
     private DcMotor rightFront;
     private DcMotor leftBack;
     private DcMotor rightBack;
-
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
@@ -41,10 +41,9 @@ public class RedMoveAuto extends LinearOpMode
     {
         WAITING_FOR_START,
         DRIVE_OFF_LINE,
-                PARK,
+        PARK,
         PARKED,
     }
-
 
     @Override
     public void runOpMode()
@@ -69,7 +68,8 @@ public class RedMoveAuto extends LinearOpMode
 
         m_odo.setOffsets(90, 5, DistanceUnit.MM);//these are tuned for Gimli 3110-0002-0001 Product Insight #1
         m_odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+//        m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         m_odo.resetPosAndIMU();
 

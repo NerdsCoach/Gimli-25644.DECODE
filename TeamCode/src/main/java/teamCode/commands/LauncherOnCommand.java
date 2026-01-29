@@ -14,7 +14,6 @@ public class LauncherOnCommand extends CommandBase
     private final AxeSubsystem m_axeSubsystem;
     private final HuskyLensSubsystem m_huskySubsystem;
 
-
     private TreeMap<Double, Double> distanceLUT = new TreeMap<>();
     private TreeMap<Double, Double> velocityLUT = new TreeMap<>();
 
@@ -88,10 +87,7 @@ public class LauncherOnCommand extends CommandBase
         double width = m_huskySubsystem.getTargetWidth();
         int centerX = m_huskySubsystem.getTargetCenterX();
 
-
-//        if (m_position == m_down)
-//        {
-            this.m_axeSubsystem.pivotAxe(m_axeUp);
+            this.m_axeSubsystem.pivotAxe(m_axeDown);
             if (width > 0)
             {
                 // 1. HANDLE SPEED (Distance Logic)

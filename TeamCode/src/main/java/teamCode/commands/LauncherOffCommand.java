@@ -37,7 +37,7 @@ public class LauncherOffCommand extends CommandBase
     @Override
     public void execute()
     {
-            this.m_axeSubsystem.pivotAxe(m_axeDown);
+            this.m_axeSubsystem.pivotAxe(m_axeUp);
             this.m_launcherSubsystem.setMotorVelocity(0);
     }
 

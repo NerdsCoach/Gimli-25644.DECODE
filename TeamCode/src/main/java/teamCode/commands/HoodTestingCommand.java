@@ -2,7 +2,7 @@ package teamCode.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import teamCode.Constants;
-import teamCode.subsystems.AimingServoSubsystem;
+
 import teamCode.subsystems.HoodServoSubsystem;
 
 public class HoodTestingCommand extends CommandBase

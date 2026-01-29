@@ -31,7 +31,7 @@ public class ReverseTransferCommand extends CommandBase
     public void execute() {
         // Get the 0 to 1.0 value
         double triggerVal = this.m_leftTriggerValue.getAsDouble();
-        this.m_limitSwitchSubsystem.setPower(triggerVal);
+        this.m_limitSwitchSubsystem.setTransferPower(triggerVal);
 
     }
 
@@ -45,6 +45,6 @@ public class ReverseTransferCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        this.m_limitSwitchSubsystem.setPower(0);
+        this.m_limitSwitchSubsystem.setTransferPower(0);
     }
 }

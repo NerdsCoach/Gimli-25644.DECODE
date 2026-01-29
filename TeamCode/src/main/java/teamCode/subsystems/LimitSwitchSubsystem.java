@@ -20,7 +20,7 @@ public class LimitSwitchSubsystem extends SubsystemBase
         m_transferServo = transferServo;
     }
 
-    public void setPower(double speed)
+    public void setTransferPower(double speed)
     {
         m_transferServo.set(speed);
     }
