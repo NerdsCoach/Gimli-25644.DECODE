@@ -7,6 +7,7 @@ import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
+import teamCode.subsystems.TurnTableSubsystem;
 
 public class ParkingCommand extends CommandBase
 {
@@ -14,15 +15,17 @@ public class ParkingCommand extends CommandBase
     private IntakeServoSubsystem m_intakeSubsystem;
     private LauncherSubsystem m_launcherSubsystem;
     private SorterServoSubsystem m_bellyOfTheBeastSubsystem;
+    private TurnTableSubsystem m_turnTableSubsystem;
 
-    public ParkingCommand(ParkingSubsystem parkingSubsystem, IntakeServoSubsystem intakeSubsystem, LauncherSubsystem launcherSubsystem, SorterServoSubsystem bellyOfTheBeastSubsystem)
+    public ParkingCommand(ParkingSubsystem parkingSubsystem, IntakeServoSubsystem intakeSubsystem, LauncherSubsystem launcherSubsystem, SorterServoSubsystem bellyOfTheBeastSubsystem, TurnTableSubsystem turnTableSubsystem)
     {
         this.m_parkingSubsystem = parkingSubsystem;
         this.m_intakeSubsystem = intakeSubsystem;
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_bellyOfTheBeastSubsystem = bellyOfTheBeastSubsystem;
+        this.m_turnTableSubsystem = turnTableSubsystem;
 
-        addRequirements(m_parkingSubsystem, this.m_intakeSubsystem, this.m_launcherSubsystem, this.m_bellyOfTheBeastSubsystem);
+        addRequirements(m_parkingSubsystem, this.m_intakeSubsystem, this.m_launcherSubsystem, this.m_bellyOfTheBeastSubsystem, this.m_turnTableSubsystem);
     }
 
     @Override
@@ -37,6 +40,7 @@ public class ParkingCommand extends CommandBase
             this.m_intakeSubsystem.spinIntake(0.0);
             this.m_launcherSubsystem.setMotorVelocity(0.0);
             this.m_bellyOfTheBeastSubsystem.spinSorter(0.0);
+            this.m_turnTableSubsystem.stop();
     }
 
     @Override

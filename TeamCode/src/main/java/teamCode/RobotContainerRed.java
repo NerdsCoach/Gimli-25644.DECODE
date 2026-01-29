@@ -313,7 +313,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
                 .whileHeld(this.m_fudgeDeParkingCommand);
 
-        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeServoSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem);
+        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeServoSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem, this.m_turnTableSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_parkingCommand);
 

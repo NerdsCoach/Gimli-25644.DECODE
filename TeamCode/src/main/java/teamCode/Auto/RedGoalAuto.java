@@ -39,10 +39,10 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
-@Autonomous(name="Red Near Auto", group="Pinpoint")
+@Autonomous(name="Red Goal Auto", group="Pinpoint")
 //@Disabled
 
-public class RedNearAuto extends LinearOpMode
+public class RedGoalAuto extends LinearOpMode
 {
     /* Drivetrain */
     private MecanumDrive m_drive;
@@ -104,7 +104,7 @@ public class RedNearAuto extends LinearOpMode
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, -500, 0, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -1100, -530, UnnormalizedAngleUnit.DEGREES, -45);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -660, -960, UnnormalizedAngleUnit.DEGREES, -45);
-    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -700, -100, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -310, 440, UnnormalizedAngleUnit.DEGREES, -45);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
@@ -232,8 +232,7 @@ public class RedNearAuto extends LinearOpMode
             switch (m_stateMachine)
             {
                 case WAITING_FOR_START:
-                    //the first step in the autonomous
-//                    this.m_launcherSubsystem.setMotorVelocity(2700);
+
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
@@ -241,7 +240,7 @@ public class RedNearAuto extends LinearOpMode
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_launcherSubsystem.setMotorVelocity(1850);
+                    this.m_launcherSubsystem.setMotorVelocity(1900);
                     this.m_turnTableSubsystem.Turn(-55);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
@@ -327,12 +326,13 @@ public class RedNearAuto extends LinearOpMode
                     if (m_StateTime.time() > 1.0) {
                         ballCount++; // Increment after successful transfer
 
-                        if (ballCount==4)
+                        if (ballCount==5)
                         {
+                            holdTimer.reset();
                             m_stateMachine = StateMachine.START_PICK_UP;
 
                         }
-                        else if (ballCount < maxBalls && ballCount!=4)
+                        else if (ballCount < maxBalls && ballCount!= 5)
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
@@ -342,13 +342,15 @@ public class RedNearAuto extends LinearOpMode
                             // Done with all 4: reset counter and move on
                             ballCount = 0;
                             m_stateMachine = StateMachine.PARKED;
+                            holdTimer.reset();
                         }
                     }
                     break;
 
                 case REVERSE_RECOVERY:
                     this.m_limitSwitchSubsystem.setTransferPower(0.30); // Reverse
-                    if (m_StateTime.time() > 0.5) {
+                    if (m_StateTime.time() > 0.5)
+                    {
                         m_StateTime.reset();
                         m_stateMachine = StateMachine.LAUNCH_BALL; // Retry the same ball
                     }
@@ -358,18 +360,17 @@ public class RedNearAuto extends LinearOpMode
 
 
 
-
                 case START_PICK_UP:
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            Park, 0.5, 0))
-                    holdTimer.reset();
+
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp, 0.4, .5))
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeServo.set(-1.0);
                         m_stateMachine = StateMachine.PICK_UP;
-
+                        holdTimer.reset();
                         telemetry.addLine("Done");
                     }
                     break;
@@ -377,7 +378,6 @@ public class RedNearAuto extends LinearOpMode
                 case PICK_UP:
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            Park, 0.5, 0))
-                    holdTimer.reset();
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.0)
                     {
@@ -390,7 +390,7 @@ public class RedNearAuto extends LinearOpMode
                     break;
                 case PARKED:
 
-                    holdTimer.reset();
+
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
                     {
