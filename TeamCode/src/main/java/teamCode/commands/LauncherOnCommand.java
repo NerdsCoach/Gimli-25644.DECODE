@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
+import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 
@@ -13,6 +14,10 @@ public class LauncherOnCommand extends CommandBase
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
     private final HuskyLensSubsystem m_huskySubsystem;
+    private final HoodServoSubsystem m_hoodSubsystem;
+    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
+    private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
+
 
     private TreeMap<Double, Double> distanceLUT = new TreeMap<>();
     private TreeMap<Double, Double> velocityLUT = new TreeMap<>();
@@ -24,16 +29,18 @@ public class LauncherOnCommand extends CommandBase
     private static final int m_down = 0;
     private double m_lastKnownSpeed;
 
-    public LauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem, HuskyLensSubsystem huskyLensSubsystem)
+    public LauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem, HuskyLensSubsystem huskyLensSubsystem, HoodServoSubsystem hoodSubsystem)
     {
         m_position = m_down;
 
         this.m_launcherSubsystem = launcherSubsystem;
-        m_huskySubsystem = huskyLensSubsystem;
+        this.m_huskySubsystem = huskyLensSubsystem;
         this.m_axeSubsystem = axeSubsystem;
+        this.m_hoodSubsystem = hoodSubsystem;
+
         m_lastKnownSpeed = 1500.0; // Set a safe default starting speed
 
-        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem);
+        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem, this.m_hoodSubsystem);
 
         velocityLUT.put(84.0, 2400.0); // 84 inches -> 2400 ticks/sec
         velocityLUT.put(72.0, 2300.0); // 72 inches -> 2300 ticks/sec
@@ -99,12 +106,21 @@ public class LauncherOnCommand extends CommandBase
 
                 // 3. Set the motor
                 m_launcherSubsystem.setMotorVelocity(targetVelocity);
+
+                if(targetVelocity > 2000)
+                {
+                    this.m_hoodSubsystem.pivotHood(m_aimFar);
+                } else if (targetVelocity < 2000)
+                {
+                    this.m_hoodSubsystem.pivotHood(m_aimClose);
+                }
             }
             else
             {
                 // If we lose sight, DON'T set to 0. Use the saved memory!
                 m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
             }
+
     }
 
     @Override

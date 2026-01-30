@@ -343,7 +343,6 @@ public class BlueWallAuto extends LinearOpMode
                     break;
             }
 
-
         //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
         leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
         rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));

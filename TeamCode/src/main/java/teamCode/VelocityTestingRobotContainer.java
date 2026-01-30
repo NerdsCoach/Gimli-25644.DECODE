@@ -9,76 +9,58 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.hardware.rev.RevTouchSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
+import teamCode.commands.ALauncherOnCommand;
+import teamCode.commands.AimingOffCommand;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.AimingTestingCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
-import teamCode.commands.ColorModeOnCommand;
-
-import teamCode.commands.DeParkingCommand;
-import teamCode.commands.FudgeDeParkingCommand;
-import teamCode.commands.HoodTestingCommand;
-import teamCode.commands.LauncherOffCommand;
-import teamCode.commands.LauncherOnCommand;
-import teamCode.commands.OutTakeModeCommand;
-import teamCode.commands.ParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
-import teamCode.commands.DriveManateeModeCommand;
 import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeModeCommand;
-import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.ResetGyroCommand;
+import teamCode.commands.LauncherOffCommand;
+import teamCode.commands.LauncherOnCommand;
 import teamCode.commands.ReverseTransferCommand;
-import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
-
-import teamCode.commands.AimingOffCommand;
-import teamCode.commands.TurnTableLeftCommand;
-import teamCode.commands.TurnTableRightCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
-import teamCode.subsystems.HoodServoSubsystem;
-import teamCode.subsystems.HuskyLensSubsystem;
-import teamCode.subsystems.LightSubsystem;
-import teamCode.subsystems.LimitSwitchSubsystem;
-import teamCode.subsystems.TurnTableSubsystem;
 import teamCode.subsystems.DriveSubsystem;
-import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.GamepadSubsystem;
 import teamCode.subsystems.GyroSubsystem;
-import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.SorterServoSubsystem;
+import teamCode.subsystems.HoodServoSubsystem;
+import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
+import teamCode.subsystems.LauncherSubsystem;
+import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LimitSwitchSubsystem;
+import teamCode.subsystems.ParkingSubsystem;
+import teamCode.subsystems.SorterServoSubsystem;
+import teamCode.subsystems.TurnTableSubsystem;
 
-@TeleOp(name = "BLUE-DECODE")
-public class RobotContainer extends CommandOpMode
+@TeleOp(name = "Velocity Testing")
+public class VelocityTestingRobotContainer extends CommandOpMode
 {
-
     private ElapsedTime timer;
 
     /* Drivetrain */
@@ -155,32 +137,21 @@ public class RobotContainer extends CommandOpMode
     /* Commands */
     private DriveFieldOrientedCommand m_driveFieldOrientedCommand;
     private IntakeModeCommand m_intakeModeCommand;
-    private OutTakeModeCommand m_outTakeModeCommand;
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
     private LauncherOnCommand m_launcherOnCommand;
+    private ALauncherOnCommand m_aLaunch;
+
     private LauncherOffCommand m_launcherOffCommand;
-    private TurnTableLeftCommand m_turnTableLeftCommand;
-    private TurnTableRightCommand m_turnTableRightCommand;
-    private ColorModeOnCommand m_colorOnCommand;
+
     private TransferLimitCommand m_transferLimitCommand;
     private ReverseTransferCommand m_reverseTransferCommand;
 
-
-    private FudgeParkingCommand m_fudgeParkingCommand;
-    private FudgeDeParkingCommand m_fudgeDeParkingCommand;
-    private ParkingCommand m_parkingCommand;
-    private DeParkingCommand m_deParkingCommand;
-    private AimingTestingCommand m_aimingTestCommand;
     private AimingOnCommand m_aimingCommand;
     private AimingOffCommand m_turnOffAimingCommand;
-    private DriveManateeModeCommand m_driveManateeModeCommand;
-    private ResetGyroCommand m_resetGyroCommand;
     private HoodDownCommand m_hoodCloseCommand;
     private HoodUpCommand m_hoodFarCommand;
-    private HoodTestingCommand m_hoodTestingCommand;
 
     private GoBildaPinpointDriver m_odo;
-    private TimerCommand m_timerCommand;
 
     /* PID */
     private PIDController m_pIDController;
@@ -258,16 +229,14 @@ public class RobotContainer extends CommandOpMode
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
 
-
         /* Subsystems */
-
-        this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo/*, this.m_goBilda*/);
+        this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo);
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
         this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2);
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
-        this.m_huskyLensSubsystem = new HuskyLensSubsystem(this.m_huskylens, 4);//TODO Check this works
+        this.m_huskyLensSubsystem = new HuskyLensSubsystem(this.m_huskylens, 4);
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
@@ -279,81 +248,23 @@ public class RobotContainer extends CommandOpMode
         register(this.m_intakeServoSubsystem);
         register(this.m_gamepadSubsystem);
 
-        /* Default Commands */
-
-        //DRIVER
-
-        this.m_driveFieldOrientedCommand = new DriveFieldOrientedCommand
-                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-                        () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-        this.m_driveSubsystem.setDefaultCommand(this.m_driveFieldOrientedCommand);
-
-//        this.m_driveManateeModeCommand = new DriveManateeModeCommand
-//                (this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-//                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-//
-        this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
-        this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
-
         schedule();
-
         //DRIVER
-        this.m_resetGyroCommand = new ResetGyroCommand(this.m_gyroSubsystem);
-        this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.START))
-                .whenPressed(this.m_resetGyroCommand);
 
-        this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem, this.m_sorterServoSubsystem);
-        this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
-                .whenPressed(this.m_intakeModeCommand);
-
-        this.m_outTakeModeCommand = new OutTakeModeCommand(this.m_intakeServoSubsystem);
-        this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
-                .whenPressed(this.m_outTakeModeCommand);
-
-        this.m_fudgeParkingCommand = new FudgeParkingCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
-                .whileHeld(this.m_fudgeParkingCommand);
-
-        this.m_fudgeDeParkingCommand = new FudgeDeParkingCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
-                .whileHeld(this.m_fudgeDeParkingCommand);
-
-        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeServoSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem, this.m_turnTableSubsystem);
+        //DPAD UP, DOWN, LEFT, RIGHT
+        this.m_aLaunch = new ALauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(this.m_parkingCommand);
+                .whenPressed(this.m_aLaunch);
 
-        this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
-                .whenPressed(this.m_deParkingCommand);
 
         //GADGETEER
-
-        //TODO make color into a toggle
-        //TODO it only reads the color once after pressing button
-
-        this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem);
-        this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
-                .whenPressed(this.m_colorOnCommand);
-
         this.m_bellyOfTheBeastCommand = new BellyOfTheBeastCommand(this.m_sorterServoSubsystem);
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem, this.m_hoodServoSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
-                .whenPressed(this.m_launcherOnCommand);
-
         this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
                 .whenPressed(this.m_launcherOffCommand);
-
-//        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
-//        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
-//                .whileHeld(this.m_turnTableLeftCommand);
-//
-//        this.m_turnTableRightCommand = new TurnTableRightCommand(this.m_turnTableSubsystem);
-//        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
-//                .whileHeld(this.m_turnTableRightCommand);
 
         this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
@@ -378,15 +289,5 @@ public class RobotContainer extends CommandOpMode
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
-
-//        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-//                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-//        this.m_manateeButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))
-//                .toggleWhenPressed(this.m_driveFieldOrientedCommand, this.m_driveManateeModeCommand);
-
-//        this.m_pose2DObservationZoneCommand = new Pose2DObservationZoneCommand(this.m_driveSubsystem, this.m_odo,
-//                this.leftFront, this.rightFront, this.leftBack,this.rightBack);
-//        new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(this.m_pose2DObservationZoneCommand);
-
     }
 }

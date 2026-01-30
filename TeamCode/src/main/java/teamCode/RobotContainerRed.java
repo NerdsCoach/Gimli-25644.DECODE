@@ -334,7 +334,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem);
+        this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_huskyLensSubsystem, this.m_hoodServoSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .whenPressed(this.m_launcherOnCommand);
 
@@ -359,11 +359,11 @@ public class RobotContainerRed extends CommandOpMode
                 .whenPressed(this.m_turnOffAimingCommand);
 
         this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
-        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
+        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_hoodCloseCommand);
 
         this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
+        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_hoodFarCommand);
 
         this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
