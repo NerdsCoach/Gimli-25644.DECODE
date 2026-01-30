@@ -42,13 +42,30 @@ public class LauncherOnCommand extends CommandBase
 
         addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem, this.m_hoodSubsystem);
 
-        velocityLUT.put(84.0, 2400.0); // 84 inches -> 2400 ticks/sec
-        velocityLUT.put(72.0, 2300.0); // 72 inches -> 2300 ticks/sec
-        velocityLUT.put(60.0, 2100.0); // 60 inches -> 2100 ticks/sec
-        velocityLUT.put(48.0, 2000.0); // 48 inches -> 2000 ticks/sec
-        velocityLUT.put(36.0, 1960.0); // 36 inches -> 1960 ticks/sec
-        velocityLUT.put(30.0, 1870.0); // 30 inches -> 1900 ticks/sec
-        velocityLUT.put(24.0, 1800.0); // 30 inches -> 1900 ticks/sec
+//        velocityLUT.put(84.0, 2400.0); // 84 inches -> 2400 ticks/sec
+//        velocityLUT.put(72.0, 2300.0); // 72 inches -> 2300 ticks/sec
+//        velocityLUT.put(60.0, 2100.0); // 60 inches -> 2100 ticks/sec
+//        velocityLUT.put(48.0, 2000.0); // 48 inches -> 2000 ticks/sec
+//        velocityLUT.put(36.0, 1960.0); // 36 inches -> 1960 ticks/sec
+//        velocityLUT.put(30.0, 1870.0); // 30 inches -> 1900 ticks/sec
+//        velocityLUT.put(24.0, 1800.0); // 30 inches -> 1900 ticks/
+
+        velocityLUT.put(24.0, 1800.0); // inches -> ticks/sec
+        velocityLUT.put(30.0, 1800.0); // inches -> ticks/sec
+        velocityLUT.put(36.0, 1870.0); // inches -> ticks/sec
+        velocityLUT.put(42.0, 1960.0); // inches -> ticks/sec
+        velocityLUT.put(48.0, 2000.0); // inches -> ticks/sec
+        velocityLUT.put(53.0, 2050.0); // inches -> ticks/sec
+        velocityLUT.put(67.0, 2150.0); // inches -> ticks/sec
+        velocityLUT.put(75.0, 2250.0); // inches -> ticks/sec
+        velocityLUT.put(81.0, 2350.0); // inches -> ticks/sec
+        velocityLUT.put(94.0, 2400.0); // inches -> ticks/sec
+        velocityLUT.put(102.0, 2450.0); // inches -> ticks/sec
+
+
+
+
+
 
         // Add your real-world measurements here:
         distanceLUT.put(24.0, 84.0); // 24 pixels = 84 in (7ft)
