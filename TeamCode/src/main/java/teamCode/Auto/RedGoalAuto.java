@@ -102,8 +102,9 @@ public class RedGoalAuto extends LinearOpMode
 
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, -500, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -1100, -530, UnnormalizedAngleUnit.DEGREES, -45);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -660, -960, UnnormalizedAngleUnit.DEGREES, -45);
+//    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -1100, -530, UnnormalizedAngleUnit.DEGREES, -45);
+    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -1160, -620, UnnormalizedAngleUnit.DEGREES, -45);
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -715, -1030, UnnormalizedAngleUnit.DEGREES, -45);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -310, 440, UnnormalizedAngleUnit.DEGREES, -45);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -127,7 +128,7 @@ public class RedGoalAuto extends LinearOpMode
         PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END, AIM_TURNTABLE, POWER_LAUNCHER,
     }
     int ballCount = 0;
-    int maxBalls = 8;
+    int maxBalls = 9;
     private static final int TARGET_CENTER_X = 160;
     private static final double KP = 0.004;
 
@@ -141,7 +142,8 @@ public class RedGoalAuto extends LinearOpMode
     ;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -300,9 +302,6 @@ public class RedGoalAuto extends LinearOpMode
 
 
 
-
-
-
                 case LAUNCH_BALL:
                     // Standard launch power
                     this.m_limitSwitchSubsystem.setTransferPower(-0.30);
@@ -365,7 +364,7 @@ public class RedGoalAuto extends LinearOpMode
 //                            Park, 0.5, 0))
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            StartPickUp, 0.4, .5))
+                            StartPickUp, 0.5, 0.0))
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeServo.set(-1.0);
@@ -390,6 +389,7 @@ public class RedGoalAuto extends LinearOpMode
                     break;
                 case PARKED:
 
+                    this.m_axeSubsystem.pivotAxe(kAxeUp);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
@@ -398,7 +398,6 @@ public class RedGoalAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);

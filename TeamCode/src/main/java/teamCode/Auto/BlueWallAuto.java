@@ -97,9 +97,11 @@ public class BlueWallAuto extends LinearOpMode
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
+    // TODO: changing Y by 75?
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1100, -700, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, -710, UnnormalizedAngleUnit.DEGREES, 0);
+    // TODO: changed x from 1100, make change in other autos, changed y by 10
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, -200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -123,7 +125,7 @@ public class BlueWallAuto extends LinearOpMode
         PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END,
     }
     int ballCount = 0;
-    int maxBalls = 8;
+    int maxBalls = 9; //TODO: ADD TO OTHER AUTOS
 
     @Override
     public void runOpMode() {
@@ -211,22 +213,25 @@ public class BlueWallAuto extends LinearOpMode
             switch (m_stateMachine)
             {
                 case WAITING_FOR_START:
-                    this.m_launcherSubsystem.setMotorVelocity(2600);
+                    this.m_launcherSubsystem.setMotorVelocity(2620); //2600, 2700 TODO add to other auto
+
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
 
+
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_turnTableSubsystem.Turn(-570);
+                    this.m_turnTableSubsystem.Turn(-550); //570, 550, 525 TODO add to other Auto
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0))
+                            Move, 0.5, 0.1))
                     {
-                        // Sorter, Launcher, and Turntable on. Axe down
                         holdTimer.reset();
+                        // Sorter, Launcher, and Turntable on. Axe down
+
                         telemetry.addLine("Launch Motor On");
                         m_stateMachine = StateMachine.LAUNCH_BALL;
                     }
@@ -234,11 +239,13 @@ public class BlueWallAuto extends LinearOpMode
 
 
 
-
-
                 case LAUNCH_BALL:
                     // Standard launch power
                     this.m_limitSwitchSubsystem.setTransferPower(-0.30);
+                    leftBack.setPower(0.0);
+                    leftFront.setPower(0.0);
+                    rightBack.setPower(0.0);
+                    rightFront.setPower(0.0);
                     boolean currentState = m_limitSwitchSubsystem.isPressed();
 
                     if (currentState && !lastState) {
@@ -264,7 +271,7 @@ public class BlueWallAuto extends LinearOpMode
                             holdTimer.reset();
                             m_stateMachine = StateMachine.START_PICK_UP;
                         }
-                        else if (ballCount < maxBalls && ballCount!=5)
+                        else if (ballCount < maxBalls && ballCount != 5) //TODO: changed from 5 to 4, change in other autos
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
@@ -299,10 +306,12 @@ public class BlueWallAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp, 0.4, 0.0) || holdTimer.seconds() >= 2.0 )
                     {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+                        this.m_axeSubsystem.pivotAxe(kAxeUp); //TODO: got rid of axe so we don't overload and get a penalty, make change in other autos
                         this.m_intakeServo.set(-1.0);
-                        holdTimer.reset();
+                        this.m_turnTableSubsystem.Turn(0); // TODO add to other Auto
+
                         m_stateMachine = StateMachine.PICK_UP;
+                        holdTimer.reset();
 
                         telemetry.addLine("Done");
                     }
@@ -312,7 +321,7 @@ public class BlueWallAuto extends LinearOpMode
 //                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            Park, 0.5, 0))
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.5)
+                            EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
                     {
 //                        this.m_intakeServo.set(0.0);
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
@@ -322,10 +331,10 @@ public class BlueWallAuto extends LinearOpMode
                     }
                     break;
                 case PARKED:
-
+                    this.m_turnTableSubsystem.Turn(0); //570, 550 TODO add to other Auto
                     holdTimer.reset();
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Park, 0.4, 0.5))
+                            Park, 0.4, 0.05)) //TODO Hold timer 0.2 instead of 0.5
                     {
                         leftBack.setPower(0.0);
                         leftFront.setPower(0.0);

@@ -11,8 +11,10 @@ public class Constants
     {
         public static final int kLiftPark = 50; //???
         public static final int kDePark = -50;
-        public static final int kParkLiftLimit= 2000;
-        public static final int kDeParkLimit= 25;
+        public static final int kParkLiftLimit = 2000;
+        public static final int kDeParkLimit = 25;
+        public static final int kDefenseDown = 500;
+        public static final int kDefenseUp = 5;
     }
 
     public static final class TurnTableConstants
@@ -30,7 +32,7 @@ public class Constants
 
     public static final class AxeConstants
     {
-        public static final double kAxeDown = 0.62;
+        public static final double kAxeDown = 0.76;
         public static final double kAxeDownAuto = 0.48;
         public static final double kAxeUp = 0.5;// down...
     }

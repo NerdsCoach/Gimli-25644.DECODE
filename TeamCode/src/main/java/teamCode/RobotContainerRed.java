@@ -37,6 +37,8 @@ import teamCode.commands.AimingTestingCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.ColorModeOnCommand;
 import teamCode.commands.DeParkingCommand;
+import teamCode.commands.DefenseDownCommand;
+import teamCode.commands.DefenseUpCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.DriveManateeModeCommand;
 import teamCode.commands.FudgeDeParkingCommand;
@@ -165,6 +167,8 @@ public class RobotContainerRed extends CommandOpMode
     private FudgeDeParkingCommand m_fudgeDeParkingCommand;
     private ParkingCommand m_parkingCommand;
     private DeParkingCommand m_deParkingCommand;
+    private DefenseDownCommand m_defenseDownCommand;
+    private DefenseUpCommand m_defenseUpCommand;
     private AimingTestingCommand m_aimingTestCommand;
     private AimingOnCommand m_aimingCommand;
     private AimingOffCommand m_turnOffAimingCommand;
@@ -306,11 +310,11 @@ public class RobotContainerRed extends CommandOpMode
                 .whenPressed(this.m_outTakeModeCommand);
 
         this.m_fudgeParkingCommand = new FudgeParkingCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+        this.m_dpadLeft = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_LEFT))
                 .whileHeld(this.m_fudgeParkingCommand);
 
         this.m_fudgeDeParkingCommand = new FudgeDeParkingCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+        this.m_dpadRight = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT))
                 .whileHeld(this.m_fudgeDeParkingCommand);
 
         this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeServoSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem, this.m_turnTableSubsystem);
@@ -320,6 +324,14 @@ public class RobotContainerRed extends CommandOpMode
         this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
+
+        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
+        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+                .whenPressed(this.m_defenseUpCommand);
+
+        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
+        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+                .whenPressed(this.m_defenseDownCommand);
 
         //GADGETEER
 

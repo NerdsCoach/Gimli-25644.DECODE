@@ -37,10 +37,10 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
-@Autonomous(name="Red Wall Auto", group="Pinpoint")
+@Autonomous(name="Testing Blue Wall Auto", group="Pinpoint")
 //@Disabled
 
-public class RedWallAuto extends LinearOpMode
+public class TestingBlueWallAuto extends LinearOpMode
 {
     /* Drivetrain */
     private MecanumDrive m_drive;
@@ -96,12 +96,12 @@ public class RedWallAuto extends LinearOpMode
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changing Y by 75?
-    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, 620, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, -710, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changed x by 200, make change in other autos, changed y by 10 1300
-    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, -200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
@@ -216,7 +216,7 @@ public class RedWallAuto extends LinearOpMode
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_turnTableSubsystem.Turn(550); //570, 550, 525 TODO add to other Auto
+                    this.m_turnTableSubsystem.Turn(-550); //570, 550, 525 TODO add to other Auto
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
