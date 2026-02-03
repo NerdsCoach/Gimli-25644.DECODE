@@ -5,12 +5,6 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
 public class HuskyLensSubsystem extends SubsystemBase
 {
     private final HuskyLens m_huskyLens;

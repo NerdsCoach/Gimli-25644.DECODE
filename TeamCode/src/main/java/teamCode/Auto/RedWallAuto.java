@@ -91,7 +91,6 @@ public class RedWallAuto extends LinearOpMode
     public int count = 0;
 
 
-
     //Driving
     private final ElapsedTime holdTimer = new ElapsedTime();
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
@@ -99,7 +98,8 @@ public class RedWallAuto extends LinearOpMode
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, 200, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1100, 610, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1300, 610, UnnormalizedAngleUnit.DEGREES, 0);
+    // TODO: changed x by 200, make change in other autos
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -123,10 +123,11 @@ public class RedWallAuto extends LinearOpMode
         PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END,
     }
     int ballCount = 0;
-    int maxBalls = 8;
+    int maxBalls = 9; //TODO: ADD TO OTHER AUTOS
 
     @Override
-    public void runOpMode() {
+    public void      runOpMode()
+    {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -199,11 +200,6 @@ public class RedWallAuto extends LinearOpMode
         waitForStart();
         resetRuntime();
 
-        //DONE Launcher motors RPM is WAY too slow, speed it up
-        //DONE Transfer is going based on seconds not limit switch, which is bad needs to be changed
-        //TODO: only launches one ball, then lifts axe MAKE IT LAUNCH MULTIPLE AND KEEP AXE DOWN
-        //TODO: Doesn't drive away, that needs to happen
-
         while (opModeIsActive())
         {
             m_odo.update();
@@ -220,7 +216,7 @@ public class RedWallAuto extends LinearOpMode
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_turnTableSubsystem.Turn(570);
+                    this.m_turnTableSubsystem.Turn(550      ); //570
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -236,8 +232,6 @@ public class RedWallAuto extends LinearOpMode
 
 
 
-
-
                 case LAUNCH_BALL:
                     // Standard launch power
                     this.m_limitSwitchSubsystem.setTransferPower(-0.30);
@@ -248,13 +242,15 @@ public class RedWallAuto extends LinearOpMode
 
                     boolean currentState = m_limitSwitchSubsystem.isPressed();
 
-                    if (currentState && !lastState) {
+                    if (currentState && !lastState)
+                    {
                         // SUCCESS: Ball passed
                         m_limitSwitchSubsystem.setTransferPower(0.0);
                         m_StateTime.reset();
                         m_stateMachine = StateMachine.WAIT_FOR_NEXT;
                     }
-                    else if (m_StateTime.time() > 2.0) {
+                    else if (m_StateTime.time() > 2.0)
+                    {
                         // JAM DETECTED: Switch wasn't hit in 2 seconds
                         m_StateTime.reset();
                         m_stateMachine = StateMachine.REVERSE_RECOVERY;
@@ -263,21 +259,23 @@ public class RedWallAuto extends LinearOpMode
                     break;
 
                 case WAIT_FOR_NEXT:
-                    if (m_StateTime.time() > 1.0) {
+                    if (m_StateTime.time() > 1.0)
+                    {
                         ballCount++; // Increment after successful transfer
 
-                        if (ballCount==5)
+                        if (ballCount==4)
                         {
                             holdTimer.reset();
                             m_stateMachine = StateMachine.START_PICK_UP;
 
                         }
-                        else if (ballCount < maxBalls && ballCount!= 5)
+                        else if (ballCount < maxBalls && ballCount != 4) //TODO: changed from 5 to 4, change in other autos
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
                             m_stateMachine = StateMachine.LAUNCH_BALL;
-                        } else
+                        }
+                        else
                         {
                             // Done with all 4: reset counter and move on
                             ballCount = 0;
@@ -306,7 +304,7 @@ public class RedWallAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp, 0.4, .5) || holdTimer.seconds() >= 2.0)
                     {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+//                        this.m_axeSubsystem.pivotAxe(kAxeUp); //TODO: got rid of axe so we don't overload and get a penalty, make change in other autos
                         this.m_intakeServo.set(-1.0);
                         m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
@@ -320,7 +318,7 @@ public class RedWallAuto extends LinearOpMode
 //                            Park, 0.5, 0))
 //
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.5)
+                            EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
                     {
 //                        this.m_intakeServo.set(0.0);
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;

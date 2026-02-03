@@ -258,7 +258,7 @@ public class RobotContainerRed extends CommandOpMode
 
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo/*, this.m_goBilda*/);
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
-        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2);
+        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2, this.m_light); //TODO: added light
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
@@ -297,7 +297,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.START))
                 .whenPressed(this.m_resetGyroCommand);
 
-        this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem, this.m_sorterServoSubsystem);
+        this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem /*, this.m_sorterServoSubsystem*/);
         this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeModeCommand);
 
@@ -342,13 +342,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
                 .whenPressed(this.m_launcherOffCommand);
 
-//        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
-//        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
-//                .whileHeld(this.m_turnTableLeftCommand);
-//
-//        this.m_turnTableRightCommand = new TurnTableRightCommand(this.m_turnTableSubsystem);
-//        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
-//                .whileHeld(this.m_turnTableRightCommand);
+
 
         this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))

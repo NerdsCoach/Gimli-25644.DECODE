@@ -232,7 +232,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         /* Subsystems */
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo);
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
-        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2);
+        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2, this.m_light); // TODO added light
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);

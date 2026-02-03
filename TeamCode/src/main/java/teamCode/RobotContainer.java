@@ -52,7 +52,9 @@ import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.FudgeParkingCommand;
+import teamCode.commands.RedLightCommand;
 import teamCode.commands.ResetGyroCommand;
+import teamCode.commands.ResetTurnTableCommand;
 import teamCode.commands.ReverseTransferCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
@@ -160,6 +162,7 @@ public class RobotContainer extends CommandOpMode
     private LauncherOnCommand m_launcherOnCommand;
     private LauncherOffCommand m_launcherOffCommand;
     private TurnTableLeftCommand m_turnTableLeftCommand;
+    private ResetTurnTableCommand m_resetTurnTableCommand;
     private TurnTableRightCommand m_turnTableRightCommand;
     private ColorModeOnCommand m_colorOnCommand;
     private TransferLimitCommand m_transferLimitCommand;
@@ -181,6 +184,7 @@ public class RobotContainer extends CommandOpMode
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
+    private RedLightCommand m_redLightCommand;
 
     /* PID */
     private PIDController m_pIDController;
@@ -258,12 +262,11 @@ public class RobotContainer extends CommandOpMode
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
 
-
         /* Subsystems */
 
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo/*, this.m_goBilda*/);
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
-        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2);
+        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2, this.m_light); //
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
@@ -278,6 +281,7 @@ public class RobotContainer extends CommandOpMode
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
         register(this.m_gamepadSubsystem);
+        register(this.m_turnTableSubsystem); //Added this TODO
 
         /* Default Commands */
 
@@ -295,6 +299,8 @@ public class RobotContainer extends CommandOpMode
         this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
+        this.m_redLightCommand = new RedLightCommand(this.m_gamepadSubsystem,() -> getRuntime() ,this.m_lightSubsystem);
+
         schedule();
 
         //DRIVER
@@ -302,7 +308,7 @@ public class RobotContainer extends CommandOpMode
         this.m_gyroResetButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.START))
                 .whenPressed(this.m_resetGyroCommand);
 
-        this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem, this.m_sorterServoSubsystem);
+        this.m_intakeModeCommand = new IntakeModeCommand(this.m_intakeServoSubsystem/*, this.m_sorterServoSubsystem*/);
         this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeModeCommand);
 
@@ -325,7 +331,6 @@ public class RobotContainer extends CommandOpMode
         this.m_deParkingCommand = new DeParkingCommand(this.m_parkingSubsystem);
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
-
         //GADGETEER
 
         //TODO make color into a toggle
@@ -350,7 +355,11 @@ public class RobotContainer extends CommandOpMode
 //        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
 //        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
 //                .whileHeld(this.m_turnTableLeftCommand);
-//
+
+        this.m_resetTurnTableCommand = new ResetTurnTableCommand(this.m_turnTableSubsystem);
+        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
+                .whenPressed(this.m_resetTurnTableCommand);
+
 //        this.m_turnTableRightCommand = new TurnTableRightCommand(this.m_turnTableSubsystem);
 //        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
 //                .whileHeld(this.m_turnTableRightCommand);

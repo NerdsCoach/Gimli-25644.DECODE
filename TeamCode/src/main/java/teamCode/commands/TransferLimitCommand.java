@@ -40,7 +40,7 @@ public class TransferLimitCommand extends CommandBase
         }
         lastState = currentState;
 
-        m_limitSwitchSubsystem.setTransferPower(-0.25);
+        m_limitSwitchSubsystem.setTransferPower(-0.34);//-0.25 ,-0.27
     }
 
     @Override

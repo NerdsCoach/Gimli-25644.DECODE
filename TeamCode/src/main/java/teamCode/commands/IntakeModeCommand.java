@@ -17,13 +17,13 @@ public class IntakeModeCommand extends CommandBase
     private static final int  m_off = 1;
     private static final int  m_on = 0;
 
-    private final SorterServoSubsystem m_sorterSubsystem;
+//    private final SorterServoSubsystem m_sorterSubsystem;
 
-    public IntakeModeCommand(IntakeServoSubsystem intake, SorterServoSubsystem sorterSubsystem)
+    public IntakeModeCommand(IntakeServoSubsystem intake /*SorterServoSubsystem sorterSubsystem*/)
     {
         this.m_intakeWheelSubsystem = intake;
-        this.m_sorterSubsystem = sorterSubsystem;
-        addRequirements(this.m_intakeWheelSubsystem, this.m_sorterSubsystem);
+//        this.m_sorterSubsystem = sorterSubsystem;
+        addRequirements(this.m_intakeWheelSubsystem /*, this.m_sorterSubsystem*/);
     }
 
     @Override
@@ -37,13 +37,13 @@ public class IntakeModeCommand extends CommandBase
         if (m_position == m_off)
         {
             this.m_intakeWheelSubsystem.spinIntake(m_intakeOn);
-            this.m_sorterSubsystem.spinSorter(-.75);
+//            this.m_sorterSubsystem.spinSorter(-.75);
             m_position = m_on;
         }
         else if (m_position == m_on)
         {
             this.m_intakeWheelSubsystem.spinIntake(m_intakeOff);
-            this.m_sorterSubsystem.spinSorter(0.0);
+//            this.m_sorterSubsystem.spinSorter(0.0);
             m_position = m_off;
         }
     }

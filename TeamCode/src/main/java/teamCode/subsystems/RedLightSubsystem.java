@@ -2,10 +2,9 @@ package teamCode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class GamepadSubsystem extends SubsystemBase
+public class RedLightSubsystem extends SubsystemBase
 {
     private GamepadEx m_gamepad1;
     private GamepadEx m_gamepad2;
@@ -14,7 +13,7 @@ public class GamepadSubsystem extends SubsystemBase
 
 
 
-    public GamepadSubsystem(GamepadEx gamepad1, GamepadEx gamepad2, Servo light)
+    public RedLightSubsystem(GamepadEx gamepad1, GamepadEx gamepad2, Servo light)
     {
         this.m_gamepad1 = gamepad1;
         this.m_gamepad2 = gamepad2;
@@ -34,21 +33,12 @@ public class GamepadSubsystem extends SubsystemBase
     }
 
 
-//    public void redLight(double timer)
+//    public void redLight(double lightOn, double timer)
 //    {
 ////        if(timer > 120 && timer < 125 )
-//            if(timer > 130 && timer < 140)
+//            if(timer > 130 && timer < 140 )
 //            {
-//                this.m_light.setPosition(0.277);
+//            m_light.setPosition(lightOn);
 //            }
 //    }
-
-    public boolean redLight(double timer)
-    {
-        // 120s (Match) - 26s = 94 seconds elapsed
-        // Adjust the 94 to match your specific timer's behavior
-//        return timer >= 94.0 && timer <= 120.0;
-//        return timer >= 130 && timer <= 140;
-        return timer >= 10 && timer <= 20;
-    }
 }

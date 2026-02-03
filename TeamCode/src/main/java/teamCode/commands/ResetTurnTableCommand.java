@@ -2,17 +2,15 @@ package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import java.util.function.DoubleSupplier;
-
 import teamCode.Constants;
 import teamCode.subsystems.TurnTableSubsystem;
 
-public class TurnTableRightCommand extends CommandBase
+public class ResetTurnTableCommand extends CommandBase
 {
     /* Uses triggers to manually adjust turnSpeed table */
-    private TurnTableSubsystem m_turnTableSubsystem;
+    private final TurnTableSubsystem m_turnTableSubsystem;
 
-        public TurnTableRightCommand(TurnTableSubsystem turnTableSubsystem)
+        public ResetTurnTableCommand(TurnTableSubsystem turnTableSubsystem)
         {
             this.m_turnTableSubsystem = turnTableSubsystem;
             addRequirements(m_turnTableSubsystem);
@@ -26,9 +24,19 @@ public class TurnTableRightCommand extends CommandBase
         @Override
         public void execute()
         {
-            if (!m_turnTableSubsystem.atTargetRight(850))
-            {
-                this.m_turnTableSubsystem.newTurnTable(Constants.TurnTableConstants.kTurnTableRight);
-            }
+            m_turnTableSubsystem.Turn(0);
+            //TODO add to red and blue robot containers
         }
+
+    @Override
+    public void end(boolean interrupted)
+    {
     }
+
+    @Override
+    public boolean isFinished()
+    {
+        return false;
+    } //try return false
+
+}

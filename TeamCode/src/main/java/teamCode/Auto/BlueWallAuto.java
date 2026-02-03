@@ -211,7 +211,7 @@ public class BlueWallAuto extends LinearOpMode
             switch (m_stateMachine)
             {
                 case WAITING_FOR_START:
-                    this.m_launcherSubsystem.setMotorVelocity(2550);
+                    this.m_launcherSubsystem.setMotorVelocity(2600);
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
