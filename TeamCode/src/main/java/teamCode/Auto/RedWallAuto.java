@@ -154,8 +154,6 @@ public class RedWallAuto extends LinearOpMode
 
         m_odo.resetPosAndIMU();
 
-        //nav.setXYCoefficients(0.02,0.002,0.0,DistanceUnit.MM,12);
-        //nav.setYawCoefficients(1,0,0.0, UnnormalizedAngleUnit.DEGREES,2);
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
         StateMachine m_stateMachine;
@@ -183,13 +181,10 @@ public class RedWallAuto extends LinearOpMode
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
-//        this.m_transferServo = new CRServo(hardwareMap, "transferServo");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
         this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
 
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
-//        this.m_transferSubsystem = new TransferSubsystem(this.m_transferServo);
-
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
@@ -197,6 +192,8 @@ public class RedWallAuto extends LinearOpMode
 
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
+
+        this.m_turnTableSubsystem.Turn(0);
 
         waitForStart();
         resetRuntime();
@@ -297,8 +294,7 @@ public class RedWallAuto extends LinearOpMode
 
 
                 case START_PICK_UP:
-//                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-//                            Park, 0.5, 0))
+
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp, 0.4, .5) || holdTimer.seconds() >= 2.0)
                     {
@@ -314,16 +310,11 @@ public class RedWallAuto extends LinearOpMode
                     break;
 
                 case PICK_UP:
-//                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-//                            Park, 0.5, 0))
 //
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
                     {
-//                        this.m_intakeServo.set(0.0);
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-
-
                         telemetry.addLine("Done");
                     }
                     break;

@@ -6,6 +6,7 @@ import static teamCode.PoseStorage.xEncoder;
 import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
@@ -54,7 +55,6 @@ import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.RedLightCommand;
 import teamCode.commands.ResetGyroCommand;
 import teamCode.commands.ResetTurnTableCommand;
 import teamCode.commands.ReverseTransferCommand;
@@ -83,7 +83,8 @@ import teamCode.subsystems.IntakeServoSubsystem;
 public class RobotContainer extends CommandOpMode
 {
 
-    private ElapsedTime timer;
+    private final ElapsedTime timer = new ElapsedTime();
+
 
     /* Drivetrain */
     private MecanumDrive m_drive;
@@ -188,7 +189,6 @@ public class RobotContainer extends CommandOpMode
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
-    private RedLightCommand m_redLightCommand;
 
     /* PID */
     private PIDController m_pIDController;
@@ -270,7 +270,7 @@ public class RobotContainer extends CommandOpMode
 
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo/*, this.m_goBilda*/);
         this.m_gyroSubsystem = new GyroSubsystem(this.m_odo);
-        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2, this.m_light); //
+        this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2); //
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
@@ -303,7 +303,9 @@ public class RobotContainer extends CommandOpMode
         this.m_timerCommand = new TimerCommand (this.m_gamepadSubsystem, () -> getRuntime());
         this.m_gamepadSubsystem.setDefaultCommand(this.m_timerCommand);
 
-        this.m_redLightCommand = new RedLightCommand(this.m_gamepadSubsystem,() -> getRuntime() ,this.m_lightSubsystem);
+// Use a dedicated ElapsedTime for match accuracy
+        new Trigger(() -> timer.seconds() >= 95.0)
+                .whenActive(new InstantCommand(() -> m_lightSubsystem.on(0.28), m_lightSubsystem));
 
         schedule();
 
@@ -378,7 +380,7 @@ public class RobotContainer extends CommandOpMode
 //        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
 //                .whileHeld(this.m_turnTableRightCommand);
 
-        this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
+        this.m_aimingCommand = new AimingOnCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem, this.m_lightSubsystem);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 

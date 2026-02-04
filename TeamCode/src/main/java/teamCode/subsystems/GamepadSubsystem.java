@@ -9,23 +9,21 @@ public class GamepadSubsystem extends SubsystemBase
 {
     private GamepadEx m_gamepad1;
     private GamepadEx m_gamepad2;
-//    public double timer;
-    private final Servo m_light;
 
 
 
-    public GamepadSubsystem(GamepadEx gamepad1, GamepadEx gamepad2, Servo light)
+
+    public GamepadSubsystem(GamepadEx gamepad1, GamepadEx gamepad2)
     {
         this.m_gamepad1 = gamepad1;
         this.m_gamepad2 = gamepad2;
-        this.m_light = light;
 
     }
 
     public void inEndGame(double timer)
     {
 //        if(timer > 89.5 && timer < 91 )
-        if(timer > 136 && timer < 142) // TODO: changed timing to last 20 seconds
+        if(timer > 100 && timer < 106) // TODO: changed timing to last 20 seconds
 
         {
             this.m_gamepad1.gamepad.rumble(500);
@@ -34,21 +32,4 @@ public class GamepadSubsystem extends SubsystemBase
     }
 
 
-//    public void redLight(double timer)
-//    {
-////        if(timer > 120 && timer < 125 )
-//            if(timer > 130 && timer < 140)
-//            {
-//                this.m_light.setPosition(0.277);
-//            }
-//    }
-
-    public boolean redLight(double timer)
-    {
-        // 120s (Match) - 26s = 94 seconds elapsed
-        // Adjust the 94 to match your specific timer's behavior
-//        return timer >= 94.0 && timer <= 120.0;
-//        return timer >= 130 && timer <= 140;
-        return timer >= 10 && timer <= 20;
-    }
 }

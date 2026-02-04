@@ -6,28 +6,32 @@ import java.util.TreeMap;
 
 import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
+import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
 public class AimingOnCommand extends CommandBase
 {
     private final HuskyLensSubsystem m_huskySubsystem;
     private final TurnTableSubsystem m_turnTableSubsystem;
+    private final LightSubsystem m_lightSubsystem;
     // Assuming HuskyLens resolution is 320x240, center X is 160
     private static final int TARGET_CENTER_X = 160;
     private static final double KP = 0.0025; //0.003 – 0.01	The multiplier that converts pixels to power.
 
     private double lastError = 0;
 
-    public AimingOnCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem)
+    public AimingOnCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem, LightSubsystem lightSubsystem)
     {
         m_huskySubsystem = huskyLensSubsystem;
         m_turnTableSubsystem = turnTableSubsystem;
-        addRequirements(huskyLensSubsystem, turnTableSubsystem);
+        m_lightSubsystem = lightSubsystem;
+        addRequirements(huskyLensSubsystem, turnTableSubsystem, lightSubsystem);
     }
 
     @Override
     public void initialize()
     {
+        m_lightSubsystem.on(.6);
     }
 
     @Override
@@ -87,5 +91,6 @@ public class AimingOnCommand extends CommandBase
     public void end(boolean interrupted)
     {
         m_turnTableSubsystem.stop();
+        m_lightSubsystem.off(0.0);
     }
 }

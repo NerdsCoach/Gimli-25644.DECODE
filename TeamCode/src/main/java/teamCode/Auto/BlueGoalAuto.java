@@ -162,8 +162,6 @@ public class BlueGoalAuto extends LinearOpMode
 
         m_odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
-//        m_odo.setOffsets(-105, -25, DistanceUnit.MM);//these are tuned for Gimli 3110-0002-0001 Product Insight #1
-
         m_odo.setOffsets(-105, -25, DistanceUnit.MM);//these are tuned for Gimli 3110-0002-0001 Product Insight #1
         m_odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -217,6 +215,8 @@ public class BlueGoalAuto extends LinearOpMode
 
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
+
+        this.m_turnTableSubsystem.Turn(0);
 
         waitForStart();
         resetRuntime();

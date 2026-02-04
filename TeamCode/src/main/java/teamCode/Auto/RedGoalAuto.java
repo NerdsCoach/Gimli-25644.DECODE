@@ -219,6 +219,8 @@ public class RedGoalAuto extends LinearOpMode
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
+        this.m_turnTableSubsystem.Turn(0);
+
         waitForStart();
         resetRuntime();
 
