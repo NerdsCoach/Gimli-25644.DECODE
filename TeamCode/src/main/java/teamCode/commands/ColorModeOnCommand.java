@@ -20,6 +20,7 @@ public class ColorModeOnCommand extends CommandBase
     private static final float HUE_TOLERANCE = 10.0f; // Allow +/- 10 degrees variance
 
     private static final int  m_off = 1;
+    public double m_lastKnownColor;
 
     public ColorModeOnCommand(ColorSensorSubsystem colorSubsystem)
     {
@@ -46,14 +47,16 @@ public class ColorModeOnCommand extends CommandBase
             if (Math.abs(hue - TARGET_GREEN_HUE) < HUE_TOLERANCE)
             {
                 m_colorSubsystem.setLEDGreen();
+                this.m_lastKnownColor = 0.5;
             }
             else if (Math.abs(hue - TARGET_PURPLE_HUE) < HUE_TOLERANCE)
             {
                 m_colorSubsystem.setLEDPurple();
+                this.m_lastKnownColor = 0.722;
             }
             else
             {
-                m_colorSubsystem.setLEDOff(); // Default to off
+                m_colorSubsystem.lastKnown(m_lastKnownColor); // Default to off
             }
 
     }

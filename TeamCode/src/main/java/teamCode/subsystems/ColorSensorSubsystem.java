@@ -47,5 +47,9 @@ public class ColorSensorSubsystem extends SubsystemBase
         {
             m_light.setPosition(OFF_POS);
         }
+        public void lastKnown (double lastKnown)
+        {
+            m_light.setPosition(lastKnown);
+        }
 
 }
