@@ -10,8 +10,6 @@ public class LimitSwitchSubsystem extends SubsystemBase
 {
     private final CRServo m_transferServo;
     private final RevTouchSensor m_limitSwitch;
-
-    // DECLARE THE VARIABLE HERE to fix the error
     private int hitCount = 0;
 
     public LimitSwitchSubsystem(RevTouchSensor limitSwitch, CRServo transferServo)
@@ -39,7 +37,6 @@ public class LimitSwitchSubsystem extends SubsystemBase
 
     }
 
-    // These will now work because hitCount is defined above
     public int getHitCount()
     {
         return hitCount;

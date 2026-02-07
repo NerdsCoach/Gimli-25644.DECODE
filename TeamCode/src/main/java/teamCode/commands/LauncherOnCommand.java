@@ -108,12 +108,12 @@ public class LauncherOnCommand extends CommandBase
     @Override
     public void execute()
     {
-
         double width = m_huskySubsystem.getTargetWidth();
         int centerX = m_huskySubsystem.getTargetCenterX();
 
             this.m_axeSubsystem.pivotAxe(m_axeDown);
-            if (width > 0)
+
+        if (width > 0)
             {
                 // 1. HANDLE SPEED (Distance Logic)
                 double distance = getDistance(width);
@@ -128,7 +128,9 @@ public class LauncherOnCommand extends CommandBase
                 if(targetVelocity > 2000)
                 {
                     this.m_hoodSubsystem.pivotHood(m_aimFar);
-                } else if (targetVelocity < 2000)
+                }
+
+                if (targetVelocity < 2000)
                 {
                     this.m_hoodSubsystem.pivotHood(m_aimClose);
                 }
@@ -137,6 +139,7 @@ public class LauncherOnCommand extends CommandBase
             {
                 // If we lose sight, DON'T set to 0. Use the saved memory!
                 m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
+                this.m_hoodSubsystem.pivotHood(m_aimClose);
             }
 
     }

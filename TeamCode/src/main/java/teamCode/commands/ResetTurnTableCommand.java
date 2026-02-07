@@ -7,7 +7,6 @@ import teamCode.subsystems.TurnTableSubsystem;
 
 public class ResetTurnTableCommand extends CommandBase
 {
-    /* Uses triggers to manually adjust turnSpeed table */
     private final TurnTableSubsystem m_turnTableSubsystem;
 
         public ResetTurnTableCommand(TurnTableSubsystem turnTableSubsystem)
@@ -15,17 +14,15 @@ public class ResetTurnTableCommand extends CommandBase
             this.m_turnTableSubsystem = turnTableSubsystem;
             addRequirements(m_turnTableSubsystem);
         }
-
-        @Override
-        public void initialize()
+    @Override
+    public void initialize()
         {
         }
 
-        @Override
-        public void execute()
+    @Override
+    public void execute()
         {
             m_turnTableSubsystem.Turn(0);
-            //TODO add to red and blue robot containers
         }
 
     @Override

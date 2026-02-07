@@ -38,16 +38,4 @@ public class ParkingSubsystem extends SubsystemBase
         return this.m_parkMotor.getCurrentPosition() <= targetDown;
     }
 
-
-
-//
-//    public boolean atTarget(int target)
-//    {
-//        return this.m_parkMotor.getCurrentPosition() >= target-5 && this.m_parkMotor.getCurrentPosition() <= target+5;
-//    }
-//
-//    public void stop()
-//    {
-//        this.m_parkMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//    }
 }

@@ -11,7 +11,6 @@ public class HuskyLensColorSubsystem extends SubsystemBase
 
     public HuskyLensColorSubsystem(final HardwareMap hardwareMap)
     {
-        // Find the HuskyLens in the hardware map
         m_huskyLensColor = hardwareMap.get(HuskyLens.class, "huskylens");
 
         // Set the HuskyLens algorithm to AprilTag recognition

@@ -305,7 +305,7 @@ public class RobotContainer extends CommandOpMode
 
 // Use a dedicated ElapsedTime for match accuracy
         new Trigger(() -> timer.seconds() >= 95.0)
-                .whenActive(new InstantCommand(() -> m_lightSubsystem.on(0.28), m_lightSubsystem));
+                .whenActive(new InstantCommand(() -> m_lightSubsystem.on(0.6), m_lightSubsystem));
 
         schedule();
 
@@ -352,7 +352,7 @@ public class RobotContainer extends CommandOpMode
         //TODO make color into a toggle
         //TODO it only reads the color once after pressing button
 
-        this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem);
+        this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_colorOnCommand);
 
@@ -384,7 +384,7 @@ public class RobotContainer extends CommandOpMode
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 
-        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem, this.m_colorSensorSubsystem);
+        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_huskyLensSubsystem, this.m_turnTableSubsystem);
         this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
                 .whenPressed(this.m_turnOffAimingCommand);
 

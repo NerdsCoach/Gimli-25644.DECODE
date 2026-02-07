@@ -24,7 +24,7 @@ public class LauncherOffCommand extends CommandBase
         m_position = m_down;
 
         this.m_launcherSubsystem = launcherSubsystem;
-        m_huskySubsystem = huskyLensSubsystem;
+        this.m_huskySubsystem = huskyLensSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem);
     }

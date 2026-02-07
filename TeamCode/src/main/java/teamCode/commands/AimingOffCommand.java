@@ -10,14 +10,12 @@ public class AimingOffCommand extends CommandBase
 {
     private final HuskyLensSubsystem m_huskySubsystem;
     private final TurnTableSubsystem m_turnTableSubsystem;
-    private final ColorSensorSubsystem m_colorSubsystem;
 
-    public AimingOffCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem, ColorSensorSubsystem colorSensorSubsystem)
+    public AimingOffCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem)
     {
         m_huskySubsystem = huskyLensSubsystem;
         m_turnTableSubsystem = turnTableSubsystem;
-        m_colorSubsystem = colorSensorSubsystem;
-        addRequirements(huskyLensSubsystem, turnTableSubsystem, colorSensorSubsystem);
+        addRequirements(huskyLensSubsystem, turnTableSubsystem);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class AimingOffCommand extends CommandBase
     public void execute()
     {
         m_turnTableSubsystem.stop(); // Stop if no tag detected
-        m_colorSubsystem.setLEDOff();
+
     }
 
     @Override

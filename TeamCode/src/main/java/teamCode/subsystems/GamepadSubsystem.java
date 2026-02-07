@@ -12,18 +12,15 @@ public class GamepadSubsystem extends SubsystemBase
 
 
 
-
     public GamepadSubsystem(GamepadEx gamepad1, GamepadEx gamepad2)
     {
         this.m_gamepad1 = gamepad1;
         this.m_gamepad2 = gamepad2;
-
     }
 
     public void inEndGame(double timer)
     {
-//        if(timer > 89.5 && timer < 91 )
-        if(timer > 100 && timer < 106) // TODO: changed timing to last 20 seconds
+        if(timer > 100 && timer < 106)
 
         {
             this.m_gamepad1.gamepad.rumble(500);

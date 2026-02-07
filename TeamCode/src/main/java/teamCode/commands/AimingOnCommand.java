@@ -31,15 +31,23 @@ public class AimingOnCommand extends CommandBase
     @Override
     public void initialize()
     {
-        m_lightSubsystem.on(.6);
+//        m_lightSubsystem.on(.6);
     }
 
     @Override
-    public void execute() {
-        if (!m_huskySubsystem.isTagDetected()) {
+    public void execute()
+    {
+        if (!m_huskySubsystem.isTagDetected())
+        {
             m_turnTableSubsystem.stop();
+            m_lightSubsystem.off(0.0);
+
             return;
         }
+
+        m_lightSubsystem.on(0.28);
+
+
 
         int targetX = m_huskySubsystem.getTargetCenterX();
         double error = TARGET_CENTER_X - targetX;
@@ -93,4 +101,126 @@ public class AimingOnCommand extends CommandBase
         m_turnTableSubsystem.stop();
         m_lightSubsystem.off(0.0);
     }
+
+    //    private final HuskyLensSubsystem m_huskySubsystem;
+//    private final TurnTableSubsystem m_turnTableSubsystem;
+//    private final LightSubsystem m_lightSubsystem;
+//    // --- TUNING CONSTANTS ---
+//    private static final double kP = 0.005;    // Increased from 0.002
+//    private static final double kD = 0.0008;  //0.0004 // Tuned to catch the higher speed
+//    private static final double kF = 0.05;     // Feed-forward (Min power to overcome friction)
+//    private static final double MAX_POWER = 0.6; // Bumped from 0.4 for speed
+//    private static final double DEADBAND = 3.0;  // Tightened from 10.0 for accuracy
+//    private static final int TARGET_CENTER_X = 160;
+//    private static final double KP = 0.0025; //0.003 – 0.01	The multiplier that converts pixels to power.
+//    private double smoothedCorrection = 0;
+//
+//
+//    private double lastError = 0;
+//
+//    public AimingOnCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem, LightSubsystem lightSubsystem)
+//    {
+//        m_huskySubsystem = huskyLensSubsystem;
+//        m_turnTableSubsystem = turnTableSubsystem;
+//        m_lightSubsystem = lightSubsystem;
+//        addRequirements(huskyLensSubsystem, turnTableSubsystem, lightSubsystem);
+//    }
+//
+//    @Override
+//    public void initialize()
+//    {
+//        m_lightSubsystem.on(.6);
+//    }
+//
+//    @Override
+//    public void execute() {
+//        if (!m_huskySubsystem.isTagDetected()) {
+//            m_turnTableSubsystem.stop();
+//            return;
+//        }
+//
+//        int targetX = m_huskySubsystem.getTargetCenterX();
+//        double error = TARGET_CENTER_X - targetX; // Pixels away from center
+//
+//        // --- 1. THE FAST ZONE (Bang-Bang Lite) ---
+//        // If we are more than 40 pixels away, just go fast!
+//        if (Math.abs(error) > 40)
+//        {
+//            double fastPower = (error > 0) ? 0.4 : -0.4; // Constant 50% power
+//            m_turnTableSubsystem.turnSpeed(fastPower);
+//            lastError = error; // Keep D-term updated
+//            return;
+//        }
+//
+//        // --- 2. THE PRECISION ZONE (Square Root Control) ---
+//        // Using Square Root makes it "snap" into place without the "jerky" PID feeling
+//        double kP_Root = 0.02; // Adjust this to make the "snap" stronger
+//        double kD = 0.0005;    // Very small brake
+//
+//        double errorChange = error - lastError;
+//
+//        // Math: Power = (Square root of error) * kP
+//        // This keeps power higher as you get closer to the center
+//        double correction = Math.signum(error) * Math.sqrt(Math.abs(error)) * kP_Root;
+//        correction += (errorChange * kD);
+//
+//        lastError = error;
+//
+//        // --- 3. MIN POWER (The Nudge) ---
+//        double kF = 0.04; // Minimum power to actually move the motor
+//        if (Math.abs(error) > 2)
+//        {
+//            correction += (error > 0) ? kF : -kF;
+//        } else {
+//            m_turnTableSubsystem.stop(); // We are perfectly centered!
+//            return;
+//        }
+//
+//        // Apply limits and move
+//        correction = Math.max(-0.5, Math.min(0.5, correction));
+//        m_turnTableSubsystem.turnSpeed(correction);
+//    }
+//
+////    @Override
+////    public void execute()
+////    {
+////        if (!m_huskySubsystem.isTagDetected())
+////        {
+////            m_turnTableSubsystem.stop();
+////            return;
+////        }
+////
+////        int targetX = m_huskySubsystem.getTargetCenterX();
+////        double error = TARGET_CENTER_X - targetX;
+////
+////        // Exit early if within deadband
+////        if (Math.abs(error) < DEADBAND) {
+////            m_turnTableSubsystem.stop();
+////            lastError = 0; // Reset to prevent D-term spike on next detection
+////            return;
+////        }
+////
+////        // PD Calculation
+////        double errorChange = error - lastError;
+////        double correction = (error * kP) + (errorChange * kD);
+////        lastError = error;
+////
+////        // Feed-Forward (Static Friction Compensation)
+////        // This adds a tiny 'kick' in the direction of movement to overcome friction
+////        double ff = (error > 0) ? kF : -kF;
+////        correction += ff;
+////
+////        // Constraints
+////        if (correction > MAX_POWER) correction = MAX_POWER;
+////        if (correction < -MAX_POWER) correction = -MAX_POWER;
+////
+////        // Software Limits
+////        int currentPosition = m_turnTableSubsystem.getCurrentPosition();
+////        if ((correction > 0 && currentPosition < 850) || (correction < 0 && currentPosition > -850)) {
+////            m_turnTableSubsystem.turnSpeed(correction);
+////        } else {
+////            m_turnTableSubsystem.stop();
+////        }
+////    }
+
 }

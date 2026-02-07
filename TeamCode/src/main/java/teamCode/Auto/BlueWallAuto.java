@@ -99,6 +99,8 @@ public class BlueWallAuto extends LinearOpMode
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changing Y by 75?
+    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
+
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, -710, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changed x from 1100, make change in other autos, changed y by 10
@@ -122,6 +124,7 @@ public class BlueWallAuto extends LinearOpMode
         WAIT_4,
         START_PICK_UP,
         PICK_UP,
+        RePREPARE_FOR_BATTLE,
         PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END,
     }
     int ballCount = 0;
@@ -229,7 +232,7 @@ public class BlueWallAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0.1))
+                            Move, 0.5, 0.0))
                     {
                         holdTimer.reset();
                         // Sorter, Launcher, and Turntable on. Axe down
@@ -239,7 +242,22 @@ public class BlueWallAuto extends LinearOpMode
                     }
                     break;
 
+                case RePREPARE_FOR_BATTLE:
+                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+                    this.m_axeSubsystem.pivotAxe(kAxeDown);
+                    this.m_turnTableSubsystem.Turn(-550); //570, 550, 525 TODO add to other Auto
+                    this.m_sorterServoSubsystem.spinSorter(-1.0);
 
+                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
+                            Launch, 0.5, 0.1))
+                    {
+                        holdTimer.reset();
+                        // Sorter, Launcher, and Turntable on. Axe down
+
+                        telemetry.addLine("Launch Motor On");
+                        m_stateMachine = StateMachine.LAUNCH_BALL;
+                    }
+                    break;
 
                 case LAUNCH_BALL:
                     // Standard launch power
@@ -326,7 +344,7 @@ public class BlueWallAuto extends LinearOpMode
                             EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
                     {
 //                        this.m_intakeServo.set(0.0);
-                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
+                        m_stateMachine = StateMachine.RePREPARE_FOR_BATTLE;
 
 
                         telemetry.addLine("Done");
