@@ -13,8 +13,8 @@ public class Constants
         public static final int kDePark = -50;
         public static final int kParkLiftLimit = 2000;
         public static final int kDeParkLimit = 25;
-        public static final int kDefenseDown = 500;
-        public static final int kDefenseUp = 5;
+        public static final int kDefenseDown = 550;
+        public static final int kDefenseUp = 3;
     }
 
     public static final class TurnTableConstants

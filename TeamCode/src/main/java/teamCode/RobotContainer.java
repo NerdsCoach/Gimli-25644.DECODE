@@ -17,6 +17,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
@@ -138,6 +139,7 @@ public class RobotContainer extends CommandOpMode
     public HuskyLens m_huskylens;
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
+//    private Limelight3A m_limelight;
 
 
     /* Subsystems */
@@ -265,6 +267,8 @@ public class RobotContainer extends CommandOpMode
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
+//        this.m_limelight = hardwareMap.get(Limelight3A.class, "m_limelight");
+
 
         /* Subsystems */
 
@@ -339,11 +343,11 @@ public class RobotContainer extends CommandOpMode
                 .whenPressed(this.m_deParkingCommand);
 
         this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
                 .whenPressed(this.m_defenseUpCommand);
 
         this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
                 .whenPressed(this.m_defenseDownCommand);
 
 

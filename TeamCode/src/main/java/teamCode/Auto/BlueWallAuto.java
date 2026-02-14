@@ -221,7 +221,7 @@ public class BlueWallAuto extends LinearOpMode
                     this.m_launcherSubsystem.setMotorVelocity(2620); //2600, 2700 TODO add to other auto
 
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-
+                    holdTimer.reset();
                     break;
 
 
@@ -232,7 +232,7 @@ public class BlueWallAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0.0))
+                            Move, 0.5, 0.0)|| holdTimer.seconds() >= 2.0)
                     {
                         holdTimer.reset();
                         // Sorter, Launcher, and Turntable on. Axe down

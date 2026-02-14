@@ -64,17 +64,17 @@ public class LauncherOnCommand extends CommandBase
 
 
         // Add your real-world measurements here:
-        distanceLUT.put(74.0, 24.0); // 74 pixels = 24 in (7ft)
-        distanceLUT.put(62.0, 30.0); // 62 pixels = 30 inches (6ft)
-        distanceLUT.put(25.0, 36.0); // 25 pixels = 36 inches (5ft)
-        distanceLUT.put(46.0, 42.0); // 46 pixels = 42 inches (4ft)
-        distanceLUT.put(40.0, 48.0); // 48 pixels = 40 inches (3ft)
-        distanceLUT.put(38.0, 53.0); // 53 pixels = 38 inches (2.5ft)
-        distanceLUT.put(30.0, 67.0); // 67 pixels = 30 inches (2ft)
-        distanceLUT.put(28.0, 75.0); // 75 pixels = 28 inches (2ft)
-        distanceLUT.put(26.0, 81.0); // 75 pixels = 28 inches (2ft)
-        distanceLUT.put(22.0, 94.0); // 75 pixels = 28 inches (2ft)
-        distanceLUT.put(20.0, 102.0); // 75 pixels = 28 inches (2ft)
+        distanceLUT.put(74.0, 24.0); // 74 pixels = 24 in
+        distanceLUT.put(62.0, 30.0); // 62 pixels = 30 inches
+        distanceLUT.put(47.0, 36.0); // 25 pixels = 36 inches
+        distanceLUT.put(46.0, 42.0); // 46 pixels = 42 inches
+        distanceLUT.put(40.0, 48.0); // 48 pixels = 40 inches
+        distanceLUT.put(38.0, 53.0); // 53 pixels = 38 inches
+        distanceLUT.put(30.0, 67.0); // 67 pixels = 30 inches
+        distanceLUT.put(28.0, 75.0); // 75 pixels = 28 inches
+        distanceLUT.put(26.0, 81.0); // 75 pixels = 28 inches
+        distanceLUT.put(22.0, 94.0); // 75 pixels = 28 inches
+        distanceLUT.put(20.0, 102.0); // 75 pixels = 28 inches
 
     }
     public double getDistance(double currentWidth)

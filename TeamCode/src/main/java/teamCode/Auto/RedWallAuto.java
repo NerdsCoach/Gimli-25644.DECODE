@@ -101,6 +101,7 @@ public class RedWallAuto extends LinearOpMode
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, 620, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changed x by 200, make change in other autos, changed y by 10 1300
+    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -121,6 +122,7 @@ public class RedWallAuto extends LinearOpMode
         WAIT_4,
         START_PICK_UP,
         PICK_UP,
+        RePREPARE_FOR_BATTLE,
         PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END,
     }
     int ballCount = 0;
@@ -208,6 +210,8 @@ public class RedWallAuto extends LinearOpMode
 
                     this.m_launcherSubsystem.setMotorVelocity(2620); //2600, 2700 TODO add to other auto
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
+                    holdTimer.reset();
+
                     break;
 
                 case PREPARE_FOR_BATTLE:
@@ -217,7 +221,7 @@ public class RedWallAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0.1))
+                            Move, 0.5, 0.1) || holdTimer.seconds() >= 2.0)
                     {
                         holdTimer.reset();
                         // Sorter, Launcher, and Turntable on. Axe down
@@ -227,7 +231,22 @@ public class RedWallAuto extends LinearOpMode
                     }
                     break;
 
+                case RePREPARE_FOR_BATTLE:
+                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+                    this.m_axeSubsystem.pivotAxe(kAxeDown);
+                    this.m_turnTableSubsystem.Turn(550); //570, 550, 525 TODO add to other Auto
+                    this.m_sorterServoSubsystem.spinSorter(-1.0);
 
+                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
+                            Launch, 0.5, 0.1))
+                    {
+                        holdTimer.reset();
+                        // Sorter, Launcher, and Turntable on. Axe down
+
+                        telemetry.addLine("Launch Motor On");
+                        m_stateMachine = StateMachine.LAUNCH_BALL;
+                    }
+                    break;
 
                 case LAUNCH_BALL:
                     // Standard launch power
@@ -314,8 +333,7 @@ public class RedWallAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
                     {
-                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        telemetry.addLine("Done");
+                        m_stateMachine = StateMachine.RePREPARE_FOR_BATTLE;                        telemetry.addLine("Done");
                     }
                     break;
 
