@@ -1,7 +1,6 @@
 package teamCode;
 
 import androidx.annotation.NonNull;
-
 import java.util.function.BooleanSupplier;
 
 public class Logic

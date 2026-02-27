@@ -4,23 +4,14 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.SorterServoSubsystem;
 
-public class LauncherOffCommand extends CommandBase
-{
+public class ALauncherOnCommand extends CommandBase {
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
 
-
-    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-    private int m_position;
-    private static final int m_down = 0;
 
-    public LauncherOffCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem)
-    {
-        m_position = m_down;
-
+    public ALauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem) {
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
 
@@ -28,25 +19,23 @@ public class LauncherOffCommand extends CommandBase
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
+        this.m_launcherSubsystem.fudgeFactor(100);
+        this.m_axeSubsystem.pivotAxe(m_axeDown);
     }
 
     @Override
     public void execute()
     {
-            this.m_axeSubsystem.pivotAxe(m_axeUp);
-            this.m_launcherSubsystem.setMotorVelocity(0);
     }
 
     @Override
-    public void end(boolean interrupted)
-    {
+    public void end(boolean interrupted) {
     }
 
     @Override
-    public boolean isFinished()
-    {
-        return false;
+    public boolean isFinished() {
+        // Returning true makes this a one-shot command, running once per button press.
+        return true;
     }
 }

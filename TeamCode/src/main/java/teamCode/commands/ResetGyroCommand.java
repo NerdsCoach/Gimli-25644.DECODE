@@ -16,7 +16,6 @@ public class ResetGyroCommand extends CommandBase
     @Override
     public void initialize()
     {
-
     }
 
     @Override

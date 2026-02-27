@@ -1,17 +1,10 @@
 package teamCode.commands;
 
 import android.graphics.Color;
-
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-
-import teamCode.Constants;
 import teamCode.subsystems.ColorSensorSubsystem;
-import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LightSubsystem;
-import teamCode.subsystems.SorterServoSubsystem;
-
-//TODO making it a toggle??
 
 public class ColorModeOnCommand extends CommandBase
 {

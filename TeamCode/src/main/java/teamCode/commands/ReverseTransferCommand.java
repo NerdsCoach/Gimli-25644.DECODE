@@ -1,12 +1,9 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import java.util.function.DoubleSupplier;
-
 import teamCode.subsystems.LimitSwitchSubsystem;
 
-//TODO Run like a trigger
 
 public class ReverseTransferCommand extends CommandBase
 {
@@ -24,7 +21,6 @@ public class ReverseTransferCommand extends CommandBase
     @Override
     public void initialize()
     {
-
     }
 
     @Override

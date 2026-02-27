@@ -1,8 +1,6 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
-import teamCode.Constants;
 import teamCode.subsystems.TurnTableSubsystem;
 
 public class ResetTurnTableCommand extends CommandBase
@@ -34,6 +32,6 @@ public class ResetTurnTableCommand extends CommandBase
     public boolean isFinished()
     {
         return false;
-    } //try return false
+    }
 
 }

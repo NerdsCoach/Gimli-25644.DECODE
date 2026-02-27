@@ -1,8 +1,7 @@
 package teamCode.commands;
+
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import teamCode.Constants;
-
 import teamCode.subsystems.HoodServoSubsystem;
 
 public class HoodTestingCommand extends CommandBase
@@ -18,7 +17,6 @@ public class HoodTestingCommand extends CommandBase
     public HoodTestingCommand(HoodServoSubsystem hoodServoSubsystem)
     {
         m_position = m_down;
-
         this.m_hoodServoSubsystem = hoodServoSubsystem;
         addRequirements(this.m_hoodServoSubsystem);
     }

@@ -1,13 +1,8 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import teamCode.Constants;
-import teamCode.subsystems.IntakeServoSubsystem;
-import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
-import teamCode.subsystems.SorterServoSubsystem;
-import teamCode.subsystems.TurnTableSubsystem;
 
 public class DefenseDownCommand extends CommandBase
 {

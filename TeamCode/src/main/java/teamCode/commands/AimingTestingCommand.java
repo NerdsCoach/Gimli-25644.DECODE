@@ -1,7 +1,6 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
@@ -40,7 +39,6 @@ public class AimingTestingCommand extends CommandBase
             double deadband = 5.0; // Adjust this (5-10) until wiggling stops
 
             m_turnTableSubsystem.turnSpeed(correction);
-
             m_turnTableSubsystem.turnSpeed(error * KP);
 
             if (Math.abs(error) < deadband)

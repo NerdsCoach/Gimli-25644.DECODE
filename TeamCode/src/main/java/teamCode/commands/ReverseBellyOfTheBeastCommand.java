@@ -1,9 +1,10 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+
 import teamCode.subsystems.SorterServoSubsystem;
 
-public class BellyOfTheBeastCommand extends CommandBase
+public class ReverseBellyOfTheBeastCommand extends CommandBase
 {
     private int m_position;
     private static final int  m_off = 1;
@@ -11,7 +12,7 @@ public class BellyOfTheBeastCommand extends CommandBase
 
     private final SorterServoSubsystem m_sorterSubsystem;
 
-    public BellyOfTheBeastCommand(SorterServoSubsystem sorterSubsystem)
+    public ReverseBellyOfTheBeastCommand(SorterServoSubsystem sorterSubsystem)
     {
         this.m_sorterSubsystem = sorterSubsystem;
         addRequirements(this.m_sorterSubsystem);
@@ -28,7 +29,7 @@ public class BellyOfTheBeastCommand extends CommandBase
     {
         if (m_position == m_off)
         {
-            this.m_sorterSubsystem.spinSorter(-0.75); //-1.0
+            this.m_sorterSubsystem.spinSorter(0.75);
             m_position = m_on;
         }
         else if (m_position == m_on)

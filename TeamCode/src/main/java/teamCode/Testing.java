@@ -7,11 +7,9 @@ import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.button.Button;
-import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
@@ -25,33 +23,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
-import teamCode.commands.AimingOffCommand;
-import teamCode.commands.AimingOnCommand;
-import teamCode.commands.AimingTestingCommand;
-import teamCode.commands.BellyOfTheBeastCommand;
-import teamCode.commands.ColorModeOnCommand;
-import teamCode.commands.DeParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
-import teamCode.commands.DriveManateeModeCommand;
-import teamCode.commands.FudgeDeParkingCommand;
-import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.HoodDownCommand;
-import teamCode.commands.HoodTestingCommand;
-import teamCode.commands.HoodUpCommand;
-import teamCode.commands.IntakeModeCommand;
-import teamCode.commands.OutTakeModeCommand;
-import teamCode.commands.ParkingCommand;
 import teamCode.commands.ResetGyroCommand;
 import teamCode.commands.TimerCommand;
-import teamCode.commands.TransferLimitCommand;
-import teamCode.commands.TurnTableLeftCommand;
-import teamCode.commands.TurnTableRightCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.DriveSubsystem;
@@ -167,12 +146,7 @@ public class Testing extends CommandOpMode
         this.m_odo.setHeading(odoHeading, AngleUnit.DEGREES);
         double headingDegrees = currentPose.getHeading(UnnormalizedAngleUnit.DEGREES);
 
-//                this.m_odo.setPosition(new Pose2DUnNormalized(DistanceUnit.MM,200,200,UnnormalizedAngleUnit.DEGREES,-45.0));
-//                this.m_odo.setPosition(PoseStorage.poseStorage.xEncoder, PoseStorage.poseStorage.yEncoder,DistanceUnit.MM, PoseStorage.poseStorage.odoHeading,UnnormalizedAngleUnit.DEGREES);
-
         System.out.println("Initial set");
-
-//        System.out.println(m_odo.getUnNormalizedPosition());
         System.out.println("Posi Variable");
         System.out.println(xEncoder);
         m_odo.recalibrateIMU();

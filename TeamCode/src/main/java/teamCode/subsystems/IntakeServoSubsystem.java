@@ -16,7 +16,7 @@ public class IntakeServoSubsystem extends SubsystemBase
     }
 
     // Spins the intake wheel forward, or in reverse.
-    public void spinIntake(double speed)
+    public void spinServo(double speed)
     {
         this.m_intakeServo.set(speed);
     }

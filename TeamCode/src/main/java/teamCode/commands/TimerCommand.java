@@ -1,15 +1,8 @@
 package teamCode.commands;
 
-import android.graphics.Color;
-
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-
 import java.util.function.DoubleSupplier;
-
-import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.GamepadSubsystem;
-//TODO Making it work with color and the timer
 
 public class TimerCommand extends CommandBase
 {

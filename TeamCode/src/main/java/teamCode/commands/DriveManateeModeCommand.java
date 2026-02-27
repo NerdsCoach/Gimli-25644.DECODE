@@ -1,9 +1,7 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
 import java.util.function.DoubleSupplier;
-
 import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.GyroSubsystem;
 import teamCode.subsystems.GamepadSubsystem;

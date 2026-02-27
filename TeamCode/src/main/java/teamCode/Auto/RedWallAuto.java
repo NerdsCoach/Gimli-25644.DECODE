@@ -4,6 +4,7 @@ package teamCode.Auto;
 import static teamCode.Constants.AxeConstants.kAxeDown;
 import static teamCode.Constants.AxeConstants.kAxeUp;
 
+import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
@@ -25,14 +26,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import teamCode.Constants;
 import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
+import teamCode.commands.AimingOnCommand;
+import teamCode.commands.LauncherOnCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
+import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
@@ -54,14 +59,14 @@ public class RedWallAuto extends LinearOpMode
     private DcMotor rightBack;
     private DcMotorEx m_launcherMotor;
     public DcMotor m_turnTableMotor;
+    public DcMotor m_intakeMotor;
+
 
     //Servos
     private Servo m_AxeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
-    public CRServo m_intakeServo;
-
 
     //Sensors
     private GoBildaPinpointDriver m_odo;
@@ -78,17 +83,19 @@ public class RedWallAuto extends LinearOpMode
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
-    private IntakeServoSubsystem m_intakeServoSubsystem;
-
+    private IntakeMotorSubsystem m_intakeMotorSubsystem;
+    private LimeLightSubsystem m_limeLightSubsystem;
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
+    private LauncherOnCommand m_launcherOnCommand;
 
     private TimerCommand m_timerCommand;
-    private StateMachine m_stateMachine;
+    private BlueGoalAuto.StateMachine m_stateMachine;
 
     private boolean lastState = false;
     public int count = 0;
+
 
 
     //Driving
@@ -122,15 +129,25 @@ public class RedWallAuto extends LinearOpMode
         WAIT_4,
         START_PICK_UP,
         PICK_UP,
-        RePREPARE_FOR_BATTLE,
-        PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END,
+        PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END, AIM_TURNTABLE, POWER_LAUNCHER,
     }
     int ballCount = 0;
-    int maxBalls = 9; //TODO: ADD TO OTHER AUTOS
+    int maxBalls = 7;
+
+    private boolean m_aimingCommandStarted = false;
+    private ElapsedTime m_aimingTimer = new ElapsedTime();
+
+
+    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
+    private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
+    private int m_position;
+    private static final int m_up = 1;
+    private static final int m_down = 0;
+    private double m_lastKnownSpeed;
+    ;
 
     @Override
-    public void      runOpMode()
-    {
+    public void runOpMode() {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -158,18 +175,15 @@ public class RedWallAuto extends LinearOpMode
 
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
-        StateMachine m_stateMachine;
-        m_stateMachine = StateMachine.WAITING_FOR_START;
-//        sortPos = 1;
+
+        BlueGoalAuto.StateMachine m_stateMachine;
+        m_stateMachine = BlueGoalAuto.StateMachine.WAITING_FOR_START;
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", m_odo.getXOffset(DistanceUnit.MM));
         telemetry.addData("Y offset", m_odo.getYOffset(DistanceUnit.MM));
         telemetry.addData("Device Version Number:", m_odo.getDeviceVersion());
         telemetry.addData("Device Scalar", m_odo.getYawScalar());
-        telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
-        telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
-        telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
         telemetry.update();
 
         this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
@@ -178,84 +192,91 @@ public class RedWallAuto extends LinearOpMode
         //Mechanism Motors
         this.m_turnTableMotor = hardwareMap.get(DcMotor.class, "turnTableMotor");
         this.m_launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotorRed");
-
-        //Servos and Sensors
+        this.m_intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");        //Servos and Sensors
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
-        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
+        this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 24);
 
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
+
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
+        this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
 
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
-        this.m_turnTableSubsystem.Turn(0);
+        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem,m_limeLightSubsystem);
+
+//        this.m_turnTableSubsystem.Turn(0);
+
+        CommandScheduler.getInstance().reset();
 
         waitForStart();
         resetRuntime();
 
         while (opModeIsActive())
         {
+            CommandScheduler.getInstance().run();
             m_odo.update();
 
             switch (m_stateMachine)
             {
                 case WAITING_FOR_START:
-
-                    this.m_launcherSubsystem.setMotorVelocity(2620); //2600, 2700 TODO add to other auto
-                    m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
                     holdTimer.reset();
+                    m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
 
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_turnTableSubsystem.Turn(550); //570, 550, 525 TODO add to other Auto
+//                    this.m_launcherSubsystem.setMotorVelocity(1900);
+//                    this.m_turnTableSubsystem.Turn(-55);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0.1) || holdTimer.seconds() >= 2.0)
+                            Move, 0.5, 0)|| holdTimer.seconds() >= 3.0)
                     {
                         holdTimer.reset();
-                        // Sorter, Launcher, and Turntable on. Axe down
 
                         telemetry.addLine("Launch Motor On");
-                        m_stateMachine = StateMachine.LAUNCH_BALL;
+                        m_stateMachine = BlueGoalAuto.StateMachine.AIM_TURNTABLE;
                     }
                     break;
 
-                case RePREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
-                    this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_turnTableSubsystem.Turn(550); //570, 550, 525 TODO add to other Auto
-                    this.m_sorterServoSubsystem.spinSorter(-1.0);
+                case AIM_TURNTABLE:
+                    if (!m_aimingCommandStarted) {
+                        // Stop the drivetrain from the previous state
+                        leftBack.setPower(0.0);
+                        leftFront.setPower(0.0);
+                        rightBack.setPower(0.0);
+                        rightFront.setPower(0.0);
 
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.5, 0.1))
-                    {
-                        holdTimer.reset();
-                        // Sorter, Launcher, and Turntable on. Axe down
+                        // Schedule AimingOnCommand with a timeout to ensure it finishes.
+                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightSubsystem, 24, telemetry)
+                                .withTimeout(3000)
+                                .schedule();
 
-                        telemetry.addLine("Launch Motor On");
-                        m_stateMachine = StateMachine.LAUNCH_BALL;
+                        // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
+                        m_launcherOnCommand.schedule();
+
+                        m_aimingTimer.reset();
+                        m_aimingCommandStarted = true;
+                    }
+
+                    // After 3 seconds, the aiming timeout will have triggered. Launch to the next state.
+                    if (m_aimingTimer.seconds() > 3.0) {
+                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
                     }
                     break;
 
                 case LAUNCH_BALL:
                     // Standard launch power
-                    this.m_limitSwitchSubsystem.setTransferPower(-0.30);
-                    leftBack.setPower(0.0);
-                    leftFront.setPower(0.0);
-                    rightBack.setPower(0.0);
-                    rightFront.setPower(0.0);
-
+                    this.m_limitSwitchSubsystem.setTransferPower(-1.0);
                     boolean currentState = m_limitSwitchSubsystem.isPressed();
 
                     if (currentState && !lastState)
@@ -263,39 +284,37 @@ public class RedWallAuto extends LinearOpMode
                         // SUCCESS: Ball passed
                         m_limitSwitchSubsystem.setTransferPower(0.0);
                         m_StateTime.reset();
-                        m_stateMachine = StateMachine.WAIT_FOR_NEXT;
+                        m_stateMachine = BlueGoalAuto.StateMachine.WAIT_FOR_NEXT;
                     }
-                    else if (m_StateTime.time() > 2.0)
-                    {
+                    else if (m_StateTime.time() > 2.0) {
                         // JAM DETECTED: Switch wasn't hit in 2 seconds
                         m_StateTime.reset();
-                        m_stateMachine = StateMachine.REVERSE_RECOVERY;
+                        m_stateMachine = BlueGoalAuto.StateMachine.REVERSE_RECOVERY;
                     }
                     lastState = currentState;
                     break;
 
                 case WAIT_FOR_NEXT:
-                    if (m_StateTime.time() > 1.0)
+                    if (m_StateTime.time() > 0.5)
                     {
                         ballCount++; // Increment after successful transfer
 
-                        if (ballCount==5)
+                        if (ballCount==3)
                         {
                             holdTimer.reset();
-                            m_stateMachine = StateMachine.START_PICK_UP;
+                            m_stateMachine = BlueGoalAuto.StateMachine.START_PICK_UP;
 
                         }
-                        else if (ballCount < maxBalls && ballCount != 5) //TODO: changed from 5 to 4, change in other autos
+                        else if (ballCount < maxBalls && ballCount!=3)
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
-                            m_stateMachine = StateMachine.LAUNCH_BALL;
-                        }
-                        else
+                            m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
+                        } else
                         {
                             // Done with all 4: reset counter and move on
                             ballCount = 0;
-                            m_stateMachine = StateMachine.PARKED;
+                            m_stateMachine = BlueGoalAuto.StateMachine.PARKED;
                             holdTimer.reset();
 
                         }
@@ -304,54 +323,54 @@ public class RedWallAuto extends LinearOpMode
 
                 case REVERSE_RECOVERY:
                     this.m_limitSwitchSubsystem.setTransferPower(0.30); // Reverse
-                    if (m_StateTime.time() > 0.5)
+                    if (m_StateTime.time() > 0.3)
                     {
                         m_StateTime.reset();
-                        m_stateMachine = StateMachine.LAUNCH_BALL; // Retry the same ball
+                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL; // Retry the same ball
                     }
                     break;
 
-
                 case START_PICK_UP:
+                    // We are done launching, so cancel the launcher command.
+                    m_launcherOnCommand.cancel();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            StartPickUp, 0.4, .5) || holdTimer.seconds() >= 2.0)
+                            StartPickUp, 0.4, .5)|| holdTimer.seconds() >= 3.0)
                     {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp); //TODO: got rid of axe so we don't overload and get a penalty, make change in other autos
-                        this.m_intakeServo.set(-1.0);
-                        this.m_turnTableSubsystem.Turn(0); // TODO add to other Auto
-
-                        m_stateMachine = StateMachine.PICK_UP;
+                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
+                        m_stateMachine = BlueGoalAuto.StateMachine.PICK_UP;
                         holdTimer.reset();
-
                         telemetry.addLine("Done");
                     }
                     break;
 
                 case PICK_UP:
-//
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.4, 0.5) || holdTimer.seconds() >= 3.5) //TODO: changed speed to .4, make change in other autos
+                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 2.0)
                     {
-                        m_stateMachine = StateMachine.RePREPARE_FOR_BATTLE;                        telemetry.addLine("Done");
+                        m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
+
+                        holdTimer.reset();
+                        telemetry.addLine("Done");
                     }
                     break;
-
                 case PARKED:
-                    this.m_turnTableSubsystem.Turn(0); //570, 550 TODO add to other Auto
-                    holdTimer.reset();
+                    // Make sure the launcher command is stopped.
+                    m_launcherOnCommand.cancel();
+
+                    this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Park, 0.4, 0.05)) //TODO Hold timer 0.2 instead of 0.5
+                            Park, 0.4, 0.5))
                     {
                         leftBack.setPower(0.0);
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
-                        this.m_intakeServoSubsystem.spinIntake(0.0);
+                        this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
+                        this.m_intakeMotorSubsystem.stop();
                         this.m_launcherSubsystem.setMotorVelocity(0);
 
                         telemetry.addLine("Done");
@@ -359,27 +378,20 @@ public class RedWallAuto extends LinearOpMode
                     break;
             }
 
+            //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
+            leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
+            rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
+            leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
+            rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
-        //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
-        leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
-        rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
-        leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
-        rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
-
-        telemetry.addData("current state:", m_stateMachine);
+            telemetry.addData("current state:", m_stateMachine);
             telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
             telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
 
-//            Pose2DUnNormalized pos = m_odo.getUnNormalizedPosition();
-//
-//            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(UnnormalizedAngleUnit.DEGREES));
-//            telemetry.addData("Position", data);
+            telemetry.update();
 
-
-        telemetry.update();
-
-    }
+        }
     }
 }   // end class
 

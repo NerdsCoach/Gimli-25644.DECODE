@@ -1,21 +1,19 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
-import teamCode.subsystems.ColorSensorSubsystem;
-import teamCode.subsystems.HuskyLensSubsystem;
+import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
 public class AimingOffCommand extends CommandBase
 {
-    private final HuskyLensSubsystem m_huskySubsystem;
+    private final LimeLightSubsystem m_limeLightSubsystem;
     private final TurnTableSubsystem m_turnTableSubsystem;
 
-    public AimingOffCommand(HuskyLensSubsystem huskyLensSubsystem, TurnTableSubsystem turnTableSubsystem)
+    public AimingOffCommand(LimeLightSubsystem limeLightSubsystem, TurnTableSubsystem turnTableSubsystem)
     {
-        m_huskySubsystem = huskyLensSubsystem;
+        m_limeLightSubsystem = limeLightSubsystem;
         m_turnTableSubsystem = turnTableSubsystem;
-        addRequirements(huskyLensSubsystem, turnTableSubsystem);
+        addRequirements(turnTableSubsystem);
     }
 
     @Override

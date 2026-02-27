@@ -34,7 +34,6 @@ import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
-import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
@@ -42,10 +41,10 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
-@Autonomous(name="Blue Wall Auto", group="Pinpoint")
+@Autonomous(name="Blue Gate Goal Auto", group="Pinpoint")
 //@Disabled
 
-public class BlueWallAuto extends LinearOpMode
+public class BlueGateGoalAuto extends LinearOpMode
 {
     /* Drivetrain */
     private MecanumDrive m_drive;
@@ -91,10 +90,11 @@ public class BlueWallAuto extends LinearOpMode
     private LauncherOnCommand m_launcherOnCommand;
 
     private TimerCommand m_timerCommand;
-    private BlueGoalAuto.StateMachine m_stateMachine;
+    private StateMachine m_stateMachine;
 
     private boolean lastState = false;
     public int count = 0;
+
 
 
     //Driving
@@ -102,14 +102,11 @@ public class BlueWallAuto extends LinearOpMode
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
-    // TODO: changing Y by 75?
-    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, -275, UnnormalizedAngleUnit.DEGREES, 0);
-
-    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, -710, UnnormalizedAngleUnit.DEGREES, 0);
-    // TODO: changed x from 1100, make change in other autos, changed y by 10
-    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, -200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, -360, 660, UnnormalizedAngleUnit.DEGREES, -45);
+    static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -215, 1200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, -280, 1200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized OpenGate = new Pose2DUnNormalized(DistanceUnit.MM, 320, -1400, UnnormalizedAngleUnit.DEGREES, 90);
+    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -360, -25, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
@@ -176,8 +173,8 @@ public class BlueWallAuto extends LinearOpMode
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
 
-        BlueGoalAuto.StateMachine m_stateMachine;
-        m_stateMachine = BlueGoalAuto.StateMachine.WAITING_FOR_START;
+        StateMachine m_stateMachine;
+        m_stateMachine = StateMachine.WAITING_FOR_START;
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", m_odo.getXOffset(DistanceUnit.MM));
@@ -209,7 +206,7 @@ public class BlueWallAuto extends LinearOpMode
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, this.m_limeLightSubsystem);
 
 //        this.m_turnTableSubsystem.Turn(0);
 
@@ -227,12 +224,12 @@ public class BlueWallAuto extends LinearOpMode
             {
                 case WAITING_FOR_START:
                     holdTimer.reset();
-                    m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
+                    m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
 //                    this.m_launcherSubsystem.setMotorVelocity(1900);
 //                    this.m_turnTableSubsystem.Turn(-55);
@@ -244,7 +241,7 @@ public class BlueWallAuto extends LinearOpMode
                         holdTimer.reset();
 
                         telemetry.addLine("Launch Motor On");
-                        m_stateMachine = BlueGoalAuto.StateMachine.AIM_TURNTABLE;
+                        m_stateMachine = StateMachine.AIM_TURNTABLE;
                     }
                     break;
 
@@ -270,7 +267,7 @@ public class BlueWallAuto extends LinearOpMode
 
                     // After 3 seconds, the aiming timeout will have triggered. Launch to the next state.
                     if (m_aimingTimer.seconds() > 3.0) {
-                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
+                        m_stateMachine = StateMachine.LAUNCH_BALL;
                     }
                     break;
 
@@ -284,12 +281,12 @@ public class BlueWallAuto extends LinearOpMode
                         // SUCCESS: Ball passed
                         m_limitSwitchSubsystem.setTransferPower(0.0);
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.WAIT_FOR_NEXT;
+                        m_stateMachine = StateMachine.WAIT_FOR_NEXT;
                     }
                     else if (m_StateTime.time() > 2.0) {
                         // JAM DETECTED: Switch wasn't hit in 2 seconds
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.REVERSE_RECOVERY;
+                        m_stateMachine = StateMachine.REVERSE_RECOVERY;
                     }
                     lastState = currentState;
                     break;
@@ -302,19 +299,19 @@ public class BlueWallAuto extends LinearOpMode
                         if (ballCount==3)
                         {
                             holdTimer.reset();
-                            m_stateMachine = BlueGoalAuto.StateMachine.START_PICK_UP;
+                            m_stateMachine = StateMachine.START_PICK_UP;
 
                         }
                         else if (ballCount < maxBalls && ballCount!=3)
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
-                            m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
+                            m_stateMachine = StateMachine.LAUNCH_BALL;
                         } else
                         {
                             // Done with all 4: reset counter and move on
                             ballCount = 0;
-                            m_stateMachine = BlueGoalAuto.StateMachine.PARKED;
+                            m_stateMachine = StateMachine.PARKED;
                             holdTimer.reset();
 
                         }
@@ -326,12 +323,12 @@ public class BlueWallAuto extends LinearOpMode
                     if (m_StateTime.time() > 0.3)
                     {
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL; // Retry the same ball
+                        m_stateMachine = StateMachine.LAUNCH_BALL; // Retry the same ball
                     }
                     break;
 
                 case START_PICK_UP:
-                    // We are done launching, so cancel the launcher command.
+                     // We are done launching, so cancel the launcher command.
                     m_launcherOnCommand.cancel();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -339,7 +336,7 @@ public class BlueWallAuto extends LinearOpMode
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
-                        m_stateMachine = BlueGoalAuto.StateMachine.PICK_UP;
+                        m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Done");
                     }
@@ -349,7 +346,7 @@ public class BlueWallAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 2.0)
                     {
-                        m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
+                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                         holdTimer.reset();
                         telemetry.addLine("Done");
@@ -358,7 +355,7 @@ public class BlueWallAuto extends LinearOpMode
                 case PARKED:
                     // Make sure the launcher command is stopped.
                     m_launcherOnCommand.cancel();
-                    this.m_turnTableMotor.setTargetPosition(-500);
+
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
@@ -367,7 +364,7 @@ public class BlueWallAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();
@@ -379,20 +376,19 @@ public class BlueWallAuto extends LinearOpMode
             }
 
 
-            //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
-            leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
-            rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
-            leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
-            rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
+        //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
+        leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
+        rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
+        leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
+        rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
-            telemetry.addData("current state:", m_stateMachine);
+        telemetry.addData("current state:", m_stateMachine);
             telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
             telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
 
-            telemetry.update();
+        telemetry.update();
 
-        }
     }
-}   // end class
-
+    }
+}

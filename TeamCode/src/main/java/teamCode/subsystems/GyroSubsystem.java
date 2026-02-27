@@ -6,7 +6,9 @@ import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -16,10 +18,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import teamCode.Pose2DUnNormalized;
 import teamCode.PoseStorage;
 
+
 public class GyroSubsystem extends SubsystemBase
 {
     private GoBildaPinpointDriver m_odo;
 
+//    public GyroSubsystem(HardwareMap hMap, String odo)
+//    {
+//        this.m_odo = hMap.get(GoBildaPinpointDriver.class, odo);
+//    }
     public GyroSubsystem(GoBildaPinpointDriver odo)
     {
        this.m_odo = odo;

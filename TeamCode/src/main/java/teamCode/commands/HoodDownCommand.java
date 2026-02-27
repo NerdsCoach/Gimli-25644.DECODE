@@ -1,6 +1,6 @@
 package teamCode.commands;
-import com.arcrobotics.ftclib.command.CommandBase;
 
+import com.arcrobotics.ftclib.command.CommandBase;
 import teamCode.Constants;
 import teamCode.subsystems.HoodServoSubsystem;
 

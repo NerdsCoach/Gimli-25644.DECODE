@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import java.util.List;
@@ -67,7 +68,7 @@ import java.util.List;
  *   below the name of the Limelight on the top level configuration screen.
  */
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorLimelight3A extends LinearOpMode {
 
     private Limelight3A limelight;
@@ -76,6 +77,10 @@ public class SensorLimelight3A extends LinearOpMode {
     public void runOpMode() throws InterruptedException
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+
+
+
+
 
         telemetry.setMsTransmissionInterval(11);
 
@@ -108,12 +113,14 @@ public class SensorLimelight3A extends LinearOpMode {
                 double parseLatency = result.getParseLatency();
                 telemetry.addData("LL Latency", captureLatency + targetingLatency);
                 telemetry.addData("Parse Latency", parseLatency);
-                telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
+//                telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
 
                 telemetry.addData("tx", result.getTx());
                 telemetry.addData("txnc", result.getTxNC());
                 telemetry.addData("ty", result.getTy());
                 telemetry.addData("tync", result.getTyNC());
+                telemetry.addData("distance", result.getBotposeAvgDist());
+                telemetry.addData("area", result.getBotposeAvgArea());
 
                 telemetry.addData("Botpose", botpose.toString());
 

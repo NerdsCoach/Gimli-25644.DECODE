@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 
 public class DriveToPoint
 {
-//    public Pose2DUnNormalized m_pose2D = new Pose2DUnNormalized(null, 0.0, 0.0, null, 0.0);
 
     public enum DriveType
     {
@@ -41,10 +40,10 @@ public class DriveToPoint
         IN_BOUNDS
     }
 //
-    private static double xyTolerance = 12; //was  15
+    private static double xyTolerance = 8; //was  12
     private static double yawTolerance = 0.0349066;
 
-    private static double pGain = 0.009;//0.008 //latest num = 0.02
+    private static double pGain = 0.015;//0.009
     private static double dGain = 0.00001;//0.00002
     private static double accel = 10.0 ;//28.0
 
@@ -65,6 +64,13 @@ public class DriveToPoint
     private final PIDLoop hPID = new PIDLoop();
 
     private final PIDLoop xTankPID = new PIDLoop();
+    public void resetPIDs()
+    {
+        xPID.reset();
+        yPID.reset();
+        hPID.reset();
+    }
+
 
     private DriveType selectedDriveType = DriveType.MECANUM;
 
@@ -130,19 +136,6 @@ public class DriveToPoint
 
             xPWR = xTankPID.calculateAxisPID(lengthToTarget,pGain,dGain,accel, PIDTimer.seconds());
             hPWR = calculatePID(currentPosition, temp, Direction.h);
-
-//            if (inBounds(currentPosition,temp) == InBounds.IN_X_Y){
-//                xPWR = 0;
-//                hPWR = calculatePID(currentPosition,targetPosition,Direction.h);
-
-//            if(inBounds(currentPosition,temp) == InBounds.IN_HEADING) {
-//                xPWR = xTankPID.calculateAxisPID(lengthToTarget,pGain,dGain,accel,currentTime.time());
-//                hPWR = calculatePID(currentPosition, temp, Direction.h);
-//
-//            } else {
-//                xPWR = 0;
-//                hPWR = calculatePID(currentPosition, temp, Direction.h);
-//            }
             calculateTankOutput(xPWR * power, hPWR * power);
 
 
@@ -202,19 +195,6 @@ public class DriveToPoint
 
             xPWR = xTankPID.calculateAxisPID(lengthToTarget,pGain,dGain,accel, PIDTimer.seconds());
             hPWR = calculatePID(currentPosition, temp, Direction.h);
-
-//            if (inBounds(currentPosition,temp) == InBounds.IN_X_Y){
-//                xPWR = 0;
-//                hPWR = calculatePID(currentPosition,targetPosition,Direction.h);
-
-//            if(inBounds(currentPosition,temp) == InBounds.IN_HEADING) {
-//                xPWR = xTankPID.calculateAxisPID(lengthToTarget,pGain,dGain,accel,currentTime.time());
-//                hPWR = calculatePID(currentPosition, temp, Direction.h);
-//
-//            } else {
-//                xPWR = 0;
-//                hPWR = calculatePID(currentPosition, temp, Direction.h);
-//            }
             calculateTankOutput(xPWR * power, hPWR * power);
 
 
@@ -397,5 +377,11 @@ class PIDLoop
         errorR = error;
 
         return output;
+    }
+    public void reset()
+    {
+        this.previousError = 0;
+        this.previousTime = 0;
+        this.previousOutput = 0;
     }
 }

@@ -6,7 +6,6 @@ import static teamCode.PoseStorage.xEncoder;
 import static teamCode.PoseStorage.yEncoder;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -130,12 +129,8 @@ public class TelemetryReading extends CommandOpMode
         this.m_odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         this.m_odo.setPosX(xEncoder,DistanceUnit.MM);
         this.m_odo.setPosY(yEncoder,DistanceUnit.MM);
-//        this.m_odo.setHeading(odoHeading,UnnormalizedAngleUnit.DEGREES);
         this.m_odo.setHeading(odoHeading, AngleUnit.DEGREES);
         double headingDegrees = currentPose.getHeading(UnnormalizedAngleUnit.DEGREES);
-
-//                this.m_odo.setPosition(new Pose2DUnNormalized(DistanceUnit.MM,200,200,UnnormalizedAngleUnit.DEGREES,-45.0));
-//                this.m_odo.setPosition(PoseStorage.poseStorage.xEncoder, PoseStorage.poseStorage.yEncoder,DistanceUnit.MM, PoseStorage.poseStorage.odoHeading,UnnormalizedAngleUnit.DEGREES);
 
         System.out.println("Initial set");
 
@@ -187,39 +182,29 @@ public class TelemetryReading extends CommandOpMode
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
         this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
-//        this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "hoodServo");
 
 
         register(this.m_driveSubsystem);
         register(this.m_intakeServoSubsystem);
 
         schedule();
+    }
+    @Override
+    public void run()
+    {
+        // 1. This runs all your scheduled commands (Drive, Turntable, etc.)
+        super.run();
 
-//    {
-//        telemetry.addLine()
-//                .addData("Red", "%.3f", m_colorSubsystem.getRed())
-//                .addData("Green", "%.3f", m_colorSubsystem.getRed())
-//                .addData("Blue", "%.3f", m_colorSubsystem.getRed());
-//        telemetry.addLine()
-//                .addData("Hue", "%.3f", m_hsvValues)
-//                .addData("Saturation", "%.3f", m_hsvValues[1])
-//                .addData("Value", "%.3f", hsvValues[2]);
-//        telemetry.addData("Alpha", "%.3f", m_colorSensor.alpha());
-//    }
+        telemetry.addData("Turn Table Motor", this.m_turnTableMotor.getCurrentPosition());
+        telemetry.addData("Parking Motor", this.m_parkMotor.getCurrentPosition());
+        telemetry.addData("Launcher Motor", this.m_launcherMotorRed.getPower());
+        telemetry.addData("Switch Pressed", this.m_limitSwitch.isPressed());
+        telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
+        telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
+        telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
+        System.out.println(this.m_limitSwitch.isPressed());
 
-        for (int i = 1; i>0; i+=0)
-        {
-            telemetry.addData("Turn Table Motor", this.m_turnTableMotor.getCurrentPosition());
-            telemetry.addData("Parking Motor", this.m_parkMotor.getCurrentPosition());
-            telemetry.addData("Launcher Motor", this.m_launcherMotorRed.getPower());
-            telemetry.addData("Switch Pressed", this.m_limitSwitch.isPressed());
-            telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
-            telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
-            telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
-            System.out.println(this.m_limitSwitch.isPressed());
-        }
-            telemetry.update();
-        }
-
-//    }
+        // 2. This pushes your data to the Driver Hub screen
+        telemetry.update();
+    }
 }

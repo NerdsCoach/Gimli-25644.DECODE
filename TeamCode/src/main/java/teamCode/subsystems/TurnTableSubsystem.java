@@ -2,6 +2,7 @@ package teamCode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class TurnTableSubsystem extends SubsystemBase
 {
@@ -11,12 +12,12 @@ public class TurnTableSubsystem extends SubsystemBase
     public TurnTableSubsystem(DcMotor turnTableMotor)
     {
         m_turnTableMotor = turnTableMotor;
+        m_turnTableMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void turnSpeed(double speed)
     {
-        m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         m_turnTableMotor.setPower(speed * TURRET_SPEED);
     }
 

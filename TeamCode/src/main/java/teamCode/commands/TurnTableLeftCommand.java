@@ -3,7 +3,6 @@ import teamCode.Constants;
 import teamCode.subsystems.TurnTableSubsystem;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import java.util.function.DoubleSupplier;
 
 public class TurnTableLeftCommand extends CommandBase
 {
@@ -24,7 +23,7 @@ public class TurnTableLeftCommand extends CommandBase
         @Override
         public void execute()
         {
-            if (!m_turnTableSubsystem.atTargetLeft(850))
+            if (!m_turnTableSubsystem.atTargetLeft(-835))
             {
                 this.m_turnTableSubsystem.newTurnTable(Constants.TurnTableConstants.kTurnTableLeft);
             }

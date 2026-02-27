@@ -1,9 +1,6 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-
-import java.util.function.DoubleSupplier;
-
 import teamCode.Constants;
 import teamCode.subsystems.TurnTableSubsystem;
 
@@ -26,7 +23,7 @@ public class TurnTableRightCommand extends CommandBase
         @Override
         public void execute()
         {
-            if (!m_turnTableSubsystem.atTargetRight(850))
+            if (!m_turnTableSubsystem.atTargetRight(835))
             {
                 this.m_turnTableSubsystem.newTurnTable(Constants.TurnTableConstants.kTurnTableRight);
             }

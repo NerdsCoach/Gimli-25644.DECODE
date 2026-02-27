@@ -1,13 +1,7 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.qualcomm.hardware.rev.RevTouchSensor;
-
-import java.util.function.DoubleSupplier;
-
 import teamCode.subsystems.LimitSwitchSubsystem;
-
 
 public class TransferLimitCommand extends CommandBase
 {
@@ -40,7 +34,7 @@ public class TransferLimitCommand extends CommandBase
         }
         lastState = currentState;
 
-        m_limitSwitchSubsystem.setTransferPower(-0.29); //-0.25 ,-0.27, -0.34
+        m_limitSwitchSubsystem.setTransferPower(-0.5); //-0.29
     }
 
     @Override
