@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class LauncherSubsystem extends SubsystemBase
 {
     private final DcMotorEx m_launcherMotorRed;
-    private double launcherTargetVelocity = 1000;
+    private double launcherTargetVelocity = 1050;
 
     public LauncherSubsystem(DcMotorEx launcherMotor)
     {

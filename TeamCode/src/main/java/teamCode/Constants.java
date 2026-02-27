@@ -25,9 +25,10 @@ public class Constants
 
     public static final class IntakeConstants
     {
-        public static final int kIntakeOn = 1;
+        public static final double kIntakeOn = 0.5;
         public static final int kIntakeOff = 0;
         public static final int kOutTake = -1;
+        public static final int kServoOn = 1;
     }
 
     public static final class AxeConstants

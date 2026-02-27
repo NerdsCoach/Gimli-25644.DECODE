@@ -12,6 +12,7 @@ public class IntakeMotorCommand extends CommandBase
     private final IntakeServoSubsystem m_intakeServoSubsystem;
     private static final double m_intakeOn = Constants.IntakeConstants.kIntakeOn;
     private static final double m_intakeOff = Constants.IntakeConstants.kIntakeOff;
+    private static final double m_servoOn = Constants.IntakeConstants.kServoOn;
     private int m_position;
     private static final int  m_off = 1;
     private static final int  m_on = 0;
@@ -34,7 +35,7 @@ public class IntakeMotorCommand extends CommandBase
         if (m_position == m_off)
         {
             this.m_intakeMotorSubsystem.spinMotorIntake(m_intakeOn);
-            this.m_intakeServoSubsystem.spinServo(m_intakeOn);
+            this.m_intakeServoSubsystem.spinServo(m_servoOn);
             m_position = m_on;
         }
         else if (m_position == m_on)

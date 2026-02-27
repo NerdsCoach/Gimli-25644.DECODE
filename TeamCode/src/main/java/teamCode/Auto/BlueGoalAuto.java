@@ -347,7 +347,7 @@ public class BlueGoalAuto extends LinearOpMode
                             StartPickUp1, 0.6, 0) || holdTimer.seconds() >= 3.0)
                     {
 //                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.5);
                         m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up");
@@ -360,7 +360,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.OPEN_GATE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.3);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.2);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up Row 1");
@@ -375,7 +375,7 @@ public class BlueGoalAuto extends LinearOpMode
                             StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
                     {
 //                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.5);
                         m_stateMachine = StateMachine.PICK_UP2;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up Again");
@@ -388,7 +388,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.3);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.2);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up middle row");
