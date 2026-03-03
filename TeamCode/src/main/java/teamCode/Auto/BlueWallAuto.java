@@ -106,7 +106,8 @@ public class BlueWallAuto extends LinearOpMode
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -255, UnnormalizedAngleUnit.DEGREES, 0); //-275
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 700, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
+    static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, -200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -131,7 +132,7 @@ public class BlueWallAuto extends LinearOpMode
         LAUNCH_BALL,
         AIM_TURNTABLE,
         SORT_PURPLE_ONE,
-        SORT_2,
+        SORT_2, FINAL_ARTIFACT,
     }
     int ballCount = 0;
     int maxBalls = 7;
@@ -340,11 +341,14 @@ public class BlueWallAuto extends LinearOpMode
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_sorterServoSubsystem.spinSorter(-0.5);
+                    this.m_sorterServoSubsystem.spinSorter(-0.3);
+                    m_launcherOnCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
-                    {
+//                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+                        Move, 0.6, 0.1))
+
+                {
                         nav.resetPIDs();
                         leftBack.setPower(0);
                         leftFront.setPower(0);
@@ -373,7 +377,7 @@ public class BlueWallAuto extends LinearOpMode
                                 .schedule();
 
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-                        m_launcherOnCommand.schedule();
+//                        m_launcherOnCommand.schedule();
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;
@@ -479,8 +483,18 @@ public class BlueWallAuto extends LinearOpMode
                         m_aimingCommandStarted = false;
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.0);
                         holdTimer.reset();
-                        m_stateMachine = StateMachine.SORT_2;
+                        m_stateMachine = StateMachine.FINAL_ARTIFACT;
                         telemetry.addLine("End Pickup");
+                    }
+                    break;
+
+                case FINAL_ARTIFACT:
+                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
+                            GrabFinalArtifact, 0.3, 0.5) || holdTimer.seconds() >= 3.0)
+                    {
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.SORT_2;
+                        telemetry.addLine("Ready to sort");
                     }
                     break;
 

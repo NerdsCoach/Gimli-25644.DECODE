@@ -229,7 +229,6 @@ public class BlueGoalAuto extends LinearOpMode
                 case WAITING_FOR_START:
                     this.m_limitSwitchSubsystem.setTransferPower(0.0);
                     holdTimer.reset();
-
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
@@ -240,15 +239,17 @@ public class BlueGoalAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
-                    {
+//                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+                        Launch, 0.6, 0.1))
+
+                {
                         nav.resetPIDs();
                         leftBack.setPower(0);
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_launcherOnCommand.schedule();
-
+//                        m_launcherOnCommand.schedule();
+                        m_launcherSubsystem.setMotorVelocity(1725);
                         holdTimer.reset();
 
                         telemetry.addLine("Ready to Aim!");
@@ -356,7 +357,7 @@ public class BlueGoalAuto extends LinearOpMode
                             StartPickUp1, 0.6, 0) || holdTimer.seconds() >= 3.0)
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.75);
                         this.m_intakeServoSybsystem.spinServo(1.0);
                         m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();

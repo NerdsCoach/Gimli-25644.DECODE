@@ -371,13 +371,13 @@ public class RobotContainer extends CommandOpMode
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
 
-        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
-                .whenPressed(this.m_defenseUpCommand);
-
-        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
-                .whenPressed(this.m_defenseDownCommand);
+//        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
+//        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+//                .whenPressed(this.m_defenseUpCommand);
+//
+//        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
+//        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+//                .whenPressed(this.m_defenseDownCommand);
 
 
         //GADGETEER

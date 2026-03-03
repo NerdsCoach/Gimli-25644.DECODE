@@ -1,6 +1,7 @@
 package teamCode.Auto;
 
 
+import static teamCode.Auto.BlueWallAuto.StateMachine.FINAL_ARTIFACT;
 import static teamCode.Constants.AxeConstants.kAxeDown;
 import static teamCode.Constants.AxeConstants.kAxeUp;
 
@@ -111,8 +112,8 @@ public class RedWallAuto extends LinearOpMode
     static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
     // TODO: changing Y by 75?
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 1150, 620, UnnormalizedAngleUnit.DEGREES, 0);
-    // TODO: changed x by 200, make change in other autos, changed y by 10 1300
+    static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, 610, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, 610, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
 
@@ -132,6 +133,7 @@ public class RedWallAuto extends LinearOpMode
         PREPARE_FOR_BATTLE,
         START_PICK_UP,
         PICK_UP,
+        FINAL_ARTIFACT,
         PARKED,
         WAIT_FOR_NEXT,
         REVERSE_RECOVERY,
@@ -327,7 +329,7 @@ public class RedWallAuto extends LinearOpMode
                     break;
 
                 case PPG_PATTERN:
-                    this.m_sorterServoSubsystem.spinSorter(-0.3);
+//                    this.m_sorterServoSubsystem.spinSorter(-0.5);
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
                     this.m_intakeMotorSubsystem.spinMotorIntake(1);
                     this.m_intakeServoSubsystem.spinServo(1.0);
@@ -348,10 +350,13 @@ public class RedWallAuto extends LinearOpMode
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-0.5);
+                    m_launcherOnCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
-                    {
+//                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+                        Move, 0.6, 0.1))
+
+                {
                         nav.resetPIDs();
                         leftBack.setPower(0);
                         leftFront.setPower(0);
@@ -485,8 +490,18 @@ public class RedWallAuto extends LinearOpMode
                         m_aimingCommandStarted = false;
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.0);
                         holdTimer.reset();
-                        m_stateMachine = StateMachine.SORT_2;
+                        m_stateMachine = StateMachine.FINAL_ARTIFACT;
                         telemetry.addLine("End Pickup");
+                    }
+                    break;
+
+                case FINAL_ARTIFACT:
+                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
+                            GrabFinalArtifact, 0.3, 0.5) || holdTimer.seconds() >= 3.0)
+                    {
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.SORT_2;
+                        telemetry.addLine("Ready to sort");
                     }
                     break;
 

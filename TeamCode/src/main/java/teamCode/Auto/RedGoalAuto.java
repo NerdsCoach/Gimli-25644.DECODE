@@ -104,12 +104,11 @@ public class RedGoalAuto extends LinearOpMode
 
     static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, -455, -600, UnnormalizedAngleUnit.DEGREES, 45);
     static final Pose2DUnNormalized StartPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, -300, -1300, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, 380, -1300, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized OpenGate = new Pose2DUnNormalized(DistanceUnit.MM, 260, -1430, UnnormalizedAngleUnit.DEGREES, 90);
+    static final Pose2DUnNormalized EndPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, 340, -1300, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized OpenGate = new Pose2DUnNormalized(DistanceUnit.MM, 420, -1340, UnnormalizedAngleUnit.DEGREES, 90);
     static final Pose2DUnNormalized StartPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, -320, -1900, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, 400, -1900, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -360, 25, UnnormalizedAngleUnit.DEGREES, 0);
-
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
@@ -130,7 +129,7 @@ public class RedGoalAuto extends LinearOpMode
         PICK_UP2,
     }
     int ballCount = 0;
-    int maxBalls = 10;//9
+    int maxBalls = 9;//9
 
     private boolean m_aimingCommandStarted = false;
     private ElapsedTime m_aimingTimer = new ElapsedTime();
@@ -239,7 +238,9 @@ public class RedGoalAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+//                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+                        Launch, 0.6, 0.2))
+
                     {
                         nav.resetPIDs();
                         leftBack.setPower(0);
@@ -247,6 +248,7 @@ public class RedGoalAuto extends LinearOpMode
                         rightBack.setPower(0);
                         rightFront.setPower(0);
                         m_launcherOnCommand.schedule();
+//                        m_launcherSubsystem.setMotorVelocity(1730);
                         holdTimer.reset();
 
                         telemetry.addLine("Ready to Aim!");
@@ -303,23 +305,23 @@ public class RedGoalAuto extends LinearOpMode
                     break;
 
                 case WAIT_FOR_NEXT:
-                    if (m_StateTime.time() > 0.2) //.5
+                    if (m_StateTime.time() > 0.25) //.5
                     {
                         ballCount++;
 
-                        if (ballCount==4)
+                        if (ballCount==3)
                         {
                             holdTimer.reset();
                             m_stateMachine = StateMachine.START_PICK_UP;
                         }
 
-                        else if (ballCount == 7)
+                        else if (ballCount == 6)
                         {
                             holdTimer.reset();
                             m_stateMachine = StateMachine.START_PICK_UP2;
                         }
 
-                        else if (ballCount < maxBalls && ballCount!=4 && ballCount !=7)
+                        else if (ballCount < maxBalls && ballCount!=3 && ballCount !=6)
                         {
                             m_StateTime.reset();
                             m_stateMachine = StateMachine.LAUNCH_BALL;
@@ -367,7 +369,7 @@ public class RedGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.OPEN_GATE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.4);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up Row 1");
@@ -382,7 +384,7 @@ public class RedGoalAuto extends LinearOpMode
                             StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.75);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
                         this.m_intakeServoSybsystem.spinServo(1.0);
                         m_stateMachine = StateMachine.PICK_UP2;
                         holdTimer.reset();
@@ -396,7 +398,7 @@ public class RedGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.4);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up middle row");

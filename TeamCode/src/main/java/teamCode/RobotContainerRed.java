@@ -348,19 +348,16 @@ public class RobotContainerRed extends CommandOpMode
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
 
-        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
-                .whenPressed(this.m_defenseUpCommand);
-
-        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
-        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
-                .whenPressed(this.m_defenseDownCommand);
+//        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
+//        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+//                .whenPressed(this.m_defenseUpCommand);
+//
+//        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
+//        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+//                .whenPressed(this.m_defenseDownCommand);
 
 
         //GADGETEER
-
-        //TODO make color into a toggle
-        //TODO it only reads the color once after pressing button
 
         this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
