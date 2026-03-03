@@ -7,14 +7,21 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class LauncherSubsystem extends SubsystemBase
 {
     private final DcMotorEx m_launcherMotorRed;
-    private double launcherTargetVelocity = 1050;
+    private double launcherTargetVelocity = 1000;
 
     public LauncherSubsystem(DcMotorEx launcherMotor)
     {
         this.m_launcherMotorRed = launcherMotor;
         this.m_launcherMotorRed.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         this.m_launcherMotorRed.setDirection(DcMotorEx.Direction.FORWARD);
-        this.m_launcherMotorRed.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        this.m_launcherMotorRed.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);   //TODO test this
+//        this.m_launcherMotorRed.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        // TUNE THESE:
+        // P: If it overshoots, LOWER this.
+        // F: This is the "base power" for your velocity.
+        // Formula for F: 32767 / MaxVelocityTicksPerSec
+        m_launcherMotorRed.setVelocityPIDFCoefficients(1.1, 0.0, 0, 11.7);//TODO test this
+
     }
 
     public void setMotorVelocity(double ticksPerSec)
@@ -50,6 +57,6 @@ public class LauncherSubsystem extends SubsystemBase
     // Check if the motor is actually spinning near the speed we want
     public boolean atTarget(double target)
     {
-        return Math.abs(m_launcherMotorRed.getVelocity() - target) < 50; // Tolerance of 50 ticks
+        return Math.abs(m_launcherMotorRed.getVelocity() - target) < 25; // Tolerance of 50 ticks
     }
 }

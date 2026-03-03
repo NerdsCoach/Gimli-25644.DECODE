@@ -341,7 +341,7 @@ public class RobotContainer extends CommandOpMode
         this.m_rightBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeMotorCommand);
 
-        this.m_outTakeMotorCommand = new OutTakeMotorCommand(this.m_intakeMotorSubsystem);
+        this.m_outTakeMotorCommand = new OutTakeMotorCommand(this.m_intakeMotorSubsystem, this.m_intakeServoSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_outTakeMotorCommand);
 
@@ -363,7 +363,7 @@ public class RobotContainer extends CommandOpMode
         this.m_dpadRight = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT))
                 .whileHeld(this.m_fudgeDeParkingCommand);
 
-        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeMotorSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem, this.m_turnTableSubsystem);
+        this.m_parkingCommand = new ParkingCommand(this.m_parkingSubsystem, this.m_intakeMotorSubsystem, this.m_launcherMotorSubsystem, this.m_sorterServoSubsystem, this.m_turnTableSubsystem, this.m_intakeServoSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_parkingCommand);
 
@@ -393,9 +393,9 @@ public class RobotContainer extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .whenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_reverseBellyCommand = new ReverseBellyOfTheBeastCommand(this.m_sorterServoSubsystem);
-        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
-                .whenPressed(this.m_reverseBellyCommand);
+//        this.m_reverseBellyCommand = new ReverseBellyOfTheBeastCommand(this.m_sorterServoSubsystem);
+//        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
+//                .whenPressed(this.m_reverseBellyCommand);
 
         this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem, this.m_limelightSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))

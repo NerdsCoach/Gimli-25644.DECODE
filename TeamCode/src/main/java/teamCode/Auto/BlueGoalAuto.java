@@ -2,6 +2,7 @@ package teamCode.Auto;
 
 
 import static teamCode.Constants.AxeConstants.kAxeDown;
+import static teamCode.Constants.AxeConstants.kAxeUp;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.controller.PIDController;
@@ -34,6 +35,7 @@ import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 
 import teamCode.subsystems.IntakeMotorSubsystem;
+import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
@@ -63,6 +65,7 @@ public class BlueGoalAuto extends LinearOpMode
 
     //Servos
     private Servo m_AxeServo;
+    private CRServo m_intakeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
@@ -82,6 +85,7 @@ public class BlueGoalAuto extends LinearOpMode
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
+    private IntakeServoSubsystem m_intakeServoSybsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
 
@@ -132,7 +136,7 @@ public class BlueGoalAuto extends LinearOpMode
     private ElapsedTime m_aimingTimer = new ElapsedTime();
 
 
-    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
+    private static final double m_axeUp = kAxeUp;
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
     private int m_position;
     private static final int m_up = 1;
@@ -188,6 +192,7 @@ public class BlueGoalAuto extends LinearOpMode
         //Servos
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
+        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
         this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
         //Sensors
@@ -198,6 +203,7 @@ public class BlueGoalAuto extends LinearOpMode
 
         //Subsystems
         this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
+        this.m_intakeServoSybsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
@@ -223,6 +229,7 @@ public class BlueGoalAuto extends LinearOpMode
                 case WAITING_FOR_START:
                     this.m_limitSwitchSubsystem.setTransferPower(0.0);
                     holdTimer.reset();
+
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
 
                     break;
@@ -240,6 +247,7 @@ public class BlueGoalAuto extends LinearOpMode
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
+                        m_launcherOnCommand.schedule();
 
                         holdTimer.reset();
 
@@ -249,7 +257,7 @@ public class BlueGoalAuto extends LinearOpMode
                     break;
 
                 case AIM_TURNTABLE:
-
+//                    m_launcherOnCommand.schedule();
                     leftBack.setPower(0.0);
                     leftFront.setPower(0.0);
                     rightBack.setPower(0.0);
@@ -262,7 +270,7 @@ public class BlueGoalAuto extends LinearOpMode
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-                        m_launcherOnCommand.schedule();
+
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;
@@ -270,8 +278,9 @@ public class BlueGoalAuto extends LinearOpMode
 
                     if (m_aimingTimer.seconds() > 0.75)
                     {
-                        m_stateMachine = StateMachine.LAUNCH_BALL;
                         m_StateTime.reset();
+                        m_stateMachine = StateMachine.LAUNCH_BALL;
+
                     }
                     break;
 
@@ -346,8 +355,9 @@ public class BlueGoalAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp1, 0.6, 0) || holdTimer.seconds() >= 3.0)
                     {
-//                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.5);
+                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                        this.m_intakeServoSybsystem.spinServo(1.0);
                         m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up");
@@ -360,7 +370,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.OPEN_GATE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.2);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up Row 1");
@@ -374,8 +384,9 @@ public class BlueGoalAuto extends LinearOpMode
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
                     {
-//                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.5);
+                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                        this.m_intakeServoSybsystem.spinServo(1.0);
                         m_stateMachine = StateMachine.PICK_UP2;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up Again");
@@ -388,7 +399,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         m_aimingCommandStarted = false;
                         m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.2);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
 
                         holdTimer.reset();
                         telemetry.addLine("Picked up middle row");
@@ -422,6 +433,7 @@ public class BlueGoalAuto extends LinearOpMode
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();
+                        this.m_intakeServoSybsystem.spinServo(0.0);
                         this.m_launcherSubsystem.setMotorVelocity(0);
 
                         telemetry.addLine("Done");

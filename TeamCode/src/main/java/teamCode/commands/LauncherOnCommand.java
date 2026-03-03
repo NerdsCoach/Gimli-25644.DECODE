@@ -1,6 +1,7 @@
 package teamCode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -18,7 +19,7 @@ public class LauncherOnCommand extends CommandBase
         private final HoodServoSubsystem m_hoodSubsystem;
         private final LimeLightSubsystem m_limelightSubsystem;
 
-
+        private final InterpLUT m_velocityLUT = new InterpLUT();//TODO test this
         private static final double m_aimFar = Constants.AimingConstants.kFarAim;
         private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
         private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
@@ -40,30 +41,24 @@ public class LauncherOnCommand extends CommandBase
 
             // This table maps the distance in meters (from the Limelight) to the required launcher velocity.
 
-            m_velocityFromDistanceLUT.put(0.53, 1400.0);
-            m_velocityFromDistanceLUT.put(0.54, 1450.0);
-            m_velocityFromDistanceLUT.put(0.60, 1500.0);
-            m_velocityFromDistanceLUT.put(0.61, 1550.0);
-            m_velocityFromDistanceLUT.put(0.77, 1600.0);
-            m_velocityFromDistanceLUT.put(0.69, 1650.0);
-            m_velocityFromDistanceLUT.put(0.87, 1700.0); //HOOD UP
-            m_velocityFromDistanceLUT.put(0.95, 1750.0);
-            m_velocityFromDistanceLUT.put(1.13, 1800.0);
-            m_velocityFromDistanceLUT.put(1.26, 1850.0);
-            m_velocityFromDistanceLUT.put(1.32, 1900.0);
-            m_velocityFromDistanceLUT.put(1.39, 1950.0);
-            m_velocityFromDistanceLUT.put(1.66, 2000.0);
-            m_velocityFromDistanceLUT.put(1.57, 2050.0);
-            m_velocityFromDistanceLUT.put(1.75, 2100.0);
-            m_velocityFromDistanceLUT.put(1.82, 2150.0);
-            m_velocityFromDistanceLUT.put(1.87, 2200.0);
-            m_velocityFromDistanceLUT.put(1.98, 2250.0);
-            m_velocityFromDistanceLUT.put(2.15, 2300.0);
-            m_velocityFromDistanceLUT.put(2.16, 2300.0);
-            m_velocityFromDistanceLUT.put(2.51, 2400.0);
-            m_velocityFromDistanceLUT.put(2.31, 2450.0);
-            m_velocityFromDistanceLUT.put(2.73, 2500.0);
+//            InterpLUT lut = new InterpLUT();//TODO test this
 
+            m_velocityLUT.add(0.49, 1450.0);
+            m_velocityLUT.add(0.65, 1550.0);
+            m_velocityLUT.add(0.85, 1650.0);
+            m_velocityLUT.add(0.99, 1750.0);
+            m_velocityLUT.add(1.12, 1850.0);
+            m_velocityLUT.add(1.28, 1950.0);
+            m_velocityLUT.add(1.36, 2050.0);
+            m_velocityLUT.add(1.61, 2150.0);
+            m_velocityLUT.add(1.93, 2250.0); // hood up
+            m_velocityLUT.add(1.95, 2260.0);
+            m_velocityLUT.add(2.14, 2300.0);
+            m_velocityLUT.add(2.22, 2350.0);
+            m_velocityLUT.add(2.38, 2450.0);
+            m_velocityLUT.add(2.42, 2550.0);
+// ... add other points ...
+            m_velocityLUT.createLUT();
         }
 
         /**
@@ -113,7 +108,8 @@ public class LauncherOnCommand extends CommandBase
                 if (pose != null)
                 {
                     double zMeters = Math.abs(pose.getPosition().z); // Distance (Z) in meters
-                    double targetVelocity = getVelocityFromDistance(zMeters); // get velocity from LUT based on distance
+//                    double targetVelocity = getVelocityFromDistance(zMeters); // get velocity from LUT based on distance
+                    double targetVelocity = m_velocityLUT.get(zMeters); //TODO test this
 
                     m_launcherSubsystem.setMotorVelocity(targetVelocity);
                     m_lastKnownSpeed = targetVelocity;

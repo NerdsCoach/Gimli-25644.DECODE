@@ -15,23 +15,27 @@ public class ResetTurnTableCommand extends CommandBase
     @Override
     public void initialize()
         {
+            m_turnTableSubsystem.Turn(0);
         }
 
     @Override
     public void execute()
         {
-            m_turnTableSubsystem.Turn(0);
         }
 
     @Override
     public void end(boolean interrupted)
     {
+        m_turnTableSubsystem.setAimingMode();
+        m_turnTableSubsystem.stop();
     }
 
     @Override
     public boolean isFinished()
     {
-        return false;
+        return m_turnTableSubsystem.isAtTarget();
+
+//        return false;
     }
 
 }

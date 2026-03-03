@@ -47,14 +47,7 @@ public class AimingOnCommand extends CommandBase
         if (!m_limelightSubsystem.isTagDetected(m_targetId))
         {
             m_lightSubsystem.off(0.0);
-
-            // If tag is lost, slowly drift back to zero so camera can re-acquire
-            if (Math.abs(currentPosition) > 20) {
-                double searchSpeed = (currentPosition > 0) ? -0.12 : 0.12;
-                m_turnTableSubsystem.turnSpeed(searchSpeed);
-            } else {
-                m_turnTableSubsystem.stop();
-            }
+            m_turnTableSubsystem.stop();
             return;
         }
 

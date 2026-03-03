@@ -4,11 +4,15 @@ package teamCode.Auto;
 import static teamCode.Constants.AxeConstants.kAxeDown;
 import static teamCode.Constants.AxeConstants.kAxeUp;
 
+import android.graphics.Color;
+
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -62,17 +67,18 @@ public class RedWallAuto extends LinearOpMode
     public DcMotor m_intakeMotor;
 
 
-    //Servos
     private Servo m_AxeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
+    private CRServo m_intakeServo;
 
     //Sensors
     private GoBildaPinpointDriver m_odo;
     public NormalizedColorSensor m_colorSensor;
     private ElapsedTime m_StateTime = new ElapsedTime();
     private RevTouchSensor m_limitSwitch;
+
 
     //Subsystems
     private AxeSubsystem m_axeSubsystem;
@@ -84,6 +90,7 @@ public class RedWallAuto extends LinearOpMode
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
+    private IntakeServoSubsystem m_intakeServoSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
 
     //Commands
@@ -91,12 +98,10 @@ public class RedWallAuto extends LinearOpMode
     private LauncherOnCommand m_launcherOnCommand;
 
     private TimerCommand m_timerCommand;
-    private BlueGoalAuto.StateMachine m_stateMachine;
+    private StateMachine m_stateMachine;
 
     private boolean lastState = false;
     public int count = 0;
-
-
 
     //Driving
     private final ElapsedTime holdTimer = new ElapsedTime();
@@ -114,29 +119,37 @@ public class RedWallAuto extends LinearOpMode
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
+    private String[] targetPattern = {"NONE", "NONE", "NONE"};
+    private int ballsScored = 0;
+
     enum StateMachine
     {
         WAITING_FOR_START,
+        SCAN_OBELISK,
+        GPP_PATTERN,
+        PGP_PATTERN,
+        PPG_PATTERN,
         PREPARE_FOR_BATTLE,
-        LAUNCH_BALL_1,
-        WAIT_1,
-        COUNTER_SCORE,
-        LAUNCH_BALL_2,
-        WAIT_2,
-        LAUNCH_BALL_3,
-        WAIT_3,
-        LAUNCH_BALL_4,
-        WAIT_4,
         START_PICK_UP,
         PICK_UP,
-        PARKED, WAIT_FOR_NEXT, REVERSE_RECOVERY, LAUNCH_BALL, END, AIM_TURNTABLE, POWER_LAUNCHER,
+        PARKED,
+        WAIT_FOR_NEXT,
+        REVERSE_RECOVERY,
+        LAUNCH_BALL,
+        AIM_TURNTABLE,
+        SORT_PURPLE_ONE,
+        SORT_2,
     }
     int ballCount = 0;
     int maxBalls = 7;
 
+    int tagPattern = 0;
+
     private boolean m_aimingCommandStarted = false;
     private ElapsedTime m_aimingTimer = new ElapsedTime();
 
+    private static final float TARGET_GREEN_HUE = 160.0f;
+    private static final float TARGET_PURPLE_HUE = 240.0f;
 
     private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
@@ -144,7 +157,12 @@ public class RedWallAuto extends LinearOpMode
     private static final int m_up = 1;
     private static final int m_down = 0;
     private double m_lastKnownSpeed;
-    ;
+    private static final int  m_off = 1;
+    private static final int  m_on = 0;
+
+    private static final float HUE_TOLERANCE = 10.0f; // Allow +/- 10 degrees variance
+    public double m_lastKnownColor;
+
 
     @Override
     public void runOpMode() {
@@ -175,9 +193,7 @@ public class RedWallAuto extends LinearOpMode
 
         nav.setDriveType(DriveToPoint.DriveType.MECANUM);
 
-
-        BlueGoalAuto.StateMachine m_stateMachine;
-        m_stateMachine = BlueGoalAuto.StateMachine.WAITING_FOR_START;
+        this.m_stateMachine = StateMachine.WAITING_FOR_START;
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", m_odo.getXOffset(DistanceUnit.MM));
@@ -186,6 +202,7 @@ public class RedWallAuto extends LinearOpMode
         telemetry.addData("Device Scalar", m_odo.getYawScalar());
         telemetry.update();
 
+        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
         this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
 
@@ -199,6 +216,7 @@ public class RedWallAuto extends LinearOpMode
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 24);
 
+        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
 
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
@@ -209,9 +227,7 @@ public class RedWallAuto extends LinearOpMode
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem,m_limeLightSubsystem);
-
-//        this.m_turnTableSubsystem.Turn(0);
+        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
 
         CommandScheduler.getInstance().reset();
 
@@ -222,34 +238,136 @@ public class RedWallAuto extends LinearOpMode
         {
             CommandScheduler.getInstance().run();
             m_odo.update();
+            NormalizedRGBA colors = m_colorSensorSubsystem.getNormalizedColors();
+
+            float[] hsv = new float[3];
+            Color.RGBToHSV(
+                    (int) (colors.red * 255),
+                    (int) (colors.green * 255),
+                    (int) (colors.blue * 255),
+                    hsv
+            );
+            float hue = hsv[0];
 
             switch (m_stateMachine)
             {
+                //TODO: Start the robot with the launcher aimed at the obelisk
                 case WAITING_FOR_START:
                     holdTimer.reset();
-                    m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
-
+                    m_stateMachine = StateMachine.SCAN_OBELISK;
                     break;
+
+
+                case SCAN_OBELISK:
+                    LLResult result = m_limeLightSubsystem.getLatestResult();
+
+                    // Check if we actually see any tags
+                    if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()) {
+
+                        // Loop through all seen tags to find the Obelisk
+                        for (LLResultTypes.FiducialResult fr : result.getFiducialResults())
+                        {
+                            int id = fr.getFiducialId();
+
+                            if (id == 21)
+                            {
+                                targetPattern = new String[]{"GREEN", "PURPLE", "PURPLE"};
+                                telemetry.addLine("GPP");
+                                this.tagPattern = 21;
+                                holdTimer.reset();
+                                m_stateMachine = StateMachine.GPP_PATTERN;
+                            }
+
+                            else if (id == 22)
+                            {
+                                targetPattern = new String[]{"PURPLE", "GREEN", "PURPLE"};
+                                telemetry.addLine("PGP");
+                                this.tagPattern = 22;
+                                holdTimer.reset();
+                                m_stateMachine = StateMachine.PGP_PATTERN;
+                            }
+
+                            else if (id == 23)
+                            {
+                                targetPattern = new String[]{"PURPLE", "PURPLE", "GREEN"};
+                                telemetry.addLine("PPG");
+                                this.m_axeSubsystem.pivotAxe(kAxeUp);
+                                this.tagPattern = 23;
+                                m_stateMachine = StateMachine.PPG_PATTERN;
+                            }
+                        }
+                    }
+                    break;
+
+
+
+                case GPP_PATTERN:
+
+                    this.m_sorterServoSubsystem.spinSorter(-0.5);
+                    this.m_lightSubsystem.setLEDGreen();
+                    telemetry.addLine("GPP Color Sensing");
+                    holdTimer.reset();
+                    this.m_lastKnownColor = 0.5;
+                    m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
+                 break;
+
+                case PGP_PATTERN:
+                    this.m_sorterServoSubsystem.spinSorter(-0.3);
+                    this.m_axeSubsystem.pivotAxe(kAxeUp);
+                    telemetry.addLine("PGP Color Sensing");
+                    holdTimer.reset();
+                    if (Math.abs(hue - TARGET_PURPLE_HUE) < HUE_TOLERANCE)
+                    {
+                        this.m_lightSubsystem.setLEDPurple();
+                        this.m_axeSubsystem.pivotAxe(kAxeDown);
+                        this.m_lastKnownColor = 0.722;
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
+                    }
+                    break;
+
+                case PPG_PATTERN:
+                    this.m_sorterServoSubsystem.spinSorter(-0.3);
+                    this.m_axeSubsystem.pivotAxe(kAxeUp);
+                    this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                    this.m_intakeServoSubsystem.spinServo(1.0);
+                    telemetry.addLine("PPG Color Sensing");
+                    holdTimer.reset();
+
+                if(Math.abs(hue - TARGET_PURPLE_HUE) < HUE_TOLERANCE)
+                {
+                    this.m_axeSubsystem.pivotAxe(kAxeDown);
+                    m_lightSubsystem.setLEDPurple();
+                    this.m_lastKnownColor = 0.722;
+                    holdTimer.reset();
+                    m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
+                }
+                break;
 
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-//                    this.m_launcherSubsystem.setMotorVelocity(1900);
-//                    this.m_turnTableSubsystem.Turn(-55);
-                    this.m_sorterServoSubsystem.spinSorter(-1.0);
+                    this.m_sorterServoSubsystem.spinSorter(-0.5);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Move, 0.5, 0)|| holdTimer.seconds() >= 3.0)
+                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
                     {
-                        holdTimer.reset();
+                        nav.resetPIDs();
+                        leftBack.setPower(0);
+                        leftFront.setPower(0);
+                        rightBack.setPower(0);
+                        rightFront.setPower(0);
 
+                        holdTimer.reset();
                         telemetry.addLine("Launch Motor On");
-                        m_stateMachine = BlueGoalAuto.StateMachine.AIM_TURNTABLE;
+                        m_stateMachine = StateMachine.AIM_TURNTABLE;
                     }
                     break;
 
                 case AIM_TURNTABLE:
-                    if (!m_aimingCommandStarted) {
+                    if (!m_aimingCommandStarted)
+                    {
+                        telemetry.addLine("Aiming");
                         // Stop the drivetrain from the previous state
                         leftBack.setPower(0.0);
                         leftFront.setPower(0.0);
@@ -258,7 +376,7 @@ public class RedWallAuto extends LinearOpMode
 
                         // Schedule AimingOnCommand with a timeout to ensure it finishes.
                         new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightSubsystem, 24, telemetry)
-                                .withTimeout(3000)
+                                .withTimeout(1500)
                                 .schedule();
 
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
@@ -268,14 +386,16 @@ public class RedWallAuto extends LinearOpMode
                         m_aimingCommandStarted = true;
                     }
 
-                    // After 3 seconds, the aiming timeout will have triggered. Launch to the next state.
-                    if (m_aimingTimer.seconds() > 3.0) {
-                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
+                    // After 1.5 seconds, the aiming timeout will have triggered. Launch to the next state.
+                    if (m_aimingTimer.seconds() > 1.50)
+                    {
+                        m_StateTime.reset();
+                        m_stateMachine = StateMachine.LAUNCH_BALL;
                     }
                     break;
 
                 case LAUNCH_BALL:
-                    // Standard launch power
+                    this.m_sorterServoSubsystem.spinSorter(-1.0);
                     this.m_limitSwitchSubsystem.setTransferPower(-1.0);
                     boolean currentState = m_limitSwitchSubsystem.isPressed();
 
@@ -283,13 +403,17 @@ public class RedWallAuto extends LinearOpMode
                     {
                         // SUCCESS: Ball passed
                         m_limitSwitchSubsystem.setTransferPower(0.0);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.0);
+                        this.m_intakeServoSubsystem.spinServo(0.0);
+
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.WAIT_FOR_NEXT;
+                        m_stateMachine = StateMachine.WAIT_FOR_NEXT;
                     }
-                    else if (m_StateTime.time() > 2.0) {
+                    else if (m_StateTime.time() > 2.0)
+                    {
                         // JAM DETECTED: Switch wasn't hit in 2 seconds
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.REVERSE_RECOVERY;
+                        m_stateMachine = StateMachine.REVERSE_RECOVERY;
                     }
                     lastState = currentState;
                     break;
@@ -302,21 +426,29 @@ public class RedWallAuto extends LinearOpMode
                         if (ballCount==3)
                         {
                             holdTimer.reset();
-                            m_stateMachine = BlueGoalAuto.StateMachine.START_PICK_UP;
+                            m_stateMachine = StateMachine.START_PICK_UP;
 
                         }
-                        else if (ballCount < maxBalls && ballCount!=3)
+                        else if (ballCount==1||ballCount==4)
+                        {
+                            holdTimer.reset();
+                            m_StateTime.reset();
+                            this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                            m_stateMachine = StateMachine.LAUNCH_BALL;
+                        }
+
+                        else if (ballCount < maxBalls && ballCount!=3 && ballCount!=1 && ballCount!=4)
                         {
                             // Still have balls left: loop back to launch
                             m_StateTime.reset();
-                            m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL;
+                            m_stateMachine = StateMachine.LAUNCH_BALL;
                         } else
+
                         {
                             // Done with all 4: reset counter and move on
                             ballCount = 0;
-                            m_stateMachine = BlueGoalAuto.StateMachine.PARKED;
                             holdTimer.reset();
-
+                            m_stateMachine = StateMachine.PARKED;
                         }
                     }
                     break;
@@ -326,39 +458,65 @@ public class RedWallAuto extends LinearOpMode
                     if (m_StateTime.time() > 0.3)
                     {
                         m_StateTime.reset();
-                        m_stateMachine = BlueGoalAuto.StateMachine.LAUNCH_BALL; // Retry the same ball
+                        m_stateMachine = StateMachine.LAUNCH_BALL; // Retry the same ball
                     }
                     break;
 
                 case START_PICK_UP:
                     // We are done launching, so cancel the launcher command.
                     m_launcherOnCommand.cancel();
-
+                    this.m_axeSubsystem.pivotAxe(kAxeDown);
+                    this.m_sorterServoSubsystem.spinSorter(0.0);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp, 0.4, .5)|| holdTimer.seconds() >= 3.0)
                     {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
-                        m_stateMachine = BlueGoalAuto.StateMachine.PICK_UP;
+//                        this.m_axeSubsystem.pivotAxe(kAxeUp);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
                         holdTimer.reset();
-                        telemetry.addLine("Done");
+                        m_stateMachine = StateMachine.PICK_UP;
+                        telemetry.addLine("Start Pick Up");
                     }
                     break;
 
                 case PICK_UP:
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 2.0)
+                            EndPickUp, 0.2, 0.5) || holdTimer.seconds() >= 3.0)
                     {
-                        m_stateMachine = BlueGoalAuto.StateMachine.PREPARE_FOR_BATTLE;
-
+                        m_aimingCommandStarted = false;
+                        this.m_intakeMotorSubsystem.spinMotorIntake(0.0);
                         holdTimer.reset();
-                        telemetry.addLine("Done");
+                        m_stateMachine = StateMachine.SORT_2;
+                        telemetry.addLine("End Pickup");
                     }
                     break;
+
+                case SORT_2:
+                    if (tagPattern == 21)
+                    {
+                        targetPattern = new String[]{"GREEN", "PURPLE", "PURPLE"};
+                        telemetry.addLine("GPP");
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.GPP_PATTERN;
+                    }
+                    else if (tagPattern == 22)
+                    {
+                        targetPattern = new String[]{"PURPLE", "GREEN", "PURPLE"};
+                        telemetry.addLine("PGP");
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.PGP_PATTERN;
+                    }
+                    else if (tagPattern == 23)
+                    {
+                        targetPattern = new String[]{"PURPLE", "PURPLE", "GREEN"};
+                        telemetry.addLine("PPG");
+                        holdTimer.reset();
+                        m_stateMachine = StateMachine.PPG_PATTERN;
+                    }
+
                 case PARKED:
                     // Make sure the launcher command is stopped.
                     m_launcherOnCommand.cancel();
-
+                    this.m_turnTableMotor.setTargetPosition(-500);
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             Park, 0.4, 0.5))
@@ -377,6 +535,7 @@ public class RedWallAuto extends LinearOpMode
                     }
                     break;
             }
+
 
             //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
             leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));

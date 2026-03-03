@@ -18,6 +18,7 @@ public class TurnTableSubsystem extends SubsystemBase
 
     public void turnSpeed(double speed)
     {
+        m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         m_turnTableMotor.setPower(speed * TURRET_SPEED);
     }
 
@@ -36,8 +37,9 @@ public class TurnTableSubsystem extends SubsystemBase
     public void Turn (int target)
     {
         this.m_turnTableMotor.setTargetPosition(target);
-        this.m_turnTableMotor.setPower(0.3);
         this.m_turnTableMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.m_turnTableMotor.setPower(0.3);
+
     }
 
     public void setTurnPower(double power)
@@ -60,4 +62,28 @@ public class TurnTableSubsystem extends SubsystemBase
     {
         return m_turnTableMotor.getCurrentPosition();
     }
+
+    public boolean isBusy()
+    {
+        return m_turnTableMotor.isBusy();
+    }
+
+    public void prepareForAimingMode()
+    {
+        m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void setAimingMode()
+    {
+        // This 'unlocks' the motor so it can be controlled by turnSpeed
+        m_turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        m_turnTableMotor.setPower(0);
+    }
+
+    public boolean isAtTarget()
+    {
+
+        return !m_turnTableMotor.isBusy();
+    }
+
 }
+
