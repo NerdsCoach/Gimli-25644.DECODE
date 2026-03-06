@@ -1,7 +1,6 @@
 package teamCode.Auto;
 
 
-import static teamCode.Auto.BlueWallAuto.StateMachine.FINAL_ARTIFACT;
 import static teamCode.Constants.AxeConstants.kAxeDown;
 import static teamCode.Constants.AxeConstants.kAxeUp;
 
@@ -108,13 +107,10 @@ public class RedWallAuto extends LinearOpMode
     private final ElapsedTime holdTimer = new ElapsedTime();
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
-    static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
-    // TODO: changing Y by 75?
+    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, 610, UnnormalizedAngleUnit.DEGREES, 0); //1050
-    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
 
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
@@ -353,8 +349,8 @@ public class RedWallAuto extends LinearOpMode
                     m_launcherOnCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-//                            Move, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
-                        Move, 0.6, 0.1))
+//                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
+                            Launch, 0.6, 0.2))
 
                 {
                         nav.resetPIDs();

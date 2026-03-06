@@ -63,14 +63,14 @@ public class LauncherOnCommand extends CommandBase {
         m_velocityLUT.add(1.28, 1970.0);//Hood up
         m_velocityLUT.add(1.36, 2070.0);
         m_velocityLUT.add(1.61, 2170.0);
-        m_velocityLUT.add(1.93, 2370.0);//2270
-        m_velocityLUT.add(1.95, 2380.0);//2270
+        m_velocityLUT.add(1.93, 2270.0);//2270
+        m_velocityLUT.add(1.95, 2300.0);//2270
         m_velocityLUT.add(2.14, 2450.0);//2350;8
-        m_velocityLUT.add(2.22, 2470.0);//2370
-        m_velocityLUT.add(2.38, 2520.0);//2420
-        m_velocityLUT.add(2.42, 2640.0);//2590
-        m_velocityLUT.add(2.50, 2650.0);//2600
-        m_velocityLUT.add(3.00, 2700.0);//2620
+        m_velocityLUT.add(2.22, 2525.0);//2470
+        m_velocityLUT.add(2.38, 2600.0);//2520
+        m_velocityLUT.add(2.42, 2750.0);//2640
+        m_velocityLUT.add(2.50, 2750.0);//2650
+        m_velocityLUT.add(3.00, 2800.0);//2700
         // Finalize the LUT
         m_velocityLUT.createLUT();
     }
