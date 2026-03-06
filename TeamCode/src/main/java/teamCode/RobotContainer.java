@@ -69,6 +69,7 @@ import teamCode.commands.TransferLimitCommand;
 import teamCode.commands.AimingOffCommand;
 import teamCode.commands.TurnTableLeftCommand;
 import teamCode.commands.TurnTableRightCommand;
+import teamCode.commands.UnJamCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
@@ -120,7 +121,7 @@ public class RobotContainer extends CommandOpMode
     private Button m_scoreButton;
     private Button m_axeButton;
     private Button m_leftJoyStick;
-    private Button m_rightTrigger;
+    private Trigger m_rightTrigger;
     private Trigger m_leftTrigger;
 
     /* Motors*/
@@ -202,8 +203,7 @@ public class RobotContainer extends CommandOpMode
     private ResetGyroCommand m_resetGyroCommand;
     private HoodDownCommand m_hoodCloseCommand;
     private HoodUpCommand m_hoodFarCommand;
-    private HoodTestingCommand m_hoodTestingCommand;
-
+    private UnJamCommand m_unJamCommand;
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
 
@@ -425,13 +425,17 @@ public class RobotContainer extends CommandOpMode
         this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_hoodFarCommand);
 
-        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
-        this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);
-        m_leftTrigger.whileActiveContinuous(m_reverseTransferCommand);
+        this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER));
+        this.m_rightTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.05);
+        this.m_rightTrigger.whileActiveContinuous(m_reverseTransferCommand);
 
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
+
+        this.m_unJamCommand = new UnJamCommand(this.m_sorterServoSubsystem, this.m_axeSubsystem, this.m_limitSwitchSubsystem);
+        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+                .whileHeld(this.m_unJamCommand);
 
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());

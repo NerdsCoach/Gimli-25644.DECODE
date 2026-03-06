@@ -8,12 +8,12 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 public class ReverseTransferCommand extends CommandBase
 {
     private final LimitSwitchSubsystem m_limitSwitchSubsystem;
-    private final DoubleSupplier m_leftTriggerValue;
+    private final DoubleSupplier m_rightTriggerValue;
 
-    public ReverseTransferCommand(LimitSwitchSubsystem transfer, DoubleSupplier leftTrigger)
+    public ReverseTransferCommand(LimitSwitchSubsystem transfer, DoubleSupplier rightTrigger)
     {
         this.m_limitSwitchSubsystem = transfer;
-        this.m_leftTriggerValue = leftTrigger;
+        this.m_rightTriggerValue = rightTrigger;
 
         addRequirements(this.m_limitSwitchSubsystem);
     }
@@ -26,7 +26,7 @@ public class ReverseTransferCommand extends CommandBase
     @Override
     public void execute() {
         // Get the 0 to 1.0 value
-        double triggerVal = this.m_leftTriggerValue.getAsDouble();
+        double triggerVal = this.m_rightTriggerValue.getAsDouble();
         this.m_limitSwitchSubsystem.setTransferPower(triggerVal);
 
     }
@@ -35,7 +35,7 @@ public class ReverseTransferCommand extends CommandBase
     public boolean isFinished()
     {
         // If the trigger is basically zero, tell the scheduler this command is DONE.
-        return this.m_leftTriggerValue.getAsDouble() < 0.05;
+        return this.m_rightTriggerValue.getAsDouble() < 0.05;
     }
 
     @Override

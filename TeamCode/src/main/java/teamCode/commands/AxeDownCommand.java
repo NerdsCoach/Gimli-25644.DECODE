@@ -17,13 +17,7 @@ import teamCode.subsystems.LimeLightSubsystem;
 public class AxeDownCommand extends CommandBase
     {
         private final AxeSubsystem m_axeSubsystem;
-
-        private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-        private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
         private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-
-        private final TreeMap<Double, Double> m_velocityFromDistanceLUT = new TreeMap<>();
-        private double m_lastKnownSpeed;
 
         public AxeDownCommand(AxeSubsystem axeSubsystem)
         {
