@@ -35,7 +35,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 
 import teamCode.commands.AimingOffCommand;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.AimingTestingCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.ColorModeOnCommand;
 import teamCode.commands.DeParkingCommand;
@@ -50,6 +49,8 @@ import teamCode.commands.HoodTestingCommand;
 import teamCode.commands.HoodUpCommand;
 //import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.IntakeMotorCommand;
+import teamCode.commands.IntakeServoCommand;
+import teamCode.commands.LauncherBellyCommand;
 import teamCode.commands.LauncherOffCommand;
 import teamCode.commands.LauncherOnCommand;
 //import teamCode.commands.OutTakeModeCommand;
@@ -63,6 +64,7 @@ import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.commands.TurnTableLeftCommand;
 import teamCode.commands.TurnTableRightCommand;
+import teamCode.commands.UnJamCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.DriveSubsystem;
@@ -99,6 +101,8 @@ public class RobotContainerRed extends CommandOpMode
     private Button m_leftBumper;
     private Button m_rightBumper;
     private Button m_xButton;
+    private Button m_optionsButton;
+    private Button m_shareButton;
     private Button m_circle;
     private Button m_square;
     private Button m_triangle;
@@ -107,11 +111,6 @@ public class RobotContainerRed extends CommandOpMode
     private Button m_dpadLeft;
     private Button m_dpadRight;
     private Button m_gyroResetButton;
-    private Button m_manateeButton;
-    private Button m_scoreButton;
-    private Button m_axeButton;
-    private Button m_leftJoyStick;
-    private Button m_rightTrigger;
     private Trigger m_leftTrigger;
 
     /* Motors*/
@@ -165,16 +164,18 @@ public class RobotContainerRed extends CommandOpMode
 //    private OutTakeModeCommand m_outTakeModeCommand;
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
     private ReverseBellyOfTheBeastCommand m_reverseBellyCommand;
-    private LauncherOnCommand m_launcherOnCommand;
+    private LauncherBellyCommand m_launcherBellyCommand;
     private LauncherOffCommand m_launcherOffCommand;
     private TurnTableLeftCommand m_turnTableLeftCommand;
     private TurnTableRightCommand m_turnTableRightCommand;
     private IntakeMotorCommand m_intakeMotorCommand;
+    private IntakeServoCommand m_intakeServoCommand;
     private OutTakeMotorCommand m_outTakeMotorCommand;
     private ResetTurnTableCommand m_resetTurnTableCommand;
     private ColorModeOnCommand m_colorOnCommand;
     private TransferLimitCommand m_transferLimitCommand;
     private ReverseTransferCommand m_reverseTransferCommand;
+    private UnJamCommand m_unJamCommand;
     private Telemetry m_telemetry;
 
     private FudgeParkingCommand m_fudgeParkingCommand;
@@ -183,7 +184,6 @@ public class RobotContainerRed extends CommandOpMode
     private DeParkingCommand m_deParkingCommand;
     private DefenseDownCommand m_defenseDownCommand;
     private DefenseUpCommand m_defenseUpCommand;
-    private AimingTestingCommand m_aimingTestCommand;
     private AimingOnCommand m_aimingCommand;
     private AimingOffCommand m_turnOffAimingCommand;
     private DriveManateeModeCommand m_driveManateeModeCommand;
@@ -320,11 +320,11 @@ public class RobotContainerRed extends CommandOpMode
 
         //DRIVER
 
-        this.m_intakeMotorCommand = new IntakeMotorCommand(this.m_intakeMotorSubsystem, this.m_intakeServoSubsystem);
+        this.m_intakeMotorCommand = new IntakeMotorCommand(this.m_intakeMotorSubsystem);
         this.m_square = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeMotorCommand);
 
-        this.m_outTakeMotorCommand = new OutTakeMotorCommand(this.m_intakeMotorSubsystem, this.m_intakeServoSubsystem);
+        this.m_outTakeMotorCommand = new OutTakeMotorCommand(this.m_intakeMotorSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver1, GamepadKeys.Button.LEFT_BUMPER))
                 .whenPressed(this.m_outTakeMotorCommand);
 
@@ -371,12 +371,12 @@ public class RobotContainerRed extends CommandOpMode
 //        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
 //                .whenPressed(this.m_reverseBellyCommand);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_hoodServoSubsystem, this.m_limelightSubsystem);
+        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_hoodServoSubsystem, this.m_limelightSubsystem, this.m_sorterServoSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
-                .whenPressed(this.m_launcherOnCommand);
+                .whenPressed(this.m_launcherBellyCommand);
 
-        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem);
-        this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
+        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
+        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
                 .whenPressed(this.m_launcherOffCommand);
 
 //        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
@@ -414,6 +414,15 @@ public class RobotContainerRed extends CommandOpMode
         this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
+
+        this.m_unJamCommand = new UnJamCommand(this.m_sorterServoSubsystem, this.m_axeSubsystem, this.m_limitSwitchSubsystem);
+        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+                .whileHeld(this.m_unJamCommand);
+
+        this.m_intakeServoCommand = new IntakeServoCommand(this.m_intakeServoSubsystem);
+        m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.BACK))
+                .whileHeld(this.m_intakeServoCommand);
+
 //        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
 //                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
 //        this.m_manateeButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))

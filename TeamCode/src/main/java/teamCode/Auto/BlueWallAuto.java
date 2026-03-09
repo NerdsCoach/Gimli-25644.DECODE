@@ -67,7 +67,7 @@ public class BlueWallAuto extends LinearOpMode
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
-    private CRServo m_intakeServo;
+//    private CRServo m_intakeServo;
 
     //Sensors
     private GoBildaPinpointDriver m_odo;
@@ -86,7 +86,7 @@ public class BlueWallAuto extends LinearOpMode
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
-    private IntakeServoSubsystem m_intakeServoSubsystem;
+//    private IntakeServoSubsystem m_intakeServoSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
 
     //Commands
@@ -196,7 +196,7 @@ public class BlueWallAuto extends LinearOpMode
         telemetry.addData("Device Scalar", m_odo.getYawScalar());
         telemetry.update();
 
-        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
+//        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
         this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
 
@@ -210,7 +210,7 @@ public class BlueWallAuto extends LinearOpMode
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 20);
 
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
+//        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
 
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
@@ -324,7 +324,6 @@ public class BlueWallAuto extends LinearOpMode
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
                     this.m_sorterServoSubsystem.spinSorter(-0.3);
                     this.m_intakeMotorSubsystem.spinMotorIntake(0.7);
-                    this.m_intakeServoSubsystem.spinServo(1.0);
                     telemetry.addLine("PPG Color Sensing");
                     holdTimer.reset();
 
@@ -401,7 +400,6 @@ public class BlueWallAuto extends LinearOpMode
                         // SUCCESS: Ball passed
                         m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.0);
-                        this.m_intakeServoSubsystem.spinServo(0.0);
 
                         m_StateTime.reset();
                         m_stateMachine = StateMachine.WAIT_FOR_NEXT;

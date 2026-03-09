@@ -4,8 +4,9 @@ import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import java.util.TreeMap;
+
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
@@ -13,10 +14,11 @@ import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 
-public class LauncherOnCommand extends CommandBase
+public class LauncherBellyCommand extends CommandBase
 {
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
+    private final SorterServoSubsystem m_sorterSubsystem;
     private final HoodServoSubsystem m_hoodSubsystem;
     private final LimeLightSubsystem m_limelightSubsystem;
 
@@ -28,14 +30,16 @@ public class LauncherOnCommand extends CommandBase
 
     private double m_lastKnownSpeed;
 
-    public LauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
-                             HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem)
+    public LauncherBellyCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
+                                HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem,
+                                SorterServoSubsystem sorterServo)
     {
 
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         this.m_hoodSubsystem = hoodSubsystem;
         this.m_limelightSubsystem = limelightSubsystem;
+        this.m_sorterSubsystem = sorterServo;
 
         m_lastKnownSpeed = 1500.0;
 
@@ -83,6 +87,7 @@ public class LauncherOnCommand extends CommandBase
         {
             LLResult result = m_limelightSubsystem.getLatestResult();
             this.m_axeSubsystem.pivotAxe(m_axeDown);
+            this.m_sorterSubsystem.spinSorter(-0.75);
 
             if (result != null && result.isValid() && !result.getFiducialResults().isEmpty())
             {
@@ -122,5 +127,7 @@ public class LauncherOnCommand extends CommandBase
 
         @Override
         public boolean isFinished()
-        { return false; }
+        {
+            return true;
+        }
     }

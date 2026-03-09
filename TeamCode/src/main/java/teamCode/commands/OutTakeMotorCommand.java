@@ -9,18 +9,18 @@ import teamCode.subsystems.IntakeServoSubsystem;
 public class OutTakeMotorCommand extends CommandBase
 {
     private final IntakeMotorSubsystem m_intakeMotorSubsystem;
-    private final IntakeServoSubsystem m_intakeServoSubsystem;
+//    private final IntakeServoSubsystem m_intakeServoSubsystem;
     private static final double m_intakeOn = Constants.IntakeConstants.kOutTake;
     private static final double m_intakeOff = Constants.IntakeConstants.kIntakeOff;
     private int m_position;
     private static final int  m_off = 1;
     private static final int  m_on = 0;
 
-    public OutTakeMotorCommand(IntakeMotorSubsystem intakeMotor, IntakeServoSubsystem intakeServo)
+    public OutTakeMotorCommand(IntakeMotorSubsystem intakeMotor)
     {
         this.m_intakeMotorSubsystem = intakeMotor;
-        this.m_intakeServoSubsystem = intakeServo;
-        addRequirements(this.m_intakeMotorSubsystem, this.m_intakeServoSubsystem);
+//        this.m_intakeServoSubsystem = intakeServo;
+        addRequirements(this.m_intakeMotorSubsystem);
     }
 
     @Override
@@ -34,13 +34,11 @@ public class OutTakeMotorCommand extends CommandBase
         if (m_position == m_off)
         {
             this.m_intakeMotorSubsystem.spinMotorIntake(m_intakeOn);
-            this.m_intakeServoSubsystem.spinServo(m_intakeOn);
             m_position = m_on;
         }
         else if (m_position == m_on)
         {
             this.m_intakeMotorSubsystem.spinMotorIntake(m_intakeOff);
-            this.m_intakeServoSubsystem.spinServo(m_intakeOff);
             m_position = m_off;
         }
     }

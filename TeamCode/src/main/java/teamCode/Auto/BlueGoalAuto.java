@@ -65,7 +65,7 @@ public class BlueGoalAuto extends LinearOpMode
 
     //Servos
     private Servo m_AxeServo;
-    private CRServo m_intakeServo;
+//    private CRServo m_intakeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
@@ -85,7 +85,7 @@ public class BlueGoalAuto extends LinearOpMode
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
-    private IntakeServoSubsystem m_intakeServoSybsystem;
+//    private IntakeServoSubsystem m_intakeServoSybsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
 
@@ -192,7 +192,7 @@ public class BlueGoalAuto extends LinearOpMode
         //Servos
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
-        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
+//        this.m_intakeServo = new CRServo(hardwareMap, "intakeServo");
         this.m_sorterServo = new CRServo(hardwareMap, "sorterServo");
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
         //Sensors
@@ -203,7 +203,7 @@ public class BlueGoalAuto extends LinearOpMode
 
         //Subsystems
         this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
-        this.m_intakeServoSybsystem = new IntakeServoSubsystem(this.m_intakeServo);
+//        this.m_intakeServoSybsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
@@ -358,8 +358,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.75);
-                        this.m_intakeServoSybsystem.spinServo(1.0);
-                        m_stateMachine = StateMachine.PICK_UP;
+//                      m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up");
                     }
@@ -387,7 +386,6 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeMotorSubsystem.spinMotorIntake(1);
-                        this.m_intakeServoSybsystem.spinServo(1.0);
                         m_stateMachine = StateMachine.PICK_UP2;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up Again");
@@ -434,7 +432,6 @@ public class BlueGoalAuto extends LinearOpMode
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();
-                        this.m_intakeServoSybsystem.spinServo(0.0);
                         this.m_launcherSubsystem.setMotorVelocity(0);
 
                         telemetry.addLine("Done");

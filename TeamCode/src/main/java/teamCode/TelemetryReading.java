@@ -34,7 +34,6 @@ import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.GamepadSubsystem;
 import teamCode.subsystems.GyroSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
-import teamCode.subsystems.HuskyLensSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightSubsystem;
@@ -87,7 +86,6 @@ public class TelemetryReading extends CommandOpMode
     private DriveSubsystem m_driveSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
     private TurnTableSubsystem m_turnTableSubsystem;
-    private HuskyLensSubsystem m_huskyLensSubsystem;
     private IntakeServoSubsystem m_intakeServoSubsystem;
     private AxeSubsystem m_axeSubsystem;
     private LauncherSubsystem m_launcherMotorSubsystem;
@@ -176,7 +174,6 @@ public class TelemetryReading extends CommandOpMode
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
-        this.m_huskyLensSubsystem = new HuskyLensSubsystem(this.m_huskylens, 4);
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);

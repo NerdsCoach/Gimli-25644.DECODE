@@ -264,7 +264,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_dpadTop = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_UP))
                 .whenPressed(this.m_aLaunch);
 
-        this.m_intakeMotorCommand = new IntakeMotorCommand(this.m_intakeMotorSubsystem, this.m_intakeServoSubsystem);
+        this.m_intakeMotorCommand = new IntakeMotorCommand(this.m_intakeMotorSubsystem);
         this.m_square = (new GamepadButton(this.m_driver1, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_intakeMotorCommand);
 
@@ -278,7 +278,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .whenPressed(this.m_axeDownCommand);
 
-        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem);
+        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
         this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
                 .whenPressed(this.m_launcherOffCommand);
 

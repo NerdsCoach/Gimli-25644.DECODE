@@ -9,7 +9,6 @@ import teamCode.subsystems.IntakeServoSubsystem;
 public class IntakeMotorCommand extends CommandBase
 {
     private final IntakeMotorSubsystem m_intakeMotorSubsystem;
-    private final IntakeServoSubsystem m_intakeServoSubsystem;
     private static final double m_intakeOn = Constants.IntakeConstants.kIntakeOn;
     private static final double m_intakeOff = Constants.IntakeConstants.kIntakeOff;
     private static final double m_servoOn = Constants.IntakeConstants.kServoOn;
@@ -17,10 +16,9 @@ public class IntakeMotorCommand extends CommandBase
     private static final int  m_off = 1;
     private static final int  m_on = 0;
 
-    public IntakeMotorCommand(IntakeMotorSubsystem intakeMotor, IntakeServoSubsystem intakeServo)
+    public IntakeMotorCommand(IntakeMotorSubsystem intakeMotor)
     {
         this.m_intakeMotorSubsystem = intakeMotor;
-        this.m_intakeServoSubsystem = intakeServo;
         addRequirements(this.m_intakeMotorSubsystem);
     }
 
@@ -35,13 +33,11 @@ public class IntakeMotorCommand extends CommandBase
         if (m_position == m_off)
         {
             this.m_intakeMotorSubsystem.spinMotorIntake(m_intakeOn);
-            this.m_intakeServoSubsystem.spinServo(m_servoOn);
             m_position = m_on;
         }
         else if (m_position == m_on)
         {
             this.m_intakeMotorSubsystem.spinMotorIntake(m_intakeOff);
-            this.m_intakeServoSubsystem.spinServo(m_intakeOff);
             m_position = m_off;
         }
     }
