@@ -36,7 +36,7 @@ import teamCode.subsystems.GyroSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LightASubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
@@ -93,7 +93,7 @@ public class TelemetryReading extends CommandOpMode
     private ParkingSubsystem m_parkingSubsystem;
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
-    private LightSubsystem m_lightSubsystem;
+    private LightASubsystem m_lightSubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
 
@@ -177,7 +177,7 @@ public class TelemetryReading extends CommandOpMode
         this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
-        this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
+        this.m_lightSubsystem = new LightASubsystem(hardwareMap, "lightA");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
 
 

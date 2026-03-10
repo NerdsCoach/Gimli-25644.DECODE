@@ -37,7 +37,8 @@ import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LightASubsystem;
+import teamCode.subsystems.LightBSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
@@ -80,7 +81,8 @@ public class BlueWallAuto extends LinearOpMode
     private AxeSubsystem m_axeSubsystem;
     private SorterServoSubsystem m_sorterServoSubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
-    private LightSubsystem m_lightSubsystem;
+    private LightASubsystem m_lightASubsystem;
+    private LightBSubsystem m_lightBSubsystem;
     private LauncherSubsystem m_launcherSubsystem;
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
@@ -205,7 +207,8 @@ public class BlueWallAuto extends LinearOpMode
         this.m_launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotorRed");
         this.m_intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");        //Servos and Sensors
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
-        this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
+        this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 20);
@@ -298,7 +301,7 @@ public class BlueWallAuto extends LinearOpMode
                 case GPP_PATTERN:
 
                     this.m_sorterServoSubsystem.spinSorter(-0.5);
-                    this.m_lightSubsystem.setLEDGreen();
+                    this.m_lightBSubsystem.setLEDGreen();
                     telemetry.addLine("GPP Color Sensing");
                     holdTimer.reset();
                     this.m_lastKnownColor = 0.5;
@@ -312,7 +315,7 @@ public class BlueWallAuto extends LinearOpMode
                     holdTimer.reset();
                     if (Math.abs(hue - TARGET_PURPLE_HUE) < HUE_TOLERANCE)
                     {
-                        this.m_lightSubsystem.setLEDPurple();
+                        this.m_lightBSubsystem.setLEDPurple();
                         this.m_axeSubsystem.pivotAxe(kAxeDown);
                         this.m_lastKnownColor = 0.722;
                         holdTimer.reset();
@@ -330,7 +333,7 @@ public class BlueWallAuto extends LinearOpMode
                 if(Math.abs(hue - TARGET_PURPLE_HUE) < HUE_TOLERANCE)
                 {
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    m_lightSubsystem.setLEDPurple();
+                    m_lightBSubsystem.setLEDPurple();
                     this.m_lastKnownColor = 0.722;
                     holdTimer.reset();
                     m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
@@ -371,7 +374,7 @@ public class BlueWallAuto extends LinearOpMode
                         rightFront.setPower(0.0);
 
                         // Schedule AimingOnCommand with a timeout to ensure it finishes.
-                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightSubsystem, 20, telemetry)
+                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightASubsystem, 20, telemetry)
                                 .withTimeout(1500)
                                 .schedule();
 

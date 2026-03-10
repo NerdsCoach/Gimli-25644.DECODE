@@ -55,7 +55,7 @@ import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LightASubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
@@ -137,7 +137,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     private ParkingSubsystem m_parkingSubsystem;
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
-    private LightSubsystem m_lightSubsystem;
+    private LightASubsystem m_lightASubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private LimeLightSubsystem m_limelightSubsystem;
@@ -234,7 +234,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_pIDController.setPID(0.0, 0.0, 0.0);
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
-        this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "light");
 
         /* Subsystems */
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo);
@@ -282,7 +282,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
 //        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
 //                .whenPressed(this.m_launcherOffCommand);
 
-        this.m_aimingCommand = new AimingOnCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem, this.m_lightSubsystem,  20, this.m_telemetry);
+        this.m_aimingCommand = new AimingOnCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem, this.m_lightASubsystem,  20, this.m_telemetry);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 

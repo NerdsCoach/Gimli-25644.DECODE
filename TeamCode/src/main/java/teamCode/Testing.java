@@ -39,7 +39,7 @@ import teamCode.subsystems.GyroSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
-import teamCode.subsystems.LightSubsystem;
+import teamCode.subsystems.LightASubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
@@ -101,7 +101,7 @@ public class Testing extends CommandOpMode
     private ParkingSubsystem m_parkingSubsystem;
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
-    private LightSubsystem m_lightSubsystem;
+    private LightASubsystem m_lightASubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
 
@@ -192,7 +192,7 @@ public class Testing extends CommandOpMode
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
-        this.m_lightSubsystem = new LightSubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "light");
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
 

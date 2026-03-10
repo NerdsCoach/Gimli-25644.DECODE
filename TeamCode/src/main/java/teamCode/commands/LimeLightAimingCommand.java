@@ -2,20 +2,20 @@
 //
 //import com.arcrobotics.ftclib.command.CommandBase;
 //
-//import teamCode.subsystems.LightSubsystem;
+//import teamCode.subsystems.LightASubsystem;
 //import teamCode.subsystems.TurnTableSubsystem;
 //
 //public class LimeLightAimingCommand extends CommandBase
 //{
 //    private final TurnTableSubsystem m_turnTableSubsystem;
-//    private final LightSubsystem m_lightSubsystem;
+//    private final LightASubsystem m_lightSubsystem;
 //    // Assuming HuskyLens resolution is 320x240, center X is 160
 //    private static final int TARGET_CENTER_X = 160;
 //    private static final double KP = 0.0025; //0.003 – 0.01	The multiplier that converts pixels to power.
 //
 //    private double lastError = 0;
 //
-//    public LimeLightAimingCommand(TurnTableSubsystem turnTableSubsystem, LightSubsystem lightSubsystem)
+//    public LimeLightAimingCommand(TurnTableSubsystem turnTableSubsystem, LightASubsystem lightSubsystem)
 //    {
 //        m_turnTableSubsystem = turnTableSubsystem;
 //        m_lightSubsystem = lightSubsystem;
