@@ -33,9 +33,7 @@ import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
-
 import teamCode.subsystems.IntakeMotorSubsystem;
-import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
@@ -65,7 +63,6 @@ public class BlueGoalAuto extends LinearOpMode
 
     //Servos
     private Servo m_AxeServo;
-//    private CRServo m_intakeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
     private Servo m_hoodServo;
@@ -85,7 +82,6 @@ public class BlueGoalAuto extends LinearOpMode
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
-//    private IntakeServoSubsystem m_intakeServoSybsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
 
@@ -240,16 +236,16 @@ public class BlueGoalAuto extends LinearOpMode
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
-                        Launch, 0.6, 0.1))
+                            Launch, 0.6, 0.2))
 
-                {
+                    {
                         nav.resetPIDs();
                         leftBack.setPower(0);
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-//                        m_launcherOnCommand.schedule();
-                        m_launcherSubsystem.setMotorVelocity(1725);
+                        m_launcherOnCommand.schedule();
+//                        m_launcherSubsystem.setMotorVelocity(1730);
                         holdTimer.reset();
 
                         telemetry.addLine("Ready to Aim!");
@@ -271,7 +267,6 @@ public class BlueGoalAuto extends LinearOpMode
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;
@@ -297,7 +292,7 @@ public class BlueGoalAuto extends LinearOpMode
                         m_StateTime.reset();
                         m_stateMachine = StateMachine.WAIT_FOR_NEXT;
                     }
-                     if (m_StateTime.time() > 2.0)
+                    if (m_StateTime.time() > 2.0)
                     {
                         // JAM DETECTED: Switch wasn't hit in 2 seconds
                         m_StateTime.reset();
@@ -307,7 +302,7 @@ public class BlueGoalAuto extends LinearOpMode
                     break;
 
                 case WAIT_FOR_NEXT:
-                    if (m_StateTime.time() > 0.2) //.5
+                    if (m_StateTime.time() > 0.25) //.5
                     {
                         ballCount++;
 
@@ -358,7 +353,7 @@ public class BlueGoalAuto extends LinearOpMode
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.75);
-//                      m_stateMachine = StateMachine.PICK_UP;
+                        m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up");
                     }
@@ -440,19 +435,19 @@ public class BlueGoalAuto extends LinearOpMode
             }
 
 
-        //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
-        leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
-        rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
-        leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
-        rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
+            //nav calculates the power to set to each motor in a mecanum or tank drive. Use nav.getMotorPower to find that value.
+            leftFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_FRONT));
+            rightFront.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_FRONT));
+            leftBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.LEFT_BACK));
+            rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
-        telemetry.addData("current state:", m_stateMachine);
+            telemetry.addData("current state:", m_stateMachine);
             telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
             telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
 
-        telemetry.update();
+            telemetry.update();
 
-    }
+        }
     }
 }

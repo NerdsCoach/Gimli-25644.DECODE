@@ -27,6 +27,8 @@ public class LauncherBellyCommand extends CommandBase
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
     private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
+    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
+
 
     private double m_lastKnownSpeed;
 
@@ -43,23 +45,8 @@ public class LauncherBellyCommand extends CommandBase
 
         m_lastKnownSpeed = 1500.0;
 
-        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem, this.m_hoodSubsystem);
+        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem);
 
-//        m_velocityLUT.add(0.49, 1450.0);
-//        m_velocityLUT.add(0.65, 1550.0);
-//        m_velocityLUT.add(0.78, 1600.0);
-//        m_velocityLUT.add(0.85, 1650.0);
-//        m_velocityLUT.add(0.99, 1750.0);
-//        m_velocityLUT.add(1.12, 1850.0);
-//        m_velocityLUT.add(1.28, 1950.0);
-//        m_velocityLUT.add(1.36, 2050.0);
-//        m_velocityLUT.add(1.61, 2150.0);
-//        m_velocityLUT.add(1.93, 2250.0);//Hood up
-//        m_velocityLUT.add(1.95, 2260.0);
-//        m_velocityLUT.add(2.14, 2300.0);
-//        m_velocityLUT.add(2.22, 2350.0);
-//        m_velocityLUT.add(2.38, 2450.0);
-//        m_velocityLUT.add(2.42, 2550.0);
         m_velocityLUT.add(0.25, 1550.0);// 1450
         m_velocityLUT.add(0.49, 1570.0);//1470
         m_velocityLUT.add(0.65, 1670.0);//1570
@@ -122,12 +109,15 @@ public class LauncherBellyCommand extends CommandBase
         @Override
         public void end(boolean interrupted)
         {
+            this.m_axeSubsystem.pivotAxe(m_axeUp);
+            this.m_sorterSubsystem.spinSorter(0.0 );
+            this.m_launcherSubsystem.setMotorVelocity(0.0);
 
         }
 
         @Override
         public boolean isFinished()
         {
-            return true;
+            return false;
         }
     }

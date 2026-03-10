@@ -26,25 +26,17 @@ public class BellyOfTheBeastCommand extends CommandBase
     @Override
     public void execute()
     {
-        if (m_position == m_off)
-        {
             this.m_sorterSubsystem.spinSorter(-0.75); //-1.0
-            m_position = m_on;
-        }
-        else if (m_position == m_on)
-        {
-            this.m_sorterSubsystem.spinSorter(0.0);
-            m_position = m_off;
-        }
     }
     @Override
     public void end(boolean interrupted)
     {
+        this.m_sorterSubsystem.spinSorter(0.0);
     }
 
     @Override
     public boolean isFinished()
     {
-        return true;
+        return false;
     }
 }

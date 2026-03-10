@@ -7,6 +7,7 @@ import teamCode.subsystems.HoodServoSubsystem;
 public class HoodUpCommand extends CommandBase
 {
     private static final double m_aimFar = Constants.AimingConstants.kFarAim;
+    private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
     private final HoodServoSubsystem m_hoodServoSubsystem;
 
     public HoodUpCommand(HoodServoSubsystem hoodServoSubsystem)
@@ -28,11 +29,12 @@ public class HoodUpCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
+        this.m_hoodServoSubsystem.pivotHood(m_aimClose);
     }
 
     @Override
     public boolean isFinished()
     {
-        return true;
+        return false;
     }
 }

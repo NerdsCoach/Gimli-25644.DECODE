@@ -34,15 +34,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import teamCode.commands.ALauncherOnCommand;
-import teamCode.commands.AimingOffCommand;
+//import teamCode.commands.AimingOffCommand;
 import teamCode.commands.AimingOnCommand;
 import teamCode.commands.AxeDownCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
-import teamCode.commands.HoodDownCommand;
+//import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodUpCommand;
 import teamCode.commands.IntakeMotorCommand;
-import teamCode.commands.LauncherOffCommand;
+//import teamCode.commands.LauncherOffCommand;
 import teamCode.commands.LauncherOnCommand;
 import teamCode.commands.ReverseTransferCommand;
 import teamCode.commands.TransferLimitCommand;
@@ -149,14 +149,14 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     private AxeDownCommand m_axeDownCommand;
     private ALauncherOnCommand m_aLaunch;
 
-    private LauncherOffCommand m_launcherOffCommand;
+//    private LauncherOffCommand m_launcherOffCommand;
 
     private TransferLimitCommand m_transferLimitCommand;
     private ReverseTransferCommand m_reverseTransferCommand;
     private Telemetry m_telemetry;
     private AimingOnCommand m_aimingCommand;
-    private AimingOffCommand m_turnOffAimingCommand;
-    private HoodDownCommand m_hoodCloseCommand;
+//    private AimingOffCommand m_turnOffAimingCommand;
+//    private HoodDownCommand m_hoodCloseCommand;
     private HoodUpCommand m_hoodFarCommand;
 
     private GoBildaPinpointDriver m_odo;
@@ -278,21 +278,21 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .whenPressed(this.m_axeDownCommand);
 
-        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
-        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
-                .whenPressed(this.m_launcherOffCommand);
+//        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
+//        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
+//                .whenPressed(this.m_launcherOffCommand);
 
         this.m_aimingCommand = new AimingOnCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem, this.m_lightSubsystem,  20, this.m_telemetry);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .whenPressed(this.m_aimingCommand);
 
-        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem);
-        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
-                .whenPressed(this.m_turnOffAimingCommand);
-
-        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
-                .whenPressed(this.m_hoodCloseCommand);
+//        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem);
+//        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
+//                .whenPressed(this.m_turnOffAimingCommand);
+//
+//        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
+//        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
+//                .whenPressed(this.m_hoodCloseCommand);
 
         this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
         this.m_dpadTop2 = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))

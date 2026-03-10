@@ -33,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
-import teamCode.commands.AimingOffCommand;
+//import teamCode.commands.AimingOffCommand;
 import teamCode.commands.AimingOnCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.ColorModeOnCommand;
@@ -44,14 +44,14 @@ import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.DriveManateeModeCommand;
 import teamCode.commands.FudgeDeParkingCommand;
 import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.HoodDownCommand;
+//import teamCode.commands.HoodDownCommand;
 import teamCode.commands.HoodTestingCommand;
 import teamCode.commands.HoodUpCommand;
 //import teamCode.commands.IntakeModeCommand;
 import teamCode.commands.IntakeMotorCommand;
 import teamCode.commands.IntakeServoCommand;
 import teamCode.commands.LauncherBellyCommand;
-import teamCode.commands.LauncherOffCommand;
+//import teamCode.commands.LauncherOffCommand;
 import teamCode.commands.LauncherOnCommand;
 //import teamCode.commands.OutTakeModeCommand;
 import teamCode.commands.OutTakeMotorCommand;
@@ -165,7 +165,7 @@ public class RobotContainerRed extends CommandOpMode
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
     private ReverseBellyOfTheBeastCommand m_reverseBellyCommand;
     private LauncherBellyCommand m_launcherBellyCommand;
-    private LauncherOffCommand m_launcherOffCommand;
+//    private LauncherOffCommand m_launcherOffCommand;
     private TurnTableLeftCommand m_turnTableLeftCommand;
     private TurnTableRightCommand m_turnTableRightCommand;
     private IntakeMotorCommand m_intakeMotorCommand;
@@ -185,10 +185,10 @@ public class RobotContainerRed extends CommandOpMode
     private DefenseDownCommand m_defenseDownCommand;
     private DefenseUpCommand m_defenseUpCommand;
     private AimingOnCommand m_aimingCommand;
-    private AimingOffCommand m_turnOffAimingCommand;
+//    private AimingOffCommand m_turnOffAimingCommand;
     private DriveManateeModeCommand m_driveManateeModeCommand;
     private ResetGyroCommand m_resetGyroCommand;
-    private HoodDownCommand m_hoodCloseCommand;
+//    private HoodDownCommand m_hoodCloseCommand;
     private HoodUpCommand m_hoodFarCommand;
     private HoodTestingCommand m_hoodTestingCommand;
 
@@ -361,23 +361,23 @@ public class RobotContainerRed extends CommandOpMode
 
         this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem, this.m_lightSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
-                .whenPressed(this.m_colorOnCommand);
+                .toggleWhenPressed(this.m_colorOnCommand);
 
         this.m_bellyOfTheBeastCommand = new BellyOfTheBeastCommand(this.m_sorterServoSubsystem);
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
-                .whenPressed(this.m_bellyOfTheBeastCommand);
+                .toggleWhenPressed(this.m_bellyOfTheBeastCommand);
 
 //        this.m_reverseBellyCommand = new ReverseBellyOfTheBeastCommand(this.m_sorterServoSubsystem);
 //        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
 //                .whenPressed(this.m_reverseBellyCommand);
 
-        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_hoodServoSubsystem, this.m_limelightSubsystem, this.m_sorterServoSubsystem);
+        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem, this.m_limelightSubsystem, this.m_sorterServoSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
-                .whenPressed(this.m_launcherBellyCommand);
+                .toggleWhenPressed(this.m_launcherBellyCommand);
 
-        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
-        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
-                .whenPressed(this.m_launcherOffCommand);
+//        this.m_launcherOffCommand = new LauncherOffCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem, this.m_sorterServoSubsystem);
+//        this.m_optionsButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
+//                .whenPressed(this.m_launcherOffCommand);
 
 //        this.m_turnTableLeftCommand = new TurnTableLeftCommand(this.m_turnTableSubsystem);
 //        this.m_dpadLeft = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_LEFT))
@@ -393,19 +393,19 @@ public class RobotContainerRed extends CommandOpMode
 
         this.m_aimingCommand = new AimingOnCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem, this.m_lightSubsystem, 24, this.m_telemetry);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
-                .whenPressed(this.m_aimingCommand);
+                .toggleWhenPressed(this.m_aimingCommand);
 
-        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem);
-        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
-                .whenPressed(this.m_turnOffAimingCommand);
+//        this.m_turnOffAimingCommand = new AimingOffCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem);
+//        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
+//                .whenPressed(this.m_turnOffAimingCommand);
 
-        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
-        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
-                .whenPressed(this.m_hoodCloseCommand);
+//        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
+//        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
+//                .whenPressed(this.m_hoodCloseCommand);
 
         this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(this.m_hoodFarCommand);
+                .toggleWhenPressed(this.m_hoodFarCommand);
 
         this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);
@@ -422,15 +422,5 @@ public class RobotContainerRed extends CommandOpMode
         this.m_intakeServoCommand = new IntakeServoCommand(this.m_intakeServoSubsystem);
         m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.BACK))
                 .whileHeld(this.m_intakeServoCommand);
-
-//        this.m_driveManateeModeCommand = new DriveManateeModeCommand(this.m_driveSubsystem,this.m_gamepadSubsystem,() -> this.m_driver1.getLeftX(),
-//                () -> this.m_driver1.getLeftY(), () -> this.m_driver1.getRightX(), () -> this.m_driver1.getRightY());
-//        this.m_manateeButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.B))
-//                .toggleWhenPressed(this.m_driveFieldOrientedCommand, this.m_driveManateeModeCommand);
-
-//        this.m_pose2DObservationZoneCommand = new Pose2DObservationZoneCommand(this.m_driveSubsystem, this.m_odo,
-//                this.leftFront, this.rightFront, this.leftBack,this.rightBack);
-//        new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(this.m_pose2DObservationZoneCommand);
-
     }
 }

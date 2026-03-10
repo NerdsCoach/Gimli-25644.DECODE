@@ -43,9 +43,6 @@ public class ColorModeOnCommand extends CommandBase
             );
             float hue = hsv[0];
 
-
-        if (m_position == m_off)
-        {
             if (Math.abs(hue - TARGET_GREEN_HUE) < HUE_TOLERANCE)
             {
                 m_lightSubsystem.setLEDGreen();
@@ -60,19 +57,13 @@ public class ColorModeOnCommand extends CommandBase
             {
                 m_lightSubsystem.lastKnown(m_lastKnownColor); // Default to off
             }
-            m_position = m_on;
-        }
-        else if (m_position == m_on)
-        {
-
-            m_position = m_off;
-        }
 
     }
 
     @Override
     public void end(boolean interrupted)
     {
+        m_lightSubsystem.off(0.0);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class AimingOnCommand extends CommandBase
     private Telemetry m_telemetry;
 
     private static final double deadband = 1.5;
-    private static final double minPower = 0.08;
+    private static final double minPower = 0.04; //0.08
     private static final double kP = 0.025;
     private static final double kD = 0.001;
     private final int m_targetId;
@@ -105,6 +105,7 @@ public class AimingOnCommand extends CommandBase
         m_telemetry.addData("Turntable Pos", currentPosition);
         m_telemetry.addData("Correction", correction);
         m_telemetry.addData("Tag Error", error);
+        lastError = error;
     }
     @Override
     public boolean isFinished()
@@ -118,15 +119,13 @@ public class AimingOnCommand extends CommandBase
         m_turnTableSubsystem.stop();
         m_lightSubsystem.off(0.0);
     }
-//
-//
 //    private final LimeLightSubsystem m_limelightSubsystem;
 //    private final TurnTableSubsystem m_turnTableSubsystem;
 //    private final LightSubsystem m_lightSubsystem;
 //    private Telemetry m_telemetry;
 //
 //    private static final double deadband = 1.5;
-//    private static final double minPower = 0.08;
+//    private static final double minPower = 0.04;//0.08
 //    private static final double kP = 0.025;
 //    private static final double kD = 0.001;
 //    private final int m_targetId;
@@ -175,6 +174,7 @@ public class AimingOnCommand extends CommandBase
 //// We loop through the detected tags to find the one matching your m_targetId
 //        for (LLResultTypes.FiducialResult fr : result.getFiducialResults())
 //        {
+//
 //            if (fr.getFiducialId() == m_targetId)
 //            {
 //                // Robot's position relative to the AprilTag center
@@ -185,7 +185,7 @@ public class AimingOnCommand extends CommandBase
 //
 //                // GOAL OFFSET: Distance (meters) from the tag center to the goal center
 //                // If the goal is 10 inches behind the tag, use 0.254
-//                double goalDepth = 0.3;
+//                double goalDepth = 0.0;//0.3
 //
 //                // We use -x because if the robot is to the right (+x),
 //                // it needs a negative angle to turn left toward the center.
@@ -206,19 +206,23 @@ public class AimingOnCommand extends CommandBase
 //        if (Math.abs(error) < deadband)
 //        {
 //            m_turnTableSubsystem.stop();
-//            lastError = error;
+////            lastError = error;
 //            return;
 //        }
 //
 //        // PD Control
+//
 //        double correction = (error * kP) + ((error - lastError) * kD);
 //        lastError = error;
 //
 //        // Smart Power Floor & Clamping
-//        if (Math.abs(correction) < minPower)
-//        {
-//            correction = (error > 0) ? minPower : -minPower;
+//        if (Math.abs(error) > deadband && Math.abs(correction) < minPower) {
+//            correction = Math.copySign(minPower, error);
 //        }
+////        if (Math.abs(correction) < minPower)
+////        {
+////            correction = (error > 0) ? minPower : -minPower;
+////        }
 //        correction = Math.max(-0.4, Math.min(0.4, correction));
 //
 //        // 3. DIRECTIONAL SAFETY LIMITS
@@ -249,6 +253,7 @@ public class AimingOnCommand extends CommandBase
 //        m_telemetry.addData("Turntable Pos", currentPosition);
 //        m_telemetry.addData("Correction", correction);
 //        m_telemetry.addData("Tag Error", error);
+//        lastError = error;
 //    }
 //
 //
