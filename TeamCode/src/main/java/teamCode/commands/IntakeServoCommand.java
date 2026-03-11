@@ -9,9 +9,7 @@ import teamCode.subsystems.IntakeServoSubsystem;
 public class IntakeServoCommand extends CommandBase
 {
     private final IntakeServoSubsystem m_intakeServoSubsystem;
-    private static final double m_intakeOn = Constants.IntakeConstants.kIntakeOn;
-    private static final double m_intakeOff = Constants.IntakeConstants.kIntakeOff;
-    private static final double m_servoOn = Constants.IntakeConstants.kServoOn;
+    private boolean lastState = false;
 
     public IntakeServoCommand(IntakeServoSubsystem intakeServo)
     {
@@ -22,22 +20,33 @@ public class IntakeServoCommand extends CommandBase
     @Override
     public void initialize()
     {
+        m_intakeServoSubsystem.resetHits();
+        lastState = m_intakeServoSubsystem.isPressed();
     }
 
     @Override
     public void execute()
     {
-            this.m_intakeServoSubsystem.spinServo(m_intakeOn);
+        boolean currentState = m_intakeServoSubsystem.isPressed();
+
+        // Only count if it transitions from FALSE to TRUE
+        if (currentState && !lastState)
+        {
+            m_intakeServoSubsystem.incrementHits();
+        }
+        lastState = currentState;
+
+        m_intakeServoSubsystem.spinServo(0.4); //-0.29
     }
     @Override
     public void end(boolean interrupted)
     {
-        this.m_intakeServoSubsystem.spinServo(m_intakeOff);
+        m_intakeServoSubsystem.spinServo(0.0);
     }
 
     @Override
     public boolean isFinished()
     {
-        return false;
+        return m_intakeServoSubsystem.getHitCount() >= 1 ;
     }
 }

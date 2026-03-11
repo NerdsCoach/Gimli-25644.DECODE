@@ -36,6 +36,7 @@ import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightASubsystem;
+import teamCode.subsystems.LightBSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
@@ -77,7 +78,8 @@ public class BlueGoalAuto extends LinearOpMode
     private AxeSubsystem m_axeSubsystem;
     private SorterServoSubsystem m_sorterServoSubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
-    private LightASubsystem m_lightSubsystem;
+    private LightASubsystem m_lightASubsystem;
+    private LightBSubsystem m_lightBSubsystem;
     private LauncherSubsystem m_launcherSubsystem;
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
@@ -193,7 +195,8 @@ public class BlueGoalAuto extends LinearOpMode
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
         //Sensors
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
-        this.m_lightSubsystem = new LightASubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
+        this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 20);
 
@@ -263,7 +266,7 @@ public class BlueGoalAuto extends LinearOpMode
                     if (!m_aimingCommandStarted)
                     {
                         // Schedule AimingOnCommand with a timeout to ensure it finishes.
-                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightSubsystem, 20, telemetry)
+                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightASubsystem, 20, telemetry)
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.

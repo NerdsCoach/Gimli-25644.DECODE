@@ -212,7 +212,7 @@ public class RedWallAuto extends LinearOpMode
         this.m_intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");        //Servos and Sensors
         this.m_axeSubsystem = new AxeSubsystem(hardwareMap, "axeServo");
         this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
-        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightB");
+        this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_hoodServoSubsystem = new HoodServoSubsystem(hardwareMap, "aimingServo");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 24);

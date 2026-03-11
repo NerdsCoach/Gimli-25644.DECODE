@@ -122,6 +122,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     /* Sensors */
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
+    private RevTouchSensor m_intakeLimitSwitch;
 
 
     /* Subsystems */
@@ -234,6 +235,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_pIDController.setPID(0.0, 0.0, 0.0);
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
+        this.m_intakeLimitSwitch = hardwareMap.get(RevTouchSensor.class, "intakeLimitSwitch");
         this.m_lightASubsystem = new LightASubsystem(hardwareMap, "light");
 
         /* Subsystems */
@@ -245,7 +247,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
         this.m_limelightSubsystem = new LimeLightSubsystem(hardwareMap, 20);
         this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_sorterServo);
+        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeLimitSwitch, this.m_sorterServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);

@@ -37,6 +37,7 @@ import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightASubsystem;
+import teamCode.subsystems.LightBSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
@@ -80,6 +81,7 @@ public class RedGoalAuto extends LinearOpMode
     private SorterServoSubsystem m_sorterServoSubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
     private LightASubsystem m_lightASubsystem;
+    private LightBSubsystem m_lightBSubsystem;
     private LauncherSubsystem m_launcherSubsystem;
     private TurnTableSubsystem m_turnTableSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
@@ -196,7 +198,8 @@ public class RedGoalAuto extends LinearOpMode
         this.m_transferServo = new CRServo(hardwareMap, "transferServo");
         //Sensors
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
-        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
+        this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_limeLightSubsystem = new LimeLightSubsystem(hardwareMap, 24);
 

@@ -78,6 +78,7 @@ public class TelemetryReading extends CommandOpMode
     public HuskyLens m_huskylens;
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
+    private RevTouchSensor m_intakeLimitSwitch;
 
 //    public int m_gain;
 //    public  m_hsvValues;
@@ -165,6 +166,7 @@ public class TelemetryReading extends CommandOpMode
         this.m_huskylens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
+        this.m_intakeLimitSwitch = hardwareMap.get(RevTouchSensor.class, "intakeLimitSwitch");
 
         /* Subsystems */
 
@@ -174,7 +176,7 @@ public class TelemetryReading extends CommandOpMode
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
+        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeLimitSwitch, this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
         this.m_lightSubsystem = new LightASubsystem(hardwareMap, "lightA");

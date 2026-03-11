@@ -133,6 +133,7 @@ public class RobotContainer extends CommandOpMode
     /* Sensors */
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
+    private RevTouchSensor m_intakeLimitSwitch;
     private Limelight3A m_limelight;
 
 
@@ -252,6 +253,8 @@ public class RobotContainer extends CommandOpMode
         this.m_pIDController.setPID(0.0, 0.0, 0.0);
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
+        this.m_intakeLimitSwitch = hardwareMap.get(RevTouchSensor.class, "intakeLimitSwitch");
+
         this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
         this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
 
@@ -265,7 +268,7 @@ public class RobotContainer extends CommandOpMode
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
         this.m_limelightSubsystem = new LimeLightSubsystem(hardwareMap, 20);
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
+        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeLimitSwitch, this.m_intakeServo);
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
@@ -363,7 +366,7 @@ public class RobotContainer extends CommandOpMode
 
         this.m_intakeServoCommand = new IntakeServoCommand(this.m_intakeServoSubsystem);
         m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.BACK))
-                .whileHeld(this.m_intakeServoCommand);
+                .whenPressed(this.m_intakeServoCommand);
     }
     @Override
     public void run()

@@ -124,6 +124,7 @@ public class RobotContainerRed extends CommandOpMode
     /* Sensors */
     public NormalizedColorSensor m_colorSensor;
     private RevTouchSensor m_limitSwitch;
+    private RevTouchSensor m_intakeLimitSwitch;
     private Limelight3A m_limelight;
 
 
@@ -238,6 +239,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_pIDController.setPID(0.0, 0.0, 0.0);
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
+        this.m_intakeLimitSwitch = hardwareMap.get(RevTouchSensor.class, "intakeLimitSwitch");
         this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
         this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
 
@@ -248,7 +250,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_gamepadSubsystem = new GamepadSubsystem(this.m_driver1, this.m_driver2); //TODO: added light
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
-        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeServo);
+        this.m_intakeServoSubsystem = new IntakeServoSubsystem(this.m_intakeLimitSwitch,this.m_intakeServo);
         this.m_launcherMotorSubsystem = new LauncherSubsystem(this.m_launcherMotorRed);
         this.m_parkingSubsystem = new ParkingSubsystem(this.m_parkMotor);
         this.m_limelightSubsystem = new LimeLightSubsystem(hardwareMap, 24);
@@ -347,6 +349,14 @@ public class RobotContainerRed extends CommandOpMode
 
         this.m_intakeServoCommand = new IntakeServoCommand(this.m_intakeServoSubsystem);
         m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.BACK))
-                .whileHeld(this.m_intakeServoCommand);
+                .whenPressed(this.m_intakeServoCommand);
+    }
+    @Override
+    public void run()
+    {
+        // 1. This runs all your scheduled commands (Drive, Turntable, etc.)
+        super.run();
+        // 2. This pushes your Limelight data to the Driver Hub screen
+        telemetry.update();
     }
 }
