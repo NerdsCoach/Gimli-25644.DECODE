@@ -34,6 +34,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import teamCode.commands.AimingOnCommand;
+import teamCode.commands.AxeToggleCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.ColorModeOnCommand;
 import teamCode.commands.DeParkingCommand;
@@ -150,6 +151,7 @@ public class RobotContainerRed extends CommandOpMode
     private DriveFieldOrientedCommand m_driveFieldOrientedCommand;
     private BellyOfTheBeastCommand m_bellyOfTheBeastCommand;
     private LauncherBellyCommand m_launcherBellyCommand;
+    private AxeToggleCommand m_axeToggleCommand;
     private IntakeMotorCommand m_intakeMotorCommand;
     private IntakeServoCommand m_intakeServoCommand;
     private OutTakeMotorCommand m_outTakeMotorCommand;
@@ -216,7 +218,6 @@ public class RobotContainerRed extends CommandOpMode
 
         this.m_driver1 = new GamepadEx(gamepad1);
         this.m_driver2 = new GamepadEx(gamepad2);
-
 
 
         /* Motors */
@@ -344,12 +345,16 @@ public class RobotContainerRed extends CommandOpMode
                 .whenPressed(this.m_transferLimitCommand);
 
         this.m_unJamCommand = new UnJamCommand(this.m_sorterServoSubsystem, this.m_axeSubsystem, this.m_limitSwitchSubsystem);
-        this.m_dpadRight = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_RIGHT))
+        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
                 .whileHeld(this.m_unJamCommand);
 
         this.m_intakeServoCommand = new IntakeServoCommand(this.m_intakeServoSubsystem);
-        m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.BACK))
+        m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
                 .whenPressed(this.m_intakeServoCommand);
+
+        this.m_axeToggleCommand = new AxeToggleCommand(this.m_axeSubsystem);
+        m_shareButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.START))
+                .whenPressed(this.m_axeToggleCommand);
     }
     @Override
     public void run()

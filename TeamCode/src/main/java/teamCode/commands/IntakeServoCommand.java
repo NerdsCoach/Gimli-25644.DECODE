@@ -36,7 +36,7 @@ public class IntakeServoCommand extends CommandBase
         }
         lastState = currentState;
 
-        m_intakeServoSubsystem.spinServo(0.4); //-0.29
+        m_intakeServoSubsystem.spinServo(0.2); //-0.29
     }
     @Override
     public void end(boolean interrupted)

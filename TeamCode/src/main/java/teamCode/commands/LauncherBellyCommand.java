@@ -36,7 +36,6 @@ public class LauncherBellyCommand extends CommandBase
                                 HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem,
                                 SorterServoSubsystem sorterServo)
     {
-
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         this.m_hoodSubsystem = hoodSubsystem;
@@ -45,7 +44,7 @@ public class LauncherBellyCommand extends CommandBase
 
         m_lastKnownSpeed = 1500.0;
 
-        addRequirements(this.m_launcherSubsystem, this.m_axeSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem);
+        addRequirements(this.m_launcherSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem);
 
         m_velocityLUT.add(0.25, 1550.0);// 1450
         m_velocityLUT.add(0.49, 1570.0);//1470
@@ -59,9 +58,9 @@ public class LauncherBellyCommand extends CommandBase
         m_velocityLUT.add(1.61, 2170.0);
         m_velocityLUT.add(1.93, 2270.0);//2270
         m_velocityLUT.add(1.95, 2300.0);//2270
-        m_velocityLUT.add(2.14, 2450.0);//2350
-        m_velocityLUT.add(2.22, 2525.0);//2470
-        m_velocityLUT.add(2.38, 2600.0);//2520
+        m_velocityLUT.add(2.14, 2355.0);//2350
+        m_velocityLUT.add(2.22, 2445.0);//2470
+        m_velocityLUT.add(2.38, 2500.0);//2520
         m_velocityLUT.add(2.42, 2750.0);//2640
         m_velocityLUT.add(2.50, 2775.0);//2650
         m_velocityLUT.add(3.00, 2800.0);//2700

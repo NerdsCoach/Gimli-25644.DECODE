@@ -56,6 +56,7 @@ import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightASubsystem;
+import teamCode.subsystems.LightBSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
@@ -116,7 +117,8 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     private CRServo m_intakeServo;
     public CRServo m_transferServo;
     public CRServo m_sorterServo;
-    private Servo m_light;
+    private Servo m_lightA;
+    private Servo m_lightB;
     private Servo m_AxeServo;
 
     /* Sensors */
@@ -139,6 +141,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     private GyroSubsystem m_gyroSubsystem;
     private GamepadSubsystem m_gamepadSubsystem;
     private LightASubsystem m_lightASubsystem;
+    private LightBSubsystem m_lightBSubsystem;
     private ColorSensorSubsystem m_colorSensorSubsystem;
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private LimeLightSubsystem m_limelightSubsystem;
@@ -228,7 +231,8 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_parkMotor = hardwareMap.get(DcMotor.class, "parkMotor");
         this.m_intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
 
-        this.m_light = hardwareMap.get(Servo.class, "light");
+        this.m_lightA = hardwareMap.get(Servo.class, "lightA");
+        this.m_lightB = hardwareMap.get(Servo.class, "lightB");
 
         /* Sensors */
         this.m_pIDController = new PIDController(0, 0, 0);
@@ -236,7 +240,8 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
         this.m_limitSwitch = hardwareMap.get(RevTouchSensor.class, "limitSwitch");
         this.m_intakeLimitSwitch = hardwareMap.get(RevTouchSensor.class, "intakeLimitSwitch");
-        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "light");
+        this.m_lightASubsystem = new LightASubsystem(hardwareMap, "lightA");
+        this.m_lightBSubsystem = new LightBSubsystem(hardwareMap, "lightB");
 
         /* Subsystems */
         this.m_driveSubsystem = new DriveSubsystem(this.m_drive, this.m_odo);

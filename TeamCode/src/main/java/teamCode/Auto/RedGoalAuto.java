@@ -241,7 +241,6 @@ public class RedGoalAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-//                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
                         Launch, 0.6, 0.2))
 
                     {
