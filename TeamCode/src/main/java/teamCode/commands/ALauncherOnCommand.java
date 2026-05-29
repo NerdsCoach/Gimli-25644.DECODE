@@ -11,7 +11,8 @@ public class ALauncherOnCommand extends CommandBase {
 
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
 
-    public ALauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem) {
+    public ALauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem)
+    {
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
 
@@ -19,8 +20,10 @@ public class ALauncherOnCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void initialize()
+    {
         this.m_launcherSubsystem.fudgeFactor(100);
+//        this.m_launcherSubsystem.setMotorVelocity(200.0); //2150, 2300
         this.m_axeSubsystem.pivotAxe(m_axeDown);
     }
 

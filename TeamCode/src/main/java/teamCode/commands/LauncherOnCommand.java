@@ -66,8 +66,8 @@ public class LauncherOnCommand extends CommandBase
         m_velocityLUT.add(1.28, 1970.0);//Hood up
         m_velocityLUT.add(1.36, 2070.0);
         m_velocityLUT.add(1.61, 2100.0);//2170
-        m_velocityLUT.add(1.93, 2200.0);//2270
-        m_velocityLUT.add(1.95, 2230.0);//2300
+        m_velocityLUT.add(1.93, 2050.0);//2270 //Auto Launching Zone
+//        m_velocityLUT.add(1.95, 2200.0);//2300
         m_velocityLUT.add(2.14, 2385.0);//2450
         m_velocityLUT.add(2.22, 2495.0);//2525
         m_velocityLUT.add(2.38, 2525.0);//2600

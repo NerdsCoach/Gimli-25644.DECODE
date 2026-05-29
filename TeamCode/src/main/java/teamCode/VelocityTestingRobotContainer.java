@@ -297,13 +297,9 @@ public class VelocityTestingRobotContainer extends CommandOpMode
 //        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
 //                .whenPressed(this.m_turnOffAimingCommand);
 //
-//        this.m_hoodCloseCommand = new HoodDownCommand(this.m_hoodServoSubsystem);
-//        this.m_dpadBottom = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_DOWN))
-//                .whenPressed(this.m_hoodCloseCommand);
-
         this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
-        this.m_dpadTop2 = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
-                .whenPressed(this.m_hoodFarCommand);
+        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
+                .toggleWhenPressed(this.m_hoodFarCommand);
 
         this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);

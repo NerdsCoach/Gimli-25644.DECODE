@@ -38,6 +38,8 @@ import teamCode.commands.AxeToggleCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.ColorModeOnCommand;
 import teamCode.commands.DeParkingCommand;
+import teamCode.commands.DefenseDownCommand;
+import teamCode.commands.DefenseUpCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.FudgeDeParkingCommand;
 import teamCode.commands.FudgeParkingCommand;
@@ -166,6 +168,8 @@ public class RobotContainerRed extends CommandOpMode
     private FudgeDeParkingCommand m_fudgeDeParkingCommand;
     private ParkingCommand m_parkingCommand;
     private DeParkingCommand m_deParkingCommand;
+    private DefenseUpCommand m_defenseUpCommand;
+    private DefenseDownCommand m_defenseDownCommand;
     private AimingOnCommand m_aimingCommand;
     private ResetGyroCommand m_resetGyroCommand;
     private HoodUpCommand m_hoodFarCommand;
@@ -311,6 +315,14 @@ public class RobotContainerRed extends CommandOpMode
         this.m_dpadBottom = (new GamepadButton(this.m_driver1, GamepadKeys.Button.DPAD_DOWN))
                 .whenPressed(this.m_deParkingCommand);
 
+        this.m_defenseUpCommand = new DefenseUpCommand(this.m_parkingSubsystem);
+        this.m_triangle = (new GamepadButton(this.m_driver1, GamepadKeys.Button.Y))
+                .whenPressed(this.m_defenseUpCommand);
+
+        this.m_defenseDownCommand = new DefenseDownCommand(this.m_parkingSubsystem);
+        this.m_xButton = (new GamepadButton(this.m_driver1, GamepadKeys.Button.A))
+                .whenPressed(this.m_defenseDownCommand);
+
         //GADGETEER
         this.m_colorOnCommand = new ColorModeOnCommand(this.m_colorSensorSubsystem, this.m_lightBSubsystem);
         this.m_leftBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.LEFT_BUMPER))
@@ -320,7 +332,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .toggleWhenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem, this.m_limelightSubsystem, this.m_sorterServoSubsystem);
+        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem,this.m_limelightSubsystem, this.m_sorterServoSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .toggleWhenPressed(this.m_launcherBellyCommand);
 

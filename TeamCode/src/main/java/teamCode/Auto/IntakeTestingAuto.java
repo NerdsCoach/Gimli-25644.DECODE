@@ -42,10 +42,10 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
-@Autonomous(name="Blue Goal Auto", group="Pinpoint")
+@Autonomous(name="Intake Testing Auto", group="Pinpoint")
 //@Disabled
 
-public class BlueGoalAuto extends LinearOpMode
+public class IntakeTestingAuto extends LinearOpMode
 {
     /* Drivetrain */
     private MecanumDrive m_drive;
@@ -103,7 +103,7 @@ public class BlueGoalAuto extends LinearOpMode
 
     static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, -455, 600, UnnormalizedAngleUnit.DEGREES, -45);
     static final Pose2DUnNormalized StartPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, -300, 1200, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, 380, 1200, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized EndPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, 300, 1200, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized OpenGate = new Pose2DUnNormalized(DistanceUnit.MM, 470, 1400, UnnormalizedAngleUnit.DEGREES, -90);
     static final Pose2DUnNormalized StartPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, -320, 1840, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, 400, 1860, UnnormalizedAngleUnit.DEGREES, 0);
@@ -234,12 +234,9 @@ public class BlueGoalAuto extends LinearOpMode
 
                 case PREPARE_FOR_BATTLE:
                     this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
-                    this.m_axeSubsystem.pivotAxe(kAxeDown);
-                    this.m_sorterServoSubsystem.spinSorter(-1.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.6, 0.2))
-
+                            Launch, 0.8, 0.2))
                     {
                         nav.resetPIDs();
                         leftBack.setPower(0);
@@ -251,97 +248,7 @@ public class BlueGoalAuto extends LinearOpMode
                         holdTimer.reset();
 
                         telemetry.addLine("Ready to Aim!");
-                        m_stateMachine = StateMachine.AIM_TURNTABLE;
-                    }
-                    break;
-
-                case AIM_TURNTABLE:
-//                    m_launcherOnCommand.schedule();
-                    leftBack.setPower(0.0);
-                    leftFront.setPower(0.0);
-                    rightBack.setPower(0.0);
-                    rightFront.setPower(0.0);
-
-                    if (!m_aimingCommandStarted)
-                    {
-                        // Schedule AimingOnCommand with a timeout to ensure it finishes.
-                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightASubsystem, 20, telemetry)
-                                .withTimeout(750)
-                                .schedule();
-                        // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-
-                        m_aimingTimer.reset();
-                        m_aimingCommandStarted = true;
-                    }
-
-                    if (m_aimingTimer.seconds() > 0.75)
-                    {
-                        m_StateTime.reset();
-                        m_stateMachine = StateMachine.LAUNCH_BALL;
-
-                    }
-                    break;
-
-                case LAUNCH_BALL:
-
-                    this.m_limitSwitchSubsystem.setTransferPower(-1.0);
-                    boolean currentState = m_limitSwitchSubsystem.isPressed();
-
-                    if (currentState && !lastState)
-                    {
-                        // SUCCESS: Ball passed
-                        m_limitSwitchSubsystem.setTransferPower(0.0);
-                        m_StateTime.reset();
-                        m_stateMachine = StateMachine.WAIT_FOR_NEXT;
-                    }
-                    if (m_StateTime.time() > 2.0)
-                    {
-                        // JAM DETECTED: Switch wasn't hit in 2 seconds
-                        m_StateTime.reset();
-                        m_stateMachine = StateMachine.REVERSE_RECOVERY;
-                    }
-                    lastState = currentState;
-                    break;
-
-                case WAIT_FOR_NEXT:
-                    if (m_StateTime.time() > 0.25) //.5
-                    {
-                        ballCount++;
-
-                        if (ballCount==3)
-                        {
-                            holdTimer.reset();
-                            m_stateMachine = StateMachine.START_PICK_UP;
-                        }
-
-                        else if (ballCount == 6)
-                        {
-                            holdTimer.reset();
-                            m_stateMachine = StateMachine.START_PICK_UP2;
-                        }
-
-                        else if (ballCount < maxBalls && ballCount!=3 && ballCount !=6)
-                        {
-                            m_StateTime.reset();
-                            m_stateMachine = StateMachine.LAUNCH_BALL;
-                        }
-
-                        else
-                        {
-                            ballCount = 0;
-                            m_stateMachine = StateMachine.PARKED;
-                            holdTimer.reset();
-                        }
-                    }
-                    break;
-
-                case REVERSE_RECOVERY:
-
-                    this.m_limitSwitchSubsystem.setTransferPower(0.30); // Reverse
-                    if (m_StateTime.time() > 0.3)
-                    {
-                        m_StateTime.reset();
-                        m_stateMachine = StateMachine.LAUNCH_BALL;
+                        m_stateMachine = StateMachine.START_PICK_UP;
                     }
                     break;
 
@@ -351,10 +258,10 @@ public class BlueGoalAuto extends LinearOpMode
                     this.m_sorterServoSubsystem.spinSorter(0.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            StartPickUp1, 0.6, 0) || holdTimer.seconds() >= 3.0)
+                            StartPickUp1, 0.8, 0) || holdTimer.seconds() >= 3.0)
                     {
                         this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.75);
+                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
                         m_stateMachine = StateMachine.PICK_UP;
                         holdTimer.reset();
                         telemetry.addLine("Start Pick Up");
@@ -363,10 +270,10 @@ public class BlueGoalAuto extends LinearOpMode
 
                 case PICK_UP:
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp1, 0.4, 0.4) || holdTimer.seconds() >= 3.0)
+                            EndPickUp1, 0.8, 0.4) || holdTimer.seconds() >= 3.0)
                     {
                         m_aimingCommandStarted = false;
-                        m_stateMachine = StateMachine.OPEN_GATE;
+                        m_stateMachine = StateMachine.PARKED;
                         this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
 
                         holdTimer.reset();
@@ -374,44 +281,6 @@ public class BlueGoalAuto extends LinearOpMode
                     }
                     break;
 
-                case START_PICK_UP2:
-                    // We are done launching, so cancel the launcher command.
-                    m_launcherOnCommand.cancel();
-                    this.m_sorterServoSubsystem.spinSorter(0.0);
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
-                    {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1);
-                        m_stateMachine = StateMachine.PICK_UP2;
-                        holdTimer.reset();
-                        telemetry.addLine("Start Pick Up Again");
-                    }
-                    break;
-
-                case PICK_UP2:
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp2, 0.3, 0.4) || holdTimer.seconds() >= 2.0)
-                    {
-                        m_aimingCommandStarted = false;
-                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
-
-                        holdTimer.reset();
-                        telemetry.addLine("Picked up middle row");
-                    }
-                    break;
-
-                case OPEN_GATE:
-
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            OpenGate, 0.8, .3)|| holdTimer.seconds() >= 2)
-                    {
-                        m_stateMachine = StateMachine.PREPARE_FOR_BATTLE;
-                        holdTimer.reset();
-                        telemetry.addLine("Gate Open");
-                    }
-                    break;
 
                 case PARKED:
                     // Make sure the launcher command is stopped.

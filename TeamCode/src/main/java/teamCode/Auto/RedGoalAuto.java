@@ -176,6 +176,19 @@ public class RedGoalAuto extends LinearOpMode
 
 
         this.m_stateMachine = StateMachine.WAITING_FOR_START;
+// THIS LOOP RUNS CONTINUOUSLY AFTER YOU PRESS "INIT" BUT BEFORE "PLAY"
+        while (!isStarted() && !isStopRequested())
+        {
+            m_odo.update(); // Important: Tell the Pinpoint to refresh its data
+
+            telemetry.addData("Status", "INITIALIZED - READY");
+            // Show real-time X and Y from the Pinpoint
+            telemetry.addData("X Pose", m_odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y Pose", m_odo.getPosY(DistanceUnit.MM));
+            telemetry.addData("Heading", m_odo.getHeading(AngleUnit.DEGREES));
+
+            telemetry.update();
+        }
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", m_odo.getXOffset(DistanceUnit.MM));
@@ -447,8 +460,8 @@ public class RedGoalAuto extends LinearOpMode
         rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
         telemetry.addData("current state:", m_stateMachine);
-            telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
-            telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
+            telemetry.addData("X coordinate (MM)", m_odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y coordinate (MM)", m_odo.getPosY(DistanceUnit.MM));
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
 
         telemetry.update();

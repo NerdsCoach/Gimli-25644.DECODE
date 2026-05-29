@@ -12,8 +12,8 @@ public class Constants
         public static final int kLiftPark = 50; //???
         public static final int kDePark = -50;
         public static final int kParkLiftLimit = 2000;
-        public static final int kDeParkLimit = 25;
-        public static final int kDefenseDown = 550;
+        public static final int kDeParkLimit = 10;
+        public static final int kDefenseDown = 900; //550
         public static final int kDefenseUp = 3;
     }
 

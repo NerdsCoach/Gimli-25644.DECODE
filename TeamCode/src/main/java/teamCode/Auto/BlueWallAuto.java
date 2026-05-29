@@ -106,7 +106,7 @@ public class BlueWallAuto extends LinearOpMode
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
     static final Pose2DUnNormalized Start = new Pose2DUnNormalized(DistanceUnit.MM, 0, 0, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -255, UnnormalizedAngleUnit.DEGREES, 0); //-275
+    static final Pose2DUnNormalized Move = new Pose2DUnNormalized(DistanceUnit.MM, 50, -135, UnnormalizedAngleUnit.DEGREES, 0); //-255
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, -700, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
@@ -553,9 +553,10 @@ public class BlueWallAuto extends LinearOpMode
             rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
             telemetry.addData("current state:", m_stateMachine);
-            telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
-            telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
+            telemetry.addData("X coordinate (MM)", m_odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y coordinate (MM)", m_odo.getPosY(DistanceUnit.MM));
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
+
 
             telemetry.update();
 

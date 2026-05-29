@@ -109,7 +109,7 @@ public class RedWallAuto extends LinearOpMode
     private final ElapsedTime holdTimer = new ElapsedTime();
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
-    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 275, UnnormalizedAngleUnit.DEGREES, 0);
+    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, 50, 135, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized StartPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 320, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, 610, UnnormalizedAngleUnit.DEGREES, 0); //1050
@@ -328,9 +328,10 @@ public class RedWallAuto extends LinearOpMode
                     break;
 
                 case PPG_PATTERN:
-//                    this.m_sorterServoSubsystem.spinSorter(-0.5);
+
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
-                    this.m_intakeMotorSubsystem.spinMotorIntake(1);
+                    this.m_sorterServoSubsystem.spinSorter(-0.3);
+                    this.m_intakeMotorSubsystem.spinMotorIntake(0.7);
                     telemetry.addLine("PPG Color Sensing");
                     holdTimer.reset();
 
@@ -556,9 +557,10 @@ public class RedWallAuto extends LinearOpMode
             rightBack.setPower(nav.getMotorPower(DriveToPoint.DriveMotor.RIGHT_BACK));
 
             telemetry.addData("current state:", m_stateMachine);
-            telemetry.addData("X coordinate (MM)", m_odo.getEncoderX());
-            telemetry.addData("Y coordinate (MM)", m_odo.getEncoderY());
+            telemetry.addData("X coordinate (MM)", m_odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y coordinate (MM)", m_odo.getPosY(DistanceUnit.MM));
             telemetry.addData("Heading angle (DEGREES)", m_odo.getHeading(AngleUnit.DEGREES));
+
 
             telemetry.update();
 
