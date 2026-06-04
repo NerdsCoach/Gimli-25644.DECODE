@@ -40,10 +40,9 @@ import teamCode.commands.AxeDownCommand;
 import teamCode.commands.BellyOfTheBeastCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 //import teamCode.commands.HoodDownCommand;
-import teamCode.commands.HoodUpCommand;
+import teamCode.commands.AutoHoodCommand;
 import teamCode.commands.IntakeMotorCommand;
 //import teamCode.commands.LauncherOffCommand;
-import teamCode.commands.LauncherOnCommand;
 import teamCode.commands.ReverseTransferCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
@@ -161,7 +160,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
     private AimingOnCommand m_aimingCommand;
 //    private AimingOffCommand m_turnOffAimingCommand;
 //    private HoodDownCommand m_hoodCloseCommand;
-    private HoodUpCommand m_hoodFarCommand;
+    private AutoHoodCommand m_hoodFarCommand;
 
     private GoBildaPinpointDriver m_odo;
 
@@ -297,7 +296,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
 //        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
 //                .whenPressed(this.m_turnOffAimingCommand);
 //
-        this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
+        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
                 .toggleWhenPressed(this.m_hoodFarCommand);
 
@@ -305,7 +304,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
         this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);
         m_leftTrigger.whileActiveContinuous(m_reverseTransferCommand);
 
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
+        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem, this.m_driveSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
 

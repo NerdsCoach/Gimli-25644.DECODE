@@ -20,6 +20,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -41,7 +42,7 @@ import teamCode.commands.DeParkingCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.FudgeDeParkingCommand;
 import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.HoodUpCommand;
+import teamCode.commands.AutoHoodCommand;
 import teamCode.commands.IntakeMotorCommand;
 import teamCode.commands.IntakeServoCommand;
 import teamCode.commands.LauncherBellyCommand;
@@ -69,6 +70,7 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.ParkingSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
+@Disabled
 
 @TeleOp(name = "Demo BLUE-DECODE")
 public class DemoRobotContainer extends CommandOpMode

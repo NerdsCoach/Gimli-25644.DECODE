@@ -24,7 +24,8 @@ public class HoodServoSubsystem extends SubsystemBase
             {1.49, 0.25},
             {1.79, 0.23},
             {2.05, 0.16},
-            {2.36, 0.16}
+            {2.36, 0.16},
+            {2.75, 0.16}
     };
 
     public HoodServoSubsystem(HardwareMap hMap, String aimingServo)

@@ -27,14 +27,14 @@ import teamCode.Constants;
 import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.LauncherOnCommand;
+import teamCode.commands.AutoHoodCommand;
+import teamCode.commands.AutoLauncherCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
-import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightASubsystem;
 import teamCode.subsystems.LightBSubsystem;
@@ -92,7 +92,8 @@ public class RedGoalAuto extends LinearOpMode
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
-    private LauncherOnCommand m_launcherOnCommand;
+    private AutoLauncherCommand m_autoLauncherCommand;
+    private AutoHoodCommand m_autoHoodCommand;
 
     private TimerCommand m_timerCommand;
     private StateMachine m_stateMachine;
@@ -112,8 +113,8 @@ public class RedGoalAuto extends LinearOpMode
     static final Pose2DUnNormalized EndPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, 400, -1900, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -360, 25, UnnormalizedAngleUnit.DEGREES, 0);
 
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
+//    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
+//    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
     enum StateMachine
     {
@@ -224,9 +225,9 @@ public class RedGoalAuto extends LinearOpMode
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         //Commands
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
-
+//        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, m_limeLightSubsystem);
 //        this.m_turnTableSubsystem.Turn(0);
 
         CommandScheduler.getInstance().reset();
@@ -249,7 +250,7 @@ public class RedGoalAuto extends LinearOpMode
                     break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+//                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
@@ -262,7 +263,8 @@ public class RedGoalAuto extends LinearOpMode
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_launcherOnCommand.schedule();
+                        m_autoLauncherCommand.schedule();
+                        m_autoHoodCommand.schedule();
 //                        m_launcherSubsystem.setMotorVelocity(1730);
                         holdTimer.reset();
 
@@ -272,7 +274,6 @@ public class RedGoalAuto extends LinearOpMode
                     break;
 
                 case AIM_TURNTABLE:
-//                    m_launcherOnCommand.schedule();
                     leftBack.setPower(0.0);
                     leftFront.setPower(0.0);
                     rightBack.setPower(0.0);
@@ -363,7 +364,8 @@ public class RedGoalAuto extends LinearOpMode
 
                 case START_PICK_UP:
 
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
                     this.m_sorterServoSubsystem.spinSorter(0.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -392,7 +394,8 @@ public class RedGoalAuto extends LinearOpMode
 
                 case START_PICK_UP2:
                     // We are done launching, so cancel the launcher command.
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
                     this.m_sorterServoSubsystem.spinSorter(0.0);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
@@ -431,7 +434,8 @@ public class RedGoalAuto extends LinearOpMode
 
                 case PARKED:
                     // Make sure the launcher command is stopped.
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
 
 //                    this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -441,7 +445,7 @@ public class RedGoalAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+//                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();

@@ -5,15 +5,14 @@ import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import java.util.TreeMap;
+
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
-import teamCode.subsystems.SorterServoSubsystem;
 
-public class LauncherOnCommand extends CommandBase
+public class AutoLauncherCommand extends CommandBase
 {
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
@@ -28,8 +27,8 @@ public class LauncherOnCommand extends CommandBase
 
     private double m_lastKnownSpeed;
 
-    public LauncherOnCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
-                             HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem)
+    public AutoLauncherCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
+                               HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem)
     {
 
         this.m_launcherSubsystem = launcherSubsystem;
@@ -56,24 +55,18 @@ public class LauncherOnCommand extends CommandBase
 //        m_velocityLUT.add(2.22, 2350.0);
 //        m_velocityLUT.add(2.38, 2450.0);
 //        m_velocityLUT.add(2.42, 2550.0);
-        m_velocityLUT.add(0.25, 1550.0);// 1450
-        m_velocityLUT.add(0.49, 1570.0);//1470
-        m_velocityLUT.add(0.65, 1670.0);//1570
-        m_velocityLUT.add(0.78, 1650.0);//1650
-        m_velocityLUT.add(0.85, 1700.0);//1700
-        m_velocityLUT.add(0.99, 1770.0);//1770
-        m_velocityLUT.add(1.12, 1870.0);
-        m_velocityLUT.add(1.28, 1970.0);//Hood up
-        m_velocityLUT.add(1.36, 2070.0);
-        m_velocityLUT.add(1.61, 2100.0);//2170
-        m_velocityLUT.add(1.93, 2050.0);//2270 //Auto Launching Zone
-//        m_velocityLUT.add(1.95, 2200.0);//2300
-        m_velocityLUT.add(2.14, 2385.0);//2450
-        m_velocityLUT.add(2.22, 2495.0);//2525
-        m_velocityLUT.add(2.38, 2525.0);//2600
-        m_velocityLUT.add(2.42, 2675.0);//2750
-        m_velocityLUT.add(2.50, 2700.0);//2775
-        m_velocityLUT.add(3.00, 2725.0);//2800
+        m_velocityLUT.add(0.20, 1450.0);
+        m_velocityLUT.add(0.53, 1650.0);
+        m_velocityLUT.add(0.80, 1750.0);
+        m_velocityLUT.add(0.99, 1820.0);
+        m_velocityLUT.add(1.07, 1920.0);
+        m_velocityLUT.add(1.20, 2000.0);
+        m_velocityLUT.add(1.35, 2100.0);
+        m_velocityLUT.add(1.49, 2200.0);
+        m_velocityLUT.add(1.79, 2260.0);
+        m_velocityLUT.add(2.05, 2360.0);
+        m_velocityLUT.add(2.36, 2480.0);
+        m_velocityLUT.add(2.75, 2660.0);
         // Finalize the LUT
         m_velocityLUT.createLUT();
     }
@@ -97,15 +90,6 @@ public class LauncherOnCommand extends CommandBase
 
                     m_launcherSubsystem.setMotorVelocity(targetVelocity);
                     m_lastKnownSpeed = targetVelocity;
-
-                    if (targetVelocity > 1900)
-                    {
-                        this.m_hoodSubsystem.pivotHood(m_aimFar);
-                    }
-                    else
-                    {
-                        this.m_hoodSubsystem.pivotHood(m_aimClose);
-                    }
                 }
             }
             else

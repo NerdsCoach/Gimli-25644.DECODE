@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
+//import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
@@ -22,6 +23,8 @@ public class LauncherBellyCommand extends CommandBase
     private final HoodServoSubsystem m_hoodSubsystem;
     private final LimeLightSubsystem m_limelightSubsystem;
 
+//    private DriveSubsystem m_driveSubsystem;
+
     private final InterpLUT m_velocityLUT = new InterpLUT();
 
     private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
@@ -32,19 +35,20 @@ public class LauncherBellyCommand extends CommandBase
 
     public LauncherBellyCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
                                 HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem,
-                                SorterServoSubsystem sorterServo)
+                                SorterServoSubsystem sorterServo /*, DriveSubsystem driveSubsystem*/ )
     {
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         this.m_hoodSubsystem = hoodSubsystem;
         this.m_limelightSubsystem = limelightSubsystem;
         this.m_sorterSubsystem = sorterServo;
+//        this.m_driveSubsystem = driveSubsystem;
 
         m_lastKnownSpeed = 1500.0;
         m_lastKnownHoodPosition = 1.0;
 
         // Added m_hoodSubsystem back to requirements so no other command steals it while firing
-        addRequirements(this.m_launcherSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem, this.m_axeSubsystem);
+        addRequirements(this.m_launcherSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem, this.m_axeSubsystem /*, this.m_driveSubsystem*/);
 
         m_velocityLUT.add(0.20, 1450.0);
         m_velocityLUT.add(0.53, 1650.0);
@@ -57,8 +61,17 @@ public class LauncherBellyCommand extends CommandBase
         m_velocityLUT.add(1.79, 2260.0);
         m_velocityLUT.add(2.05, 2360.0);
         m_velocityLUT.add(2.36, 2480.0);
+        m_velocityLUT.add(2.75, 2660.0);
 
         m_velocityLUT.createLUT();
+    }
+
+
+    @Override
+    public void initialize()
+    {
+//        m_driveSubsystem.setSpeedModifier(0.1); // Drops drive speed to 10%
+//        System.out.println("Launcher ON - Sniper Mode Active!");
     }
 
     @Override
@@ -104,13 +117,13 @@ public class LauncherBellyCommand extends CommandBase
         this.m_axeSubsystem.pivotAxe(m_axeUp);
         this.m_sorterSubsystem.spinSorter(0.0 );
         this.m_launcherSubsystem.setMotorVelocity(0.0);
-        // Optional: override hood location on end if you want it to fold flat when done
     }
 
     @Override
     public boolean isFinished()
     {
         return false;
+//        return true
     }
 }
 

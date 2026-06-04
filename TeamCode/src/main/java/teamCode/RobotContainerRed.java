@@ -43,7 +43,7 @@ import teamCode.commands.DefenseUpCommand;
 import teamCode.commands.DriveFieldOrientedCommand;
 import teamCode.commands.FudgeDeParkingCommand;
 import teamCode.commands.FudgeParkingCommand;
-import teamCode.commands.HoodUpCommand;
+import teamCode.commands.AutoHoodCommand;
 import teamCode.commands.IntakeMotorCommand;
 import teamCode.commands.IntakeServoCommand;
 import teamCode.commands.LauncherBellyCommand;
@@ -172,7 +172,7 @@ public class RobotContainerRed extends CommandOpMode
     private DefenseDownCommand m_defenseDownCommand;
     private AimingOnCommand m_aimingCommand;
     private ResetGyroCommand m_resetGyroCommand;
-    private HoodUpCommand m_hoodFarCommand;
+    private AutoHoodCommand m_hoodFarCommand;
 
     private GoBildaPinpointDriver m_odo;
     private TimerCommand m_timerCommand;
@@ -344,7 +344,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .toggleWhenPressed(this.m_aimingCommand);
 
-        this.m_hoodFarCommand = new HoodUpCommand(this.m_hoodServoSubsystem);
+        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem);
         this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
                 .toggleWhenPressed(this.m_hoodFarCommand);
 
@@ -352,7 +352,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);
         m_leftTrigger.whileActiveContinuous(m_reverseTransferCommand);
 
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
+        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem, this.m_driveSubsystem);
         this.m_rightBumper = (new GamepadButton(this.m_driver2, GamepadKeys.Button.RIGHT_BUMPER))
                 .whenPressed(this.m_transferLimitCommand);
 

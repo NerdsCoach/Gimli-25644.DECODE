@@ -1,7 +1,6 @@
 package teamCode.Auto;
 
 
-import static teamCode.Constants.AxeConstants.kAxeDown;
 import static teamCode.Constants.AxeConstants.kAxeUp;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -27,7 +26,8 @@ import teamCode.Constants;
 import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.LauncherOnCommand;
+import teamCode.commands.AutoHoodCommand;
+import teamCode.commands.AutoLauncherCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
@@ -42,7 +42,7 @@ import teamCode.subsystems.LimitSwitchSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
 import teamCode.subsystems.TurnTableSubsystem;
 
-@Autonomous(name="Intake Testing Auto", group="Pinpoint")
+@Autonomous(name="Testing Auto", group="Pinpoint")
 //@Disabled
 
 public class IntakeTestingAuto extends LinearOpMode
@@ -60,7 +60,6 @@ public class IntakeTestingAuto extends LinearOpMode
     private DcMotorEx m_launcherMotor;
     public DcMotor m_turnTableMotor;
     public DcMotor m_intakeMotor;
-
 
     //Servos
     private Servo m_AxeServo;
@@ -89,7 +88,8 @@ public class IntakeTestingAuto extends LinearOpMode
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
-    private LauncherOnCommand m_launcherOnCommand;
+    private AutoLauncherCommand m_autoLauncherCommand;
+    private AutoHoodCommand m_autoHoodCommand;
 
     private TimerCommand m_timerCommand;
     private StateMachine m_stateMachine;
@@ -101,16 +101,10 @@ public class IntakeTestingAuto extends LinearOpMode
     private final ElapsedTime holdTimer = new ElapsedTime();
     DriveToPoint nav = new DriveToPoint(); //OpMode member for the point-to-point navigation class
 
-    static final Pose2DUnNormalized Launch = new Pose2DUnNormalized(DistanceUnit.MM, -455, 600, UnnormalizedAngleUnit.DEGREES, -45);
-    static final Pose2DUnNormalized StartPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, -300, 1200, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp1 = new Pose2DUnNormalized(DistanceUnit.MM, 300, 1200, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized OpenGate = new Pose2DUnNormalized(DistanceUnit.MM, 470, 1400, UnnormalizedAngleUnit.DEGREES, -90);
-    static final Pose2DUnNormalized StartPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, -320, 1840, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized EndPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, 400, 1860, UnnormalizedAngleUnit.DEGREES, 0);
-    static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -360, -25, UnnormalizedAngleUnit.DEGREES, 0);
+        static final Pose2DUnNormalized Home = new Pose2DUnNormalized(DistanceUnit.MM, -360, -25, UnnormalizedAngleUnit.DEGREES, 0);
 
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
+
+//    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
     enum StateMachine
     {
@@ -119,13 +113,7 @@ public class IntakeTestingAuto extends LinearOpMode
         START_PICK_UP,
         PICK_UP,
         PARKED,
-        WAIT_FOR_NEXT,
-        REVERSE_RECOVERY,
-        LAUNCH_BALL,
-        AIM_TURNTABLE,
-        OPEN_GATE,
-        START_PICK_UP2,
-        PICK_UP2,
+        HOME
     }
     int ballCount = 0;
     int maxBalls = 9;//9
@@ -208,8 +196,9 @@ public class IntakeTestingAuto extends LinearOpMode
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         //Commands
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+//        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem);
 
 //        this.m_turnTableSubsystem.Turn(0);
 
@@ -233,74 +222,44 @@ public class IntakeTestingAuto extends LinearOpMode
                     break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
-
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.8, 0.2))
                     {
                         nav.resetPIDs();
                         leftBack.setPower(0);
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_launcherOnCommand.schedule();
-//                        m_launcherSubsystem.setMotorVelocity(1730);
+                        m_autoLauncherCommand.schedule();
+                        m_autoHoodCommand.schedule();
                         holdTimer.reset();
 
                         telemetry.addLine("Ready to Aim!");
-                        m_stateMachine = StateMachine.START_PICK_UP;
+                        m_stateMachine = StateMachine.HOME;
                     }
                     break;
 
-                case START_PICK_UP:
+                case HOME:
 
-                    m_launcherOnCommand.cancel();
-                    this.m_sorterServoSubsystem.spinSorter(0.0);
-
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            StartPickUp1, 0.8, 0) || holdTimer.seconds() >= 3.0)
+//                  if (!m_aimingCommandStarted)
                     {
-                        this.m_axeSubsystem.pivotAxe(kAxeUp);
-                        this.m_intakeMotorSubsystem.spinMotorIntake(1.0);
-                        m_stateMachine = StateMachine.PICK_UP;
-                        holdTimer.reset();
-                        telemetry.addLine("Start Pick Up");
-                    }
-                    break;
-
-                case PICK_UP:
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            EndPickUp1, 0.8, 0.4) || holdTimer.seconds() >= 3.0)
-                    {
-                        m_aimingCommandStarted = false;
-                        m_stateMachine = StateMachine.PARKED;
-                        this.m_intakeMotorSubsystem.spinMotorIntake(0.6);
-
-                        holdTimer.reset();
-                        telemetry.addLine("Picked up Row 1");
-                    }
-                    break;
-
-
-                case PARKED:
-                    // Make sure the launcher command is stopped.
-                    m_launcherOnCommand.cancel();
-
-//                    this.m_axeSubsystem.pivotAxe(kAxeUp);
-                    if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Park, 0.6, 0.3)|| holdTimer.seconds() >= 2.0)
-                    {
+                        telemetry.addLine("Aiming");
+                        // Stop the drivetrain from the previous state
                         leftBack.setPower(0.0);
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
-                        this.m_limitSwitchSubsystem.setTransferPower(0.0);
-                        this.m_sorterServoSubsystem.spinSorter(0.0);
-                        this.m_intakeMotorSubsystem.stop();
-                        this.m_launcherSubsystem.setMotorVelocity(0);
 
-                        telemetry.addLine("Done");
+                        // Schedule AimingOnCommand with a timeout to ensure it finishes.
+                        new AimingOnCommand(m_limeLightSubsystem, m_turnTableSubsystem, m_lightASubsystem, 20, telemetry)
+                                .withTimeout(1500)
+                                .schedule();
+
+                        // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
+//                        m_autoLauncherCommand.schedule();
+                        this.m_autoLauncherCommand.execute();
+
+
+                        m_aimingTimer.reset();
+                        m_aimingCommandStarted = true;
                     }
                     break;
             }

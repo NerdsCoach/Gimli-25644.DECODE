@@ -27,7 +27,8 @@ import teamCode.Constants;
 import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.LauncherOnCommand;
+import teamCode.commands.AutoHoodCommand;
+import teamCode.commands.AutoLauncherCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
@@ -89,7 +90,8 @@ public class BlueGoalAuto extends LinearOpMode
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
-    private LauncherOnCommand m_launcherOnCommand;
+    private AutoLauncherCommand m_autoLauncherCommand;
+    private AutoHoodCommand m_autoHoodCommand;
 
     private TimerCommand m_timerCommand;
     private StateMachine m_stateMachine;
@@ -208,9 +210,9 @@ public class BlueGoalAuto extends LinearOpMode
         this.m_sorterServoSubsystem = new SorterServoSubsystem(this.m_sorterServo);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         //Commands
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
-
+//        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem, this.m_drive);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem);
 //        this.m_turnTableSubsystem.Turn(0);
 
         CommandScheduler.getInstance().reset();
@@ -233,7 +235,8 @@ public class BlueGoalAuto extends LinearOpMode
                     break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+//                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+//                    this.m_autoHoodCommand.schedule();
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
 
@@ -246,7 +249,8 @@ public class BlueGoalAuto extends LinearOpMode
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_launcherOnCommand.schedule();
+                        m_autoLauncherCommand.schedule();
+                        m_autoHoodCommand.schedule();
 //                        m_launcherSubsystem.setMotorVelocity(1730);
                         holdTimer.reset();
 
@@ -256,7 +260,6 @@ public class BlueGoalAuto extends LinearOpMode
                     break;
 
                 case AIM_TURNTABLE:
-//                    m_launcherOnCommand.schedule();
                     leftBack.setPower(0.0);
                     leftFront.setPower(0.0);
                     rightBack.setPower(0.0);
@@ -269,6 +272,8 @@ public class BlueGoalAuto extends LinearOpMode
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
+
+                        new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem).schedule();
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;
@@ -347,7 +352,8 @@ public class BlueGoalAuto extends LinearOpMode
 
                 case START_PICK_UP:
 
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
                     this.m_sorterServoSubsystem.spinSorter(0.0);
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -376,7 +382,8 @@ public class BlueGoalAuto extends LinearOpMode
 
                 case START_PICK_UP2:
                     // We are done launching, so cancel the launcher command.
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
                     this.m_sorterServoSubsystem.spinSorter(0.0);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                             StartPickUp2, 0.6, 0)|| holdTimer.seconds() >= 3.0)
@@ -415,7 +422,8 @@ public class BlueGoalAuto extends LinearOpMode
 
                 case PARKED:
                     // Make sure the launcher command is stopped.
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
 
 //                    this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -425,7 +433,7 @@ public class BlueGoalAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
+//
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();

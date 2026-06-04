@@ -31,7 +31,8 @@ public class DriveSubsystem extends SubsystemBase
     private double m_lastRecordedAngle;
     private double m_currentAngle;
     private double error;
-
+    // --- NEW SNAPSHOT ADDITION 1/2: Speed Modifier Variable ---
+    private double m_speedModifier = 1.0;
 
     public DriveSubsystem(MecanumDrive drive, GoBildaPinpointDriver odo)
     {
@@ -45,18 +46,33 @@ public class DriveSubsystem extends SubsystemBase
 
     }
 
+    // --- NEW SNAPSHOT ADDITION 2/2: Method to Change the Modifier ---
+    public void setSpeedModifier(double m_modifier)
+    {
+        this.m_speedModifier = m_modifier;
+    }
+
     public void headingDrive(double leftX, double leftY, double rightX, double rightY)
     {
+        // Apply the speedModifier directly to the inputs to smoothly dampen his movement
         m_drive.driveFieldCentric
                 (
-                        leftX * leftX * leftX * -1.0,
-                        leftY * leftY * leftY * -1.0,//-1
-                        getJoystickAngle(rightX, rightY),
-                        m_odo.getHeading(AngleUnit.DEGREES)  //try this with robot, or change DEGREES to RADIANS below, and check for all the places we getHeading to make the same changes
-
-//                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))  //different from last year
+                        (leftX * leftX * leftX * -1.0) * m_speedModifier,
+                        (leftY * leftY * leftY * -1.0) * m_speedModifier,
+                        getJoystickAngle(rightX *  m_speedModifier, rightY * m_speedModifier),
+                        m_odo.getHeading(AngleUnit.DEGREES)
                 );
         m_odo.update();
+//        m_drive.driveFieldCentric
+//                (
+//                        leftX * leftX * leftX * -1.0,
+//                        leftY * leftY * leftY * -1.0,//-1
+//                        getJoystickAngle(rightX, rightY),
+//                        m_odo.getHeading(AngleUnit.DEGREES)  //try this with robot, or change DEGREES to RADIANS below, and check for all the places we getHeading to make the same changes
+//
+////                        Math.toDegrees(m_odo.getHeading(AngleUnit.DEGREES))  //different from last year
+//                );
+//        m_odo.update();
     }
 
     public void autoHeadingDrive (DoubleSupplier targetX, DoubleSupplier targetY, DoubleSupplier targetAngle)

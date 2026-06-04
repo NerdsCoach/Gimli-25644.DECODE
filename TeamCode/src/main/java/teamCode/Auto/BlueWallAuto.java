@@ -28,14 +28,14 @@ import teamCode.Constants;
 import teamCode.DriveToPoint;
 import teamCode.Pose2DUnNormalized;
 import teamCode.commands.AimingOnCommand;
-import teamCode.commands.LauncherOnCommand;
+import teamCode.commands.AutoHoodCommand;
+import teamCode.commands.AutoLauncherCommand;
 import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
-import teamCode.subsystems.IntakeServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LightASubsystem;
 import teamCode.subsystems.LightBSubsystem;
@@ -93,7 +93,8 @@ public class BlueWallAuto extends LinearOpMode
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
-    private LauncherOnCommand m_launcherOnCommand;
+    private AutoLauncherCommand m_autoLauncherCommand;
+    private AutoHoodCommand m_autoHoodCommand;
 
     private TimerCommand m_timerCommand;
     private StateMachine m_stateMachine;
@@ -111,9 +112,6 @@ public class BlueWallAuto extends LinearOpMode
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, -700, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, -200, UnnormalizedAngleUnit.DEGREES, 0);
-
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
     private String[] targetPattern = {"NONE", "NONE", "NONE"};
     private int ballsScored = 0;
@@ -218,13 +216,14 @@ public class BlueWallAuto extends LinearOpMode
 
         this.m_turnTableSubsystem = new TurnTableSubsystem(this.m_turnTableMotor);
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
-        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
+//        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem);
         this.m_intakeMotorSubsystem = new IntakeMotorSubsystem(this.m_intakeMotor);
 
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
-        this.m_launcherOnCommand = new LauncherOnCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
+        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem);
 
         CommandScheduler.getInstance().reset();
 
@@ -296,8 +295,6 @@ public class BlueWallAuto extends LinearOpMode
                     }
                     break;
 
-
-
                 case GPP_PATTERN:
 
                     this.m_sorterServoSubsystem.spinSorter(-0.5);
@@ -341,10 +338,11 @@ public class BlueWallAuto extends LinearOpMode
                 break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-0.3);
-                    m_launcherOnCommand.schedule();
+                    m_autoLauncherCommand.schedule();
+                    m_autoHoodCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
 //                            Launch, 0.6, 0.1)|| holdTimer.seconds() >= 4.0)
@@ -378,8 +376,10 @@ public class BlueWallAuto extends LinearOpMode
                                 .withTimeout(1500)
                                 .schedule();
 
-                        // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-//                        m_launcherOnCommand.schedule();
+                        this.m_autoLauncherCommand.execute();
+                        this.m_autoHoodCommand.execute();
+
+                        telemetry.addLine("hood should move");
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;
@@ -462,7 +462,8 @@ public class BlueWallAuto extends LinearOpMode
 
                 case START_PICK_UP:
                     // We are done launching, so cancel the launcher command.
-                    m_launcherOnCommand.cancel();
+                    m_autoLauncherCommand.cancel();
+                    m_autoHoodCommand.cancel();
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(0.0);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -524,7 +525,8 @@ public class BlueWallAuto extends LinearOpMode
 
                 case PARKED:
                     // Make sure the launcher command is stopped.
-                    m_launcherOnCommand.cancel();
+                    this.m_autoLauncherCommand.cancel();
+                    this.m_autoHoodCommand.cancel();
                     this.m_turnTableMotor.setTargetPosition(-500);
                     this.m_axeSubsystem.pivotAxe(kAxeUp);
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
@@ -534,7 +536,6 @@ public class BlueWallAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();

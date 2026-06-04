@@ -20,6 +20,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevTouchSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -36,10 +37,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 
 import teamCode.commands.HoodTestingDownCommand;
 import teamCode.commands.HoodTestingUpCommand;
-import teamCode.commands.HoodUpCommand;
+import teamCode.commands.AutoHoodCommand;
 import teamCode.subsystems.GamepadSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
+@Disabled
 
 @TeleOp(name = "Hood Testing")
 public class HoodTestingRobotContainer extends CommandOpMode
