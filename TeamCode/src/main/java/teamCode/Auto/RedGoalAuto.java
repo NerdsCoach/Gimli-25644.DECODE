@@ -113,9 +113,6 @@ public class RedGoalAuto extends LinearOpMode
     static final Pose2DUnNormalized EndPickUp2 = new Pose2DUnNormalized(DistanceUnit.MM, 400, -1900, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, -360, 25, UnnormalizedAngleUnit.DEGREES, 0);
 
-//    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-//    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
-
     enum StateMachine
     {
         WAITING_FOR_START,
@@ -136,15 +133,6 @@ public class RedGoalAuto extends LinearOpMode
 
     private boolean m_aimingCommandStarted = false;
     private ElapsedTime m_aimingTimer = new ElapsedTime();
-
-
-    private static final double m_axeUp = kAxeUp;
-    private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-    private int m_position;
-    private static final int m_up = 1;
-    private static final int m_down = 0;
-    private double m_lastKnownSpeed;
-    ;
 
     @Override
     public void runOpMode()
@@ -253,6 +241,8 @@ public class RedGoalAuto extends LinearOpMode
 //                    this.m_hoodServoSubsystem.pivotHood(m_hoodDown);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
+                    m_autoLauncherCommand.schedule();
+                    m_autoHoodCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
                         Launch, 0.6, 0.2))
@@ -263,11 +253,8 @@ public class RedGoalAuto extends LinearOpMode
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_autoLauncherCommand.schedule();
-                        m_autoHoodCommand.schedule();
-//                        m_launcherSubsystem.setMotorVelocity(1730);
-                        holdTimer.reset();
 
+                        holdTimer.reset();
                         telemetry.addLine("Ready to Aim!");
                         m_stateMachine = StateMachine.AIM_TURNTABLE;
                     }
@@ -286,6 +273,10 @@ public class RedGoalAuto extends LinearOpMode
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
+                        this.m_autoLauncherCommand.execute();
+                        this.m_autoHoodCommand.execute();
+
+                        new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem).schedule();
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;

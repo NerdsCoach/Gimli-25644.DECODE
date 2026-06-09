@@ -332,7 +332,7 @@ public class RobotContainerRed extends CommandOpMode
         this.m_triangle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.Y))
                 .toggleWhenPressed(this.m_bellyOfTheBeastCommand);
 
-        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem,this.m_limelightSubsystem, this.m_sorterServoSubsystem);
+        this.m_launcherBellyCommand = new LauncherBellyCommand(this.m_launcherMotorSubsystem, this.m_axeSubsystem,this.m_hoodServoSubsystem,this.m_limelightSubsystem, this.m_sorterServoSubsystem, 24, this.m_driveSubsystem);
         this.m_xButton = (new GamepadButton(this.m_driver2, GamepadKeys.Button.A))
                 .toggleWhenPressed(this.m_launcherBellyCommand);
 

@@ -41,7 +41,7 @@ import teamCode.commands.AutoHoodCommand;
 import teamCode.subsystems.GamepadSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
-@Disabled
+//@Disabled
 
 @TeleOp(name = "Hood Testing")
 public class HoodTestingRobotContainer extends CommandOpMode

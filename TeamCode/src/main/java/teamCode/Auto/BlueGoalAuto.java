@@ -239,9 +239,11 @@ public class BlueGoalAuto extends LinearOpMode
 //                    this.m_autoHoodCommand.schedule();
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-1.0);
+                    m_autoLauncherCommand.schedule();
+                    m_autoHoodCommand.schedule();
 
                     if (nav.driveTo(new Pose2DUnNormalized(DistanceUnit.MM, m_odo.getPosX(DistanceUnit.MM), m_odo.getPosY(DistanceUnit.MM), UnnormalizedAngleUnit.DEGREES, m_odo.getHeading(UnnormalizedAngleUnit.DEGREES)),
-                            Launch, 0.6, 0.2))
+                            Launch, 0.6, 0.1)) //0.2
 
                     {
                         nav.resetPIDs();
@@ -249,11 +251,8 @@ public class BlueGoalAuto extends LinearOpMode
                         leftFront.setPower(0);
                         rightBack.setPower(0);
                         rightFront.setPower(0);
-                        m_autoLauncherCommand.schedule();
-                        m_autoHoodCommand.schedule();
-//                        m_launcherSubsystem.setMotorVelocity(1730);
-                        holdTimer.reset();
 
+                        holdTimer.reset();
                         telemetry.addLine("Ready to Aim!");
                         m_stateMachine = StateMachine.AIM_TURNTABLE;
                     }
@@ -272,6 +271,8 @@ public class BlueGoalAuto extends LinearOpMode
                                 .withTimeout(750)
                                 .schedule();
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
+                        this.m_autoLauncherCommand.execute();
+                        this.m_autoHoodCommand.execute();
 
                         new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem).schedule();
 

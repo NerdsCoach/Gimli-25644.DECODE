@@ -11,7 +11,7 @@ public class HoodServoSubsystem extends SubsystemBase
 
     // Fudge variable
     private double tuningPosition = 0.5; // Start in the exact middle
-    // Your 7-9 points: {Distance from AprilTag, Servo Position}
+    //{Distance from AprilTag, Servo Position}
     private final double[][] hoodLUT =
             //[] Means you're using an array, a set list of data
     {
@@ -23,9 +23,9 @@ public class HoodServoSubsystem extends SubsystemBase
             {1.35, 0.29},
             {1.49, 0.25},
             {1.79, 0.23},
-            {2.05, 0.16},
-            {2.36, 0.16},
-            {2.75, 0.16}
+            {2.05, 0.16},//0.16
+//            {2.36, 0.16},//0.16
+            {2.75, 0.16} //0.16
     };
 
     public HoodServoSubsystem(HardwareMap hMap, String aimingServo)
@@ -33,10 +33,11 @@ public class HoodServoSubsystem extends SubsystemBase
         this.m_aimingServo = hMap.get(Servo.class, aimingServo);
     }
 
-    // The complete math method that replaces the broken placeholder line
-    public double getTargetFromDistance(double currentDistance) {
+    public double getTargetFromDistance(double currentDistance)
+    {
         // Edge case: closer than your closest recorded data point
-        if (currentDistance <= hoodLUT[0][0]) {
+        if (currentDistance <= hoodLUT[0][0])
+        {
             return hoodLUT[0][1];
         }
 
@@ -67,9 +68,6 @@ public class HoodServoSubsystem extends SubsystemBase
     public void setRawPosition(double position) {
         this.m_aimingServo.setPosition(position);
     }
-
-
-
 
     public void nudgeHoodUp()
     {

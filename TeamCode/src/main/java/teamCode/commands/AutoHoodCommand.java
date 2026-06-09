@@ -12,8 +12,6 @@ import teamCode.subsystems.LimeLightSubsystem;
 
 public class AutoHoodCommand extends CommandBase
 {
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
     private final HoodServoSubsystem m_hoodServoSubsystem;
     private final LimeLightSubsystem m_limelightSubsystem;
     private double m_lastKnownHoodPosition;
@@ -59,7 +57,6 @@ public class AutoHoodCommand extends CommandBase
     @Override
     public void end(boolean interrupted)
     {
-        this.m_hoodServoSubsystem.pivotHood(m_aimClose);
     }
 
     @Override

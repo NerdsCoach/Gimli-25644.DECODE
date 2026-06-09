@@ -8,10 +8,12 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class LimeLightSubsystem extends SubsystemBase {
+public class LimeLightSubsystem extends SubsystemBase
+{
     private final Limelight3A m_limelight;
 
-    public LimeLightSubsystem(HardwareMap hardwareMap, int targetId) {
+    public LimeLightSubsystem(HardwareMap hardwareMap, int targetId)
+    {
         m_limelight = hardwareMap.get(Limelight3A.class, "limelight");
         m_limelight.pipelineSwitch(0);
         m_limelight.setPollRateHz(100);

@@ -55,18 +55,19 @@ public class AutoLauncherCommand extends CommandBase
 //        m_velocityLUT.add(2.22, 2350.0);
 //        m_velocityLUT.add(2.38, 2450.0);
 //        m_velocityLUT.add(2.42, 2550.0);
-        m_velocityLUT.add(0.20, 1450.0);
-        m_velocityLUT.add(0.53, 1650.0);
-        m_velocityLUT.add(0.80, 1750.0);
-        m_velocityLUT.add(0.99, 1820.0);
-        m_velocityLUT.add(1.07, 1920.0);
-        m_velocityLUT.add(1.20, 2000.0);
-        m_velocityLUT.add(1.35, 2100.0);
-        m_velocityLUT.add(1.49, 2200.0);
-        m_velocityLUT.add(1.79, 2260.0);
-        m_velocityLUT.add(2.05, 2360.0);
-        m_velocityLUT.add(2.36, 2480.0);
-        m_velocityLUT.add(2.75, 2660.0);
+       // added 40
+        m_velocityLUT.add(0.20, 1490.0);
+        m_velocityLUT.add(0.53, 1690.0);
+        m_velocityLUT.add(0.80, 1790.0);
+        m_velocityLUT.add(0.99, 1860.0);
+        m_velocityLUT.add(1.07, 1950.0);
+        m_velocityLUT.add(1.20, 2040.0);
+        m_velocityLUT.add(1.35, 2140.0);
+        m_velocityLUT.add(1.49, 2240.0);
+        m_velocityLUT.add(1.79, 2300.0);
+        m_velocityLUT.add(2.05, 2400.0);
+        m_velocityLUT.add(2.36, 2520.0);
+        m_velocityLUT.add(2.75, 2710.0);
         // Finalize the LUT
         m_velocityLUT.createLUT();
     }

@@ -46,6 +46,22 @@ public class DriveSubsystem extends SubsystemBase
 
     }
 
+
+    public boolean isRobotMoving() {
+        // 1. Force the Pinpoint to update its internal loop data cache
+        this.m_odo.update();
+
+        // 2. Grab the live X and Y sliding velocity in mm/sec from the computer
+        double velX = this.m_odo.getVelX(DistanceUnit.MM);
+        double velY = this.m_odo.getVelY(DistanceUnit.MM);
+
+        // 3. Use the Pythagorean theorem to find your actual total speed
+        double totalSpeed = Math.hypot(velX, velY);
+
+        // 4. Return true if the robot is sliding faster than a tiny noise deadband (e.g., 15 mm/s)
+        return totalSpeed > 15.0;
+    }
+
     // --- NEW SNAPSHOT ADDITION 2/2: Method to Change the Modifier ---
     public void setSpeedModifier(double m_modifier)
     {

@@ -386,8 +386,8 @@ public class RedWallAuto extends LinearOpMode
                                 .schedule();
 
                         // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
-                        m_autoLauncherCommand.schedule();
-                        m_autoHoodCommand.schedule();
+                        this.m_autoLauncherCommand.execute();
+                        this.m_autoHoodCommand.execute();
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;

@@ -9,12 +9,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
-//import teamCode.subsystems.DriveSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
 import teamCode.subsystems.SorterServoSubsystem;
-
 public class LauncherBellyCommand extends CommandBase
 {
     private final LauncherSubsystem m_launcherSubsystem;
@@ -22,8 +21,7 @@ public class LauncherBellyCommand extends CommandBase
     private final SorterServoSubsystem m_sorterSubsystem;
     private final HoodServoSubsystem m_hoodSubsystem;
     private final LimeLightSubsystem m_limelightSubsystem;
-
-//    private DriveSubsystem m_driveSubsystem;
+    private final DriveSubsystem m_driveSubsystem;
 
     private final InterpLUT m_velocityLUT = new InterpLUT();
 
@@ -32,36 +30,40 @@ public class LauncherBellyCommand extends CommandBase
 
     private double m_lastKnownSpeed;
     private double m_lastKnownHoodPosition;
+    private final int m_targetId;
+    private double m_smoothedDistance = 0.0;
 
     public LauncherBellyCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
                                 HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem,
-                                SorterServoSubsystem sorterServo /*, DriveSubsystem driveSubsystem*/ )
+                                SorterServoSubsystem sorterServo, int targetId, DriveSubsystem driveSubsystem)
     {
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         this.m_hoodSubsystem = hoodSubsystem;
         this.m_limelightSubsystem = limelightSubsystem;
         this.m_sorterSubsystem = sorterServo;
-//        this.m_driveSubsystem = driveSubsystem;
+        this.m_targetId = targetId;
+        this.m_driveSubsystem = driveSubsystem;
 
         m_lastKnownSpeed = 1500.0;
         m_lastKnownHoodPosition = 1.0;
 
         // Added m_hoodSubsystem back to requirements so no other command steals it while firing
         addRequirements(this.m_launcherSubsystem, this.m_hoodSubsystem, this.m_sorterSubsystem, this.m_axeSubsystem /*, this.m_driveSubsystem*/);
+        // added 20
 
-        m_velocityLUT.add(0.20, 1450.0);
-        m_velocityLUT.add(0.53, 1650.0);
-        m_velocityLUT.add(0.80, 1750.0);
-        m_velocityLUT.add(0.99, 1820.0);
-        m_velocityLUT.add(1.07, 1920.0);
-        m_velocityLUT.add(1.20, 2000.0);
-        m_velocityLUT.add(1.35, 2100.0);
-        m_velocityLUT.add(1.49, 2200.0);
-        m_velocityLUT.add(1.79, 2260.0);
-        m_velocityLUT.add(2.05, 2360.0);
-        m_velocityLUT.add(2.36, 2480.0);
-        m_velocityLUT.add(2.75, 2660.0);
+        m_velocityLUT.add(0.20, 1470.0);
+        m_velocityLUT.add(0.53, 1670.0);
+        m_velocityLUT.add(0.80, 1770.0);
+        m_velocityLUT.add(0.99, 1840.0);
+        m_velocityLUT.add(1.07, 1940.0);
+        m_velocityLUT.add(1.20, 2020.0);
+        m_velocityLUT.add(1.35, 2120.0);
+        m_velocityLUT.add(1.49, 2220.0);
+        m_velocityLUT.add(1.79, 2280.0);
+        m_velocityLUT.add(2.05, 2380.0);
+        m_velocityLUT.add(2.36, 2500.0);
+        m_velocityLUT.add(2.75, 2680.0);
 
         m_velocityLUT.createLUT();
     }
@@ -81,34 +83,92 @@ public class LauncherBellyCommand extends CommandBase
         this.m_axeSubsystem.pivotAxe(m_axeDown);
         this.m_sorterSubsystem.spinSorter(-0.75);
 
+        boolean goalFound = false;
+
         if (result != null && result.isValid() && !result.getFiducialResults().isEmpty())
         {
-            LLResultTypes.FiducialResult tag = result.getFiducialResults().get(0);
-            Pose3D pose = tag.getTargetPoseCameraSpace();
-
-            if (pose != null)
+            for (LLResultTypes.FiducialResult tag : result.getFiducialResults())
             {
-                double zMeters = Math.abs(pose.getPosition().z);
-                double safeDistance = Math.max(0.49, Math.min(zMeters, 2.42));
+                if (tag.getFiducialId() == m_targetId) // Safely isolating Tag 24
+                {
+                    Pose3D pose = tag.getTargetPoseCameraSpace();
+                    if (pose != null)
+                    {
+                        double rawZ = Math.abs(pose.getPosition().z);
 
-                // 1. Calculate and set the Flywheel Speed
-                double targetVelocity = m_velocityLUT.get(safeDistance);
-                m_launcherSubsystem.setMotorVelocity(targetVelocity);
-                m_lastKnownSpeed = targetVelocity;
+                        // --- DYNAMIC TUNING FOR ON-THE-MOVE TRACKING ---
+                        // Ask your drivetrain if the robot is currently moving
+                        boolean isMoving = m_driveSubsystem.isRobotMoving(); // (Or check if joystick inputs > 0.05)
 
-                // 2. Calculate and set the Hood Position using your custom math!
-                double targetHoodPosition = m_hoodSubsystem.getTargetFromDistance(safeDistance);
-                m_hoodSubsystem.pivotHood(targetHoodPosition);
-                m_lastKnownHoodPosition = targetHoodPosition; // SAVE IT TO MEMORY HERE!
+                        // If moving, use a high factor (e.g., 0.8) for fast, raw tracking with zero lag.
+                        // If stopped, use a low factor (e.g., 0.15) to aggressively freeze and smooth the jitter.
+                        double currentFilterFactor = isMoving ? 0.80 : 0.15;
+
+                        if (m_smoothedDistance == 0.0) {
+                            m_smoothedDistance = rawZ;
+                        } else {
+                            // Blend the data using our smart dynamic factor
+                            m_smoothedDistance = (currentFilterFactor * rawZ) + ((1.0 - currentFilterFactor) * m_smoothedDistance);
+                        }
+
+                        // Constrain within your safe LUT boundaries
+                        double safeDistance = Math.max(0.20, Math.min(m_smoothedDistance, 2.75));
+
+                        // Set Flywheel Speed
+                        double targetVelocity = m_velocityLUT.get(safeDistance);
+                        m_launcherSubsystem.setMotorVelocity(targetVelocity);
+                        m_lastKnownSpeed = targetVelocity;
+
+                        // Set Hood Position
+                        double targetHoodPosition = m_hoodSubsystem.getTargetFromDistance(safeDistance);
+                        m_hoodSubsystem.pivotHood(targetHoodPosition);
+                        m_lastKnownHoodPosition = targetHoodPosition;
+
+                        goalFound = true;
+                        break;
+                    }
+                }
             }
         }
-        else
+
+        if (!goalFound)
         {
             m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
             m_hoodSubsystem.pivotHood(m_lastKnownHoodPosition);
-            // Optional: If vision drops out, you could either freeze the hood where it is,
-            // or send it to a default fallback position here. Leaving it blank freezes it.
         }
+//        LLResult result = m_limelightSubsystem.getLatestResult();
+//        this.m_axeSubsystem.pivotAxe(m_axeDown);
+//        this.m_sorterSubsystem.spinSorter(-0.75);
+//
+//        if (result != null && result.isValid() && !result.getFiducialResults().isEmpty())
+//        {
+//            LLResultTypes.FiducialResult tag = result.getFiducialResults().get(0);
+//            Pose3D pose = tag.getTargetPoseCameraSpace();
+//
+//            if (pose != null)
+//            {
+////                double zMeters = Math.abs(pose.getPosition().z);
+//                double distance = result.getBotposeAvgDist();
+//                double safeDistance = Math.max(0.49, Math.min(distance, 2.75)); //2.42
+//
+//                // 1. Calculate and set the Flywheel Speed
+//                double targetVelocity = m_velocityLUT.get(safeDistance);
+//                m_launcherSubsystem.setMotorVelocity(targetVelocity);
+//                m_lastKnownSpeed = targetVelocity;
+//
+//                // 2. Calculate and set the Hood Position using your custom math!
+//                double targetHoodPosition = m_hoodSubsystem.getTargetFromDistance(safeDistance);
+//                m_hoodSubsystem.pivotHood(targetHoodPosition);
+//                m_lastKnownHoodPosition = targetHoodPosition; // SAVE IT TO MEMORY HERE!
+//            }
+//        }
+//        else
+//        {
+//            m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
+//            m_hoodSubsystem.pivotHood(m_lastKnownHoodPosition);
+//            // Optional: If vision drops out, you could either freeze the hood where it is,
+//            // or send it to a default fallback position here. Leaving it blank freezes it.
+//        }
     }
 
     @Override
@@ -123,7 +183,6 @@ public class LauncherBellyCommand extends CommandBase
     public boolean isFinished()
     {
         return false;
-//        return true
     }
 }
 
