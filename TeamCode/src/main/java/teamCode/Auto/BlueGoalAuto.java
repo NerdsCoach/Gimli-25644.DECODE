@@ -211,8 +211,8 @@ public class BlueGoalAuto extends LinearOpMode
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         //Commands
 //        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem, this.m_drive);
-        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem);
-        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem, 20 );
+        this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem, 20);
 //        this.m_turnTableSubsystem.Turn(0);
 
         CommandScheduler.getInstance().reset();
@@ -274,7 +274,7 @@ public class BlueGoalAuto extends LinearOpMode
                         this.m_autoLauncherCommand.execute();
                         this.m_autoHoodCommand.execute();
 
-                        new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem).schedule();
+                        new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem, 20).schedule();
 
                         m_aimingTimer.reset();
                         m_aimingCommandStarted = true;

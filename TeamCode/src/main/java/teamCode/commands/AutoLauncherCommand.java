@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 import teamCode.subsystems.LimeLightSubsystem;
@@ -19,22 +20,22 @@ public class AutoLauncherCommand extends CommandBase
     private final HoodServoSubsystem m_hoodSubsystem;
     private final LimeLightSubsystem m_limelightSubsystem;
 
+    private double m_lastKnownSpeed;
+    private final int m_targetId;
+    private double m_smoothedDistance = 0.0;
+
     private final InterpLUT m_velocityLUT = new InterpLUT();
 
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_aimClose = Constants.AimingConstants.kCloseAim;
-    private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-
-    private double m_lastKnownSpeed;
-
     public AutoLauncherCommand(LauncherSubsystem launcherSubsystem, AxeSubsystem axeSubsystem,
-                               HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem)
+                               HoodServoSubsystem hoodSubsystem, LimeLightSubsystem limelightSubsystem,
+                               int targetId)
     {
 
         this.m_launcherSubsystem = launcherSubsystem;
         this.m_axeSubsystem = axeSubsystem;
         this.m_hoodSubsystem = hoodSubsystem;
         this.m_limelightSubsystem = limelightSubsystem;
+        this.m_targetId = targetId;
 
         m_lastKnownSpeed = 1500.0;
 
@@ -76,26 +77,39 @@ public class AutoLauncherCommand extends CommandBase
         public void execute()
         {
             LLResult result = m_limelightSubsystem.getLatestResult();
-            this.m_axeSubsystem.pivotAxe(m_axeDown);
+
+            boolean goalFound = false;
 
             if (result != null && result.isValid() && !result.getFiducialResults().isEmpty())
             {
-                LLResultTypes.FiducialResult tag = result.getFiducialResults().get(0);
-                Pose3D pose = tag.getTargetPoseCameraSpace();
-
-                if (pose != null)
+                for (LLResultTypes.FiducialResult tag : result.getFiducialResults())
                 {
-                    double zMeters = Math.abs(pose.getPosition().z);
-                    double safeDistance = Math.max(0.49, Math.min(zMeters, 2.42));
-                    double targetVelocity = m_velocityLUT.get(safeDistance);
+                    if (tag.getFiducialId() == m_targetId) // Safely isolating Tag 24
+                    {
+                        Pose3D pose = tag.getTargetPoseCameraSpace();
+                        if (pose != null)
+                        {
+                            double rawZ = Math.abs(pose.getPosition().z);
 
-                    m_launcherSubsystem.setMotorVelocity(targetVelocity);
-                    m_lastKnownSpeed = targetVelocity;
+                            // --- DYNAMIC TUNING FOR ON-THE-MOVE TRACKING ---
+                            // Ask your drivetrain if the robot is currently moving
+
+                            // If moving, use a high factor (e.g., 0.8) for fast, raw tracking with zero lag.
+                            // If stopped, use a low factor (e.g., 0.15) to aggressively freeze and smooth the jitter.
+
+                            // Constrain within your safe LUT boundaries
+                            double safeDistance = Math.max(0.20, Math.min(m_smoothedDistance, 2.75));
+
+                            // Set Flywheel Speed
+                            double targetVelocity = m_velocityLUT.get(safeDistance);
+                            m_launcherSubsystem.setMotorVelocity(targetVelocity);
+                            m_lastKnownSpeed = targetVelocity;
+
+                            goalFound = true;
+                            break;
+                        }
+                    }
                 }
-            }
-            else
-            {
-                m_launcherSubsystem.setMotorVelocity(m_lastKnownSpeed);
             }
         }
 

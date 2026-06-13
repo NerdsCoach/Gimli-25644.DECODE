@@ -343,10 +343,10 @@ public class RobotContainerRed extends CommandOpMode
         this.m_aimingCommand = new AimingOnCommand(this.m_limelightSubsystem, this.m_turnTableSubsystem, this.m_lightASubsystem, 24, this.m_telemetry);
         this.m_square = (new GamepadButton(this.m_driver2, GamepadKeys.Button.X))
                 .toggleWhenPressed(this.m_aimingCommand);
-
-        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem);
-        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
-                .toggleWhenPressed(this.m_hoodFarCommand);
+//
+//        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem, 24);
+//        this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
+//                .toggleWhenPressed(this.m_hoodFarCommand);
 
         this.m_reverseTransferCommand = new ReverseTransferCommand(this.m_limitSwitchSubsystem, () -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         this.m_leftTrigger = new Trigger(() -> this.m_driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.05);

@@ -296,7 +296,7 @@ public class VelocityTestingRobotContainer extends CommandOpMode
 //        this.m_circle = (new GamepadButton(this.m_driver2, GamepadKeys.Button.B))
 //                .whenPressed(this.m_turnOffAimingCommand);
 //
-        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem);
+        this.m_hoodFarCommand = new AutoHoodCommand(this.m_hoodServoSubsystem, this.m_limelightSubsystem, 20);
         this.m_dpadTop = (new GamepadButton(this.m_driver2, GamepadKeys.Button.DPAD_UP))
                 .toggleWhenPressed(this.m_hoodFarCommand);
 
