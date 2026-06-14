@@ -34,6 +34,7 @@ import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
@@ -90,6 +91,7 @@ public class BlueWallAuto extends LinearOpMode
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
 //    private IntakeServoSubsystem m_intakeServoSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
+    private DriveSubsystem m_driveSubsystem;
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
@@ -222,7 +224,7 @@ public class BlueWallAuto extends LinearOpMode
         this.m_launcherSubsystem = new LauncherSubsystem(this.m_launcherMotor);
         this.m_colorSensorSubsystem = new ColorSensorSubsystem(hardwareMap);
 
-        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem, 24);
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem,24);
         this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem, 20);
 
         CommandScheduler.getInstance().reset();

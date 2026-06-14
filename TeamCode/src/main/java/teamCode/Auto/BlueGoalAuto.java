@@ -33,6 +33,7 @@ import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
@@ -87,7 +88,7 @@ public class BlueGoalAuto extends LinearOpMode
     private HoodServoSubsystem m_hoodServoSubsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
-
+    private DriveSubsystem m_driveSubsystem;
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
     private AutoLauncherCommand m_autoLauncherCommand;
@@ -211,7 +212,7 @@ public class BlueGoalAuto extends LinearOpMode
         this.m_limitSwitchSubsystem = new LimitSwitchSubsystem(this.m_limitSwitch, this.m_transferServo);
         //Commands
 //        this.m_transferLimitCommand = new TransferLimitCommand(this.m_limitSwitchSubsystem, this.m_drive);
-        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem, 20 );
+        this.m_autoLauncherCommand = new AutoLauncherCommand(m_launcherSubsystem, m_axeSubsystem, m_hoodServoSubsystem, m_limeLightSubsystem, 20);
         this.m_autoHoodCommand = new AutoHoodCommand(m_hoodServoSubsystem, this.m_limeLightSubsystem, 20);
 //        this.m_turnTableSubsystem.Turn(0);
 

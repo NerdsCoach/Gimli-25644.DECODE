@@ -38,6 +38,7 @@ import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
@@ -94,6 +95,7 @@ public class RedWallAuto extends LinearOpMode
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
 //    private IntakeServoSubsystem m_intakeServoSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
+    private DriveSubsystem m_driveSubsystem;
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
@@ -115,9 +117,9 @@ public class RedWallAuto extends LinearOpMode
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, 610, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
-
-    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
+//
+//    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
+//    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
     private String[] targetPattern = {"NONE", "NONE", "NONE"};
     private int ballsScored = 0;
@@ -347,7 +349,7 @@ public class RedWallAuto extends LinearOpMode
                 break;
 
                 case PREPARE_FOR_BATTLE:
-                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+//                    this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                     this.m_axeSubsystem.pivotAxe(kAxeDown);
                     this.m_sorterServoSubsystem.spinSorter(-0.5);
                     m_autoLauncherCommand.schedule();
@@ -543,7 +545,7 @@ public class RedWallAuto extends LinearOpMode
                         leftFront.setPower(0.0);
                         rightBack.setPower(0.0);
                         rightFront.setPower(0.0);
-                        this.m_hoodServoSubsystem.pivotHood(m_aimFar);
+//                        this.m_hoodServoSubsystem.pivotHood(m_aimFar);
                         this.m_limitSwitchSubsystem.setTransferPower(0.0);
                         this.m_sorterServoSubsystem.spinSorter(0.0);
                         this.m_intakeMotorSubsystem.stop();

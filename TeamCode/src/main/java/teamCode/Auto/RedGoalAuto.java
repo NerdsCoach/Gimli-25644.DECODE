@@ -33,6 +33,7 @@ import teamCode.commands.TimerCommand;
 import teamCode.commands.TransferLimitCommand;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.ColorSensorSubsystem;
+import teamCode.subsystems.DriveSubsystem;
 import teamCode.subsystems.HoodServoSubsystem;
 import teamCode.subsystems.IntakeMotorSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
@@ -89,6 +90,7 @@ public class RedGoalAuto extends LinearOpMode
 //    private IntakeServoSubsystem m_intakeServoSybsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
+    private DriveSubsystem m_driveSubsystem;
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;

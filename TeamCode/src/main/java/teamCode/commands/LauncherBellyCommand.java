@@ -104,7 +104,8 @@ public class LauncherBellyCommand extends CommandBase
                         // If stopped, use a low factor (e.g., 0.15) to aggressively freeze and smooth the jitter.
                         double currentFilterFactor = isMoving ? 0.80 : 0.15;
 
-                        if (m_smoothedDistance == 0.0) {
+                        if (m_smoothedDistance == 0.0)
+                        {
                             m_smoothedDistance = rawZ;
                         } else {
                             // Blend the data using our smart dynamic factor
