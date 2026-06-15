@@ -5,7 +5,8 @@ import teamCode.Constants;
 import teamCode.subsystems.AxeSubsystem;
 import teamCode.subsystems.LauncherSubsystem;
 
-public class ALauncherOnCommand extends CommandBase {
+public class ALauncherOnCommand extends CommandBase
+{
     private final LauncherSubsystem m_launcherSubsystem;
     private final AxeSubsystem m_axeSubsystem;
 

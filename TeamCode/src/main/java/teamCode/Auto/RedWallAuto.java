@@ -72,8 +72,6 @@ public class RedWallAuto extends LinearOpMode
     private Servo m_AxeServo;
     private CRServo m_transferServo;
     private CRServo m_sorterServo;
-    private Servo m_hoodServo;
-//    private CRServo m_intakeServo;
 
     //Sensors
     private GoBildaPinpointDriver m_odo;
@@ -93,9 +91,7 @@ public class RedWallAuto extends LinearOpMode
     private LimitSwitchSubsystem m_limitSwitchSubsystem;
     private HoodServoSubsystem m_hoodServoSubsystem;
     private IntakeMotorSubsystem m_intakeMotorSubsystem;
-//    private IntakeServoSubsystem m_intakeServoSubsystem;
     private LimeLightSubsystem m_limeLightSubsystem;
-    private DriveSubsystem m_driveSubsystem;
 
     //Commands
     private TransferLimitCommand m_transferLimitCommand;
@@ -117,9 +113,6 @@ public class RedWallAuto extends LinearOpMode
     static final Pose2DUnNormalized EndPickUp = new Pose2DUnNormalized(DistanceUnit.MM, 650, 610, UnnormalizedAngleUnit.DEGREES, 0);
     static final Pose2DUnNormalized GrabFinalArtifact = new Pose2DUnNormalized(DistanceUnit.MM, 1190, 610, UnnormalizedAngleUnit.DEGREES, 0); //1050
     static final Pose2DUnNormalized Park = new Pose2DUnNormalized(DistanceUnit.MM, 400, 200, UnnormalizedAngleUnit.DEGREES, 0);
-//
-//    private static final double m_aimFar = Constants.AimingConstants.kFarAim;
-//    private static final double m_hoodDown = Constants.AimingConstants.kCloseAim;
 
     private String[] targetPattern = {"NONE", "NONE", "NONE"};
     private int ballsScored = 0;
@@ -154,21 +147,22 @@ public class RedWallAuto extends LinearOpMode
     private static final float TARGET_GREEN_HUE = 160.0f;
     private static final float TARGET_PURPLE_HUE = 240.0f;
 
-    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
-    private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
-    private int m_position;
-    private static final int m_up = 1;
-    private static final int m_down = 0;
-    private double m_lastKnownSpeed;
-    private static final int  m_off = 1;
-    private static final int  m_on = 0;
+//    private static final double m_axeUp = Constants.AxeConstants.kAxeUp;
+//    private static final double m_axeDown = Constants.AxeConstants.kAxeDown;
+//    private int m_position;
+//    private static final int m_up = 1;
+//    private static final int m_down = 0;
+//    private double m_lastKnownSpeed;
+//    private static final int  m_off = 1;
+//    private static final int  m_on = 0;
 
     private static final float HUE_TOLERANCE = 10.0f; // Allow +/- 10 degrees variance
     public double m_lastKnownColor;
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -302,7 +296,6 @@ public class RedWallAuto extends LinearOpMode
                         }
                     }
                     break;
-
 
 
                 case GPP_PATTERN:

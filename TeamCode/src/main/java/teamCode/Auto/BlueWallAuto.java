@@ -378,6 +378,7 @@ public class BlueWallAuto extends LinearOpMode
                                 .withTimeout(1500)
                                 .schedule();
 
+                        // Schedule LauncherOnCommand separately, so it continues to run after aiming is complete.
                         this.m_autoLauncherCommand.execute();
                         this.m_autoHoodCommand.execute();
 

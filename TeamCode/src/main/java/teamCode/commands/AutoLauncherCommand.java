@@ -73,33 +73,26 @@ public class AutoLauncherCommand extends CommandBase
     }
 
         @Override
-        public void execute() {
+        public void execute()
+        {
             LLResult result = m_limelightSubsystem.getLatestResult();
 
             boolean goalFound = false;
 
-            if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()) {
-                for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
+            if (result != null && result.isValid() && !result.getFiducialResults().isEmpty())
+            {
+                for (LLResultTypes.FiducialResult tag : result.getFiducialResults())
+                {
                     if (tag.getFiducialId() == m_targetId) // Safely isolating Tag 24
                     {
                         Pose3D pose = tag.getTargetPoseCameraSpace();
-                        if (pose != null) {
+                        if (pose != null)
+                        {
                             double rawZ = Math.abs(pose.getPosition().z);
-
-                            // --- DYNAMIC TUNING FOR ON-THE-MOVE TRACKING ---
-                            // Ask your drivetrain if the robot is currently moving
-//                            boolean isMoving = m_driveSubsystem.isRobotMoving(); // (Or check if joystick inputs > 0.05)
-
-                            // If moving, use a high factor (e.g., 0.8) for fast, raw tracking with zero lag.
-                            // If stopped, use a low factor (e.g., 0.15) to aggressively freeze and smooth the jitter.
-//                            double currentFilterFactor = isMoving ? 0.80 : 0.15;
-
-                            if (m_smoothedDistance == 0.0) {
+                            if (m_smoothedDistance == 0.0)
+                            {
                                 m_smoothedDistance = rawZ;
-//                            } else {
-//                                // Blend the data using our smart dynamic factor
-//                                m_smoothedDistance = (currentFilterFactor * rawZ) + ((1.0 - currentFilterFactor) * m_smoothedDistance);
-//                            }
+                            }
 
                                 // Constrain within your safe LUT boundaries
                                 double safeDistance = Math.max(0.20, Math.min(m_smoothedDistance, 2.75));
@@ -118,6 +111,8 @@ public class AutoLauncherCommand extends CommandBase
                             }
                         }
                     }
+                }
+            }
 //            LLResult result = m_limelightSubsystem.getLatestResult();
 //
 //            boolean goalFound = false;
@@ -153,9 +148,6 @@ public class AutoLauncherCommand extends CommandBase
 //                    }
 //                }
 //            }
-                }
-            }
-        }
 
         @Override
         public void end(boolean interrupted)
